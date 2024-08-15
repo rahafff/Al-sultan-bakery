@@ -146,5 +146,31 @@
   "servingMethod": "Serving Method",
 
   "manageShippingAddress": "Manage Shipping Address",
-  "manageBillingAddress": "Manage Billing Address"
+  "manageBillingAddress": "Manage Billing Address",
+
+  "sortBy": "Sort By",
+
+  "newest": "Newest",
+  "oldest": "Oldest",
+  "highToLow": "High To Low",
+  "lowToHigh": "Low To High",
+
+  "filterBy": "Filter By",
+  "price": "Price",
+
+  "clearFilter": "Clear Filter",
+
+  "oneStar": "1 Star and above",
+  "twoStar": "2 Star and above",
+  "threeStar": "3 Star and above",
+  "fourStar": "4 Star and above",
+
+  "addOns": "AddOns",
+  "required": "Required",
+  "optional": "Optional",
+  "variation": "Variation",
+
+  "select": "Select",
+
+  "addItem": "Add To Cart"
 }

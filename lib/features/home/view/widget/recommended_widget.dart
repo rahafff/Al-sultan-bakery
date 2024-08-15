@@ -80,7 +80,7 @@ class RecommendedWidget extends ConsumerWidget {
                           columnCount: 2,
                           child: ScaleAnimation(
                             child: FadeInAnimation(
-                              child: BasicProductCard(
+                              child: MainProductCard(
                                 product: products[index],
                                 cardColor: colors(context).accentColor,
                               ),

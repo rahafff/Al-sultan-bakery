@@ -27,8 +27,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "accountDeleteDes": MessageLookupByLibrary.simpleMessage(
             "This action cannot be undone.All values associated with this field will be lost."),
         "addAddress": MessageLookupByLibrary.simpleMessage("Add Address"),
+        "addItem": MessageLookupByLibrary.simpleMessage("Add To Cart"),
         "addNewAddress":
             MessageLookupByLibrary.simpleMessage("Add New Address"),
+        "addOns": MessageLookupByLibrary.simpleMessage("AddOns"),
         "additionalInfo": MessageLookupByLibrary.simpleMessage(
             "Write here any additional info"),
         "addressLine1": MessageLookupByLibrary.simpleMessage("Address Line 1"),
@@ -54,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Check Internet Connection"),
         "checkOut": MessageLookupByLibrary.simpleMessage("Checkout"),
         "city": MessageLookupByLibrary.simpleMessage("City"),
+        "clearFilter": MessageLookupByLibrary.simpleMessage("Clear Filter"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "confirmOTP": MessageLookupByLibrary.simpleMessage("Confirm OTP"),
         "confirmPassword":
@@ -91,12 +94,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enter your phone number"),
         "enterPromoCode":
             MessageLookupByLibrary.simpleMessage("Enter promo code"),
+        "filterBy": MessageLookupByLibrary.simpleMessage("Filter By"),
         "firstName": MessageLookupByLibrary.simpleMessage("First Name"),
         "flat": MessageLookupByLibrary.simpleMessage("Flat"),
         "forgetPassword":
             MessageLookupByLibrary.simpleMessage("Forgot your password"),
+        "fourStar": MessageLookupByLibrary.simpleMessage("4 Star and above"),
         "fullAddress": MessageLookupByLibrary.simpleMessage("Full Address"),
         "goToHome": MessageLookupByLibrary.simpleMessage("Go To Home"),
+        "highToLow": MessageLookupByLibrary.simpleMessage("High To Low"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
         "incorrectPin":
             MessageLookupByLibrary.simpleMessage("Incorrect pin code"),
@@ -111,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please login to continue shopping"),
         "logutConfirmation": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to log out?"),
+        "lowToHigh": MessageLookupByLibrary.simpleMessage("Low To High"),
         "makeDefault":
             MessageLookupByLibrary.simpleMessage("Make it default address"),
         "manageAddress": MessageLookupByLibrary.simpleMessage("Manage Address"),
@@ -124,6 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "nearByStore": MessageLookupByLibrary.simpleMessage("Nearby store"),
         "newPassDes": MessageLookupByLibrary.simpleMessage(
             "Type and confirm a secure new password for your account"),
+        "newest": MessageLookupByLibrary.simpleMessage("Newest"),
         "noCategoriesFound":
             MessageLookupByLibrary.simpleMessage("No category found!"),
         "noInternetDes": MessageLookupByLibrary.simpleMessage(
@@ -132,6 +140,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No Product Found!"),
         "office": MessageLookupByLibrary.simpleMessage("Office"),
         "okay": MessageLookupByLibrary.simpleMessage("Okay"),
+        "oldest": MessageLookupByLibrary.simpleMessage("Oldest"),
+        "oneStar": MessageLookupByLibrary.simpleMessage("1 Star and above"),
+        "optional": MessageLookupByLibrary.simpleMessage("Optional"),
         "orderDetails": MessageLookupByLibrary.simpleMessage("Order Details"),
         "orderDialogDes": MessageLookupByLibrary.simpleMessage(
             "You will receive a confirmation message with your order details"),
@@ -157,6 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
         "placeOrder": MessageLookupByLibrary.simpleMessage("Place Order"),
         "postalCode": MessageLookupByLibrary.simpleMessage("Postal Code"),
+        "price": MessageLookupByLibrary.simpleMessage("Price"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
         "productDNF":
             MessageLookupByLibrary.simpleMessage("Product details not found!"),
@@ -170,6 +182,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "recoverPassword":
             MessageLookupByLibrary.simpleMessage("Recover Password"),
         "relatedItems": MessageLookupByLibrary.simpleMessage("Related items"),
+        "required": MessageLookupByLibrary.simpleMessage("Required"),
         "resend": MessageLookupByLibrary.simpleMessage("Resend code in"),
         "resendCode": MessageLookupByLibrary.simpleMessage("Resend Code"),
         "reviews": MessageLookupByLibrary.simpleMessage("Reviews"),
@@ -180,6 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Search for products"),
         "searchShop": MessageLookupByLibrary.simpleMessage("Search for shop"),
         "sec": MessageLookupByLibrary.simpleMessage("sec"),
+        "select": MessageLookupByLibrary.simpleMessage("Select"),
         "selectPaymentMethod": MessageLookupByLibrary.simpleMessage(
             "Please select the payment method!"),
         "sendOtp": MessageLookupByLibrary.simpleMessage("Send OTP"),
@@ -190,20 +204,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUp": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "someThingWrong":
             MessageLookupByLibrary.simpleMessage("Something went wrong!"),
+        "sortBy": MessageLookupByLibrary.simpleMessage("Sort By"),
         "state": MessageLookupByLibrary.simpleMessage("State"),
         "storeOpenT": MessageLookupByLibrary.simpleMessage("Opening Time"),
         "subTotal": MessageLookupByLibrary.simpleMessage("Sub Total"),
         "termsConditions":
             MessageLookupByLibrary.simpleMessage("Terms & Conditions"),
+        "threeStar": MessageLookupByLibrary.simpleMessage("3 Star and above"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
         "toBePaid": MessageLookupByLibrary.simpleMessage("To Be Paid"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
+        "twoStar": MessageLookupByLibrary.simpleMessage("2 Star and above"),
         "updateProfile": MessageLookupByLibrary.simpleMessage("Update Profile"),
         "userAddressNotFound": MessageLookupByLibrary.simpleMessage(
             "Opps user address not found!"),
         "username": MessageLookupByLibrary.simpleMessage("Username"),
         "validationMessage":
             MessageLookupByLibrary.simpleMessage("field cannot be empty"),
+        "variation": MessageLookupByLibrary.simpleMessage("Variation"),
         "verifyOTPDes":
             MessageLookupByLibrary.simpleMessage("We sent OTP code to"),
         "viewAll": MessageLookupByLibrary.simpleMessage("View All"),

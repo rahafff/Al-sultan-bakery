@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grocerymart/config/app_color.dart';
 import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/hive_contants.dart';
@@ -11,17 +13,16 @@ import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/logic/cart_repo.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
 import 'package:grocerymart/features/cart/view/widget/cart_remove_dialog.dart';
+import 'package:grocerymart/features/categories/model/responses/addons_response.dart';
 import 'package:grocerymart/features/categories/model/responses/product_response.dart';
-import 'package:grocerymart/features/home/model/product.dart';
-import 'package:grocerymart/features/products/logic/product_repo.dart';
-import 'package:grocerymart/features/products/model/product_details.dart';
-import 'package:grocerymart/features/products/view/widgets/related_products.dart';
+import 'package:grocerymart/features/categories/model/responses/variation_items_response.dart';
+import 'package:grocerymart/features/categories/model/responses/variation_response.dart';
 import 'package:grocerymart/gen/assets.gen.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
-import 'package:grocerymart/widgets/busy_loader.dart';
 import 'package:grocerymart/widgets/buttons/add_to_cart_button.dart';
+import 'package:grocerymart/widgets/buttons/full_width_button.dart';
 import 'package:grocerymart/widgets/buttons/top_nav_bar_icon_button.dart';
 import 'package:grocerymart/widgets/custom_app_bar.dart';
 import 'package:grocerymart/widgets/misc.dart';
@@ -30,10 +31,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:readmore/readmore.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
-  final int productId;
+  final ProductResponse? product;
   const ProductDetailsScreen({
     super.key,
-    required this.productId,
+    this.product,
   });
 
   @override
@@ -42,153 +43,229 @@ class ProductDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
+  List<VariationItemsResponse> _selectedVariation = [];
+
+  Map<String, VariationItemsResponse> _selectedValueGroup = {};
+
+  List<AddonsResponse> addonsItems = [];
+
+  // ValueListenable<int> productQuantity = ValueNotifier<int>(1);
+  final ValueNotifier<int> productQuantity = ValueNotifier<int>(1);
+  final ValueNotifier<num> totalPrice = ValueNotifier<num>(0.0);
+
   @override
   Widget build(BuildContext context) {
     final textStyle = AppTextStyle(context);
-    return ScreenWrapper(
-      child: FutureBuilder(
-        future: ref
-            .read(productRepo)
-            .getProductDetails(productId: widget.productId),
-        builder: (context, AsyncSnapshot<ProductDetails> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return Center(
-                child: Text(
-                  S.of(context).someThingWrong,
-                  style: textStyle.subTitle,
-                ),
-              );
-            }
-            final productDetails = snapshot.data;
-            if (productDetails != null) {
-              final ProductWithShop product = productDetails.product;
-              final Shop shopDetails = productDetails.product.shop;
-              final List<ProductResponse> relatedProducts = productDetails.products;
-
-              return ValueListenableBuilder<Box<HiveCartModel>>(
-                valueListenable:
-                    Hive.box<HiveCartModel>(AppHSC.cartBox).listenable(),
-                builder: (context, cartBox, _) {
-                  bool inCart = false;
-                  int productQuantity = 0;
-                  int cartIndex = -1;
-                  final cartItems = cartBox.values.toList();
-
-                  for (int i = 0; i < cartItems.length; i++) {
-                    final cartProduct = cartItems[i];
-                    if (cartProduct.id == product.id) {
-                      inCart = true;
-                      productQuantity = cartProduct.productsQTY;
-                      cartIndex = i;
-                      break;
-                    }
-                  }
-                  return Column(
-                    children: [
-                      CustomAppBar(
-                        showSearchTextField: false,
-                        title: S.of(context).productDetails,
-                        trails: [
-                          Stack(
-                            children: [
-                              TopNavBarIconButton(
-                                svgPath: Assets.svg.iconBasketColored,
-                                onTap: () {
-                                  context.nav.pushNamed(Routes.cartScreen);
-                                },
-                              ),
-                              Positioned(
-                                right: 0,
-                                child: CircleAvatar(
-                                  backgroundColor: colors(context).primaryColor,
-                                  radius: 10.sp,
-                                  child: Center(
-                                    child: Text(
-                                      cartItems.length.toString(),
-                                      style: textStyle.bodyTextSmall.copyWith(
-                                        color: AppStaticColor.whiteColor,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: ListView(
-                          padding: EdgeInsets.zero,
+    return ValueListenableBuilder<Box<HiveCartModel>>(
+      valueListenable: Hive.box<HiveCartModel>(AppHSC.cartBox).listenable(),
+      builder: (context, cartBox, _) {
+        // bool inCart = false;
+        // int productQuantity = 0;
+        // int cartIndex = -1;
+        final cartItems = cartBox.values.toList();
+        //
+        // for (int i = 0; i < cartItems.length; i++) {
+        //   final cartProduct = cartItems[i];
+        //   if (cartProduct.id == widget.product?.id) {
+        //     inCart = true;
+        //     productQuantity = cartProduct.productsQTY;
+        //     cartIndex = i;
+        //     break;
+        //   }
+        // }
+        return ScreenWrapper(
+          bottomNavigationBar: Container(
+              decoration: const BoxDecoration(
+                  color: AppStaticColor.whiteColor,
+                  boxShadow: [
+                    BoxShadow(
+                        blurStyle: BlurStyle.outer,
+                        color: AppStaticColor.primaryColor,
+                        blurRadius: 5,
+                        spreadRadius: 5)
+                  ]),
+              height: 60.h,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 2, color: AppStaticColor.accentColor)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
                           children: [
-                            Container(
-                              color: AppStaticColor.whiteColor,
-                              height: 260.h,
-                              width: 390.w,
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl: product.thumbnail,
-                                placeholder: (context, url) =>
-                                    const Icon(Icons.image),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
+                            AppIconButton(
+                              size: 25.sp,
+                              iconData: Icons.remove,
+                              btnColor: colors(context).primaryColor ??
+                                  AppStaticColor.primaryColor,
+                              iconColor: AppStaticColor.whiteColor,
+                              onTap: () {
+                                if (productQuantity.value > 1) {
+                                  productQuantity.value--;
+                                  calculateTotalPrice();
+                                }
+                                // ref.read(cartRepo).decrementProductQuantity(
+                                //   cartItem: widget.product ,
+                                //   cartBox: cartBox,
+                                //   index: cartIndex,
+                                // );
+                              },
+                            ),
+                            10.pw,
+                            ValueListenableBuilder<int>(
+                              valueListenable: productQuantity,
+                              builder: (context, value, child) => Text(
+                                productQuantity.value.toString(),
+                                style: textStyle.bodyTextSmall.copyWith(
+                                  color: AppStaticColor.blackColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                            _buildDetailsCard(
-                              product: product,
-                              inCart: inCart,
-                              cartBox: cartBox,
-                              cartIndex: cartIndex,
-                              productQuantity: productQuantity,
-                              cartItems: cartItems,
-                              context: context,
-                              shopDetails: shopDetails,
+                            10.pw,
+                            AppIconButton(
+                              size: 25.sp,
+                              iconData: Icons.add,
+                              btnColor: AppStaticColor.primaryColor,
+                              onTap: () async {
+                                productQuantity.value++;
+                                calculateTotalPrice();
+                                // ref.read(cartRepo).incrementProductQuantity(
+                                //   cartItem: widget.product?.id ?? -1,
+                                //   box: cartBox,
+                                //   index: cartIndex,
+                                // );
+                              },
                             ),
-                            _buildRelatedCard(shopDetails, relatedProducts)
+                            10.pw,
                           ],
+                        ),
+                      ),
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: totalPrice,
+                      builder: (context, value, child) =>
+                      AppTextButton(
+                        onTap: () async {
+                          HiveCartModel cartItem = HiveCartModel(
+                              id: widget.product?.id ?? -1,
+                              name: widget.product?.title ?? '',
+                              productImage: widget.product?.image ?? '',
+                              price:
+                                  widget.product?.pricing.price?.toDouble() ?? 0,
+                              oldPrice:
+                                  widget.product?.pricing.oldPrice?.toDouble() ??
+                                      0,
+                              productsQTY: productQuantity.value,
+                              variant: _selectedValueGroup.values
+                                  .map(
+                                    (e) => HiveAddonsItem(
+                                        name: e.name, price: e.price),
+                                  )
+                                  .toList(),
+                              addons: addonsItems
+                                  .map(
+                                    (e) => HiveAddonsItem(
+                                        name: e.name, price: e.price),
+                                  )
+                                  .toList());
+                          await cartBox.add(cartItem);
+                          EasyLoading.showSuccess(S.current.addItem);
+                          context.nav.pop();
+                        },
+                        width: 200.w,
+                        title: '${S.current.addItem} ( ${totalPrice.value.toStringAsFixed(2)}${widget.product?.pricing.currency?.symbol} )',
+                        height: 35.h,
+                      ),
+                    )
+                  ],
+                ),
+              )),
+          child: Column(
+            children: [
+              CustomAppBar(
+                showSearchTextField: false,
+                title: S.of(context).productDetails,
+                trails: [
+                  Stack(
+                    children: [
+                      TopNavBarIconButton(
+                        svgPath: Assets.svg.iconBasketColored,
+                        onTap: () {
+                          context.nav.pushNamed(Routes.cartScreen);
+                        },
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: CircleAvatar(
+                          backgroundColor: colors(context).primaryColor,
+                          radius: 10.sp,
+                          child: Center(
+                            child: Text(
+                              cartItems.length.toString(),
+                              style: textStyle.bodyTextSmall.copyWith(
+                                color: AppStaticColor.whiteColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
                       )
                     ],
-                  );
-                },
-              );
-            } else {
-              return Center(
-                child: Text(
-                  S.of(context).productDNF,
-                  style: textStyle.subTitle,
-                ),
-              );
-            }
-          }
-          return Center(
-            child: Container(
-              constraints: BoxConstraints(maxHeight: 120.h, minWidth: 100.w),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
-                  color: colors(context).accentColor),
-              width: 200,
-              child: const BusyLoader(
-                size: 120,
+                  ),
+                ],
               ),
-            ),
-          );
-        },
-      ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ///IMAGE
+                      Container(
+                        color: AppStaticColor.whiteColor,
+                        height: 260.h,
+                        width: 390.w,
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: widget.product?.image ?? '',
+                          placeholder: (context, url) =>
+                              const Icon(Icons.image),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+
+                      ///DETAILS
+                      _buildDetailsCard(
+                        product: widget.product!,
+                        cartBox: cartBox,
+                        productQuantity: productQuantity.value,
+                        context: context,
+                      ),
+
+                      ///ADDbUTOON
+                      30.ph
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildDetailsCard(
-      {required ProductWithShop product,
-      required bool inCart,
-      required Box<HiveCartModel> cartBox,
-      required int cartIndex,
-      required int productQuantity,
-      required List<HiveCartModel> cartItems,
-      required BuildContext context,
-      required Shop shopDetails}) {
+  Widget _buildDetailsCard({
+    required ProductResponse product,
+    required Box<HiveCartModel> cartBox,
+    required int productQuantity,
+    required BuildContext context,
+  }) {
     final textStyle = AppTextStyle(context);
     return Padding(
       padding: EdgeInsets.all(12.r),
@@ -206,6 +283,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -217,14 +295,14 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Text(
-                    product.discountPercentage.toString(),
+                    '-${product.discountPercentage}%',
                     style: textStyle.bodyTextSmall.copyWith(
                       color: AppStaticColor.whiteColor,
                     ),
                   ),
                 ),
                 Text(
-                  '\$${product.price}/${product.sellType}',
+                  '\$${product.pricing.price}',
                   style: textStyle.subTitle
                       .copyWith(color: colors(context).primaryColor),
                 )
@@ -235,86 +313,16 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    product.name,
+                    product.title ?? '',
                     style: textStyle.subTitle,
                   ),
                 ),
-                inCart
-                    ? Row(
-                        children: [
-                          AppIconButton(
-                            size: 28.sp,
-                            iconData: Icons.remove,
-                            btnColor: colors(context).accentColor ??
-                                AppStaticColor.accentColor,
-                            iconColor: AppStaticColor.blackColor,
-                            onTap: () {
-                              ref.read(cartRepo).decrementProductQuantity(
-                                    productId: product.id,
-                                    cartBox: cartBox,
-                                    index: cartIndex,
-                                  );
-                            },
-                          ),
-                          5.pw,
-                          Text(
-                            productQuantity.toString(),
-                            style: textStyle.bodyTextSmall.copyWith(
-                              color: AppStaticColor.blackColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          5.pw,
-                          AppIconButton(
-                            size: 28.sp,
-                            iconData: Icons.add,
-                            btnColor: colors(context).primaryColor ??
-                                AppStaticColor.primaryColor,
-                            onTap: () async {
-                              ref.read(cartRepo).incrementProductQuantity(
-                                    productId: product.id,
-                                    box: cartBox,
-                                    index: cartIndex,
-                                  );
-                            },
-                          ),
-                        ],
-                      )
-                    : AddToCartButton(
-                        size: 28.sp,
-                        onTap: () async {
-                          HiveCartModel cartItem = HiveCartModel(
-                            id: product.id,
-
-                            name: product.name,
-                            productImage: product.thumbnail,
-                            price: product.price,
-                            oldPrice: product.oldPrice,
-                            productsQTY: 1,
-                          );
-
-                          if (cartItems.isEmpty) {
-                            await cartBox.add(cartItem);
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) => CartRemoveDialog(
-                                cartBox: cartBox,
-                              ),
-                            );
-                          }
-                        },
-                      )
               ],
             ),
             12.5.ph,
-            AppCustomDivider(
-              width: double.infinity,
-              color: colors(context).bodyTextColor!.withOpacity(0.5),
-            ),
-            12.5.ph,
+
             ReadMoreText(
-              product.description,
+              product.summary ?? '',
               style: textStyle.bodyText.copyWith(fontWeight: FontWeight.w400),
               trimLines: 4,
               trimMode: TrimMode.Line,
@@ -330,121 +338,202 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   ),
             ),
             12.5.ph,
-            AppCustomDivider(
-              width: double.infinity,
-              color: colors(context).bodyTextColor!.withOpacity(0.5),
+
+            ///Variation list
+            Visibility(
+              visible: product.variations.isNotEmpty,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppCustomDivider(
+                    width: double.infinity,
+                    color: colors(context).bodyTextColor!.withOpacity(0.5),
+                  ),
+                  12.5.ph,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(S.current.variation,
+                          style: textStyle.bodyTextSmall.copyWith(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      Container(
+                          decoration: BoxDecoration(
+                              color: AppStaticColor.blackColor,
+                              borderRadius:
+                                  BorderRadiusDirectional.circular(15)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Text(
+                              S.current.required,
+                              style: textStyle.bodyTextSmall.copyWith(
+                                  color: AppStaticColor.whiteColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ))
+                    ],
+                  ),
+                  12.ph,
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: product.variations.map(
+                        (e) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${S.current.select} ${e.name}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              10.5.ph,
+                              Column(
+                                children: e.items
+                                    .map(
+                                      (item) => RadioListTile<
+                                              VariationItemsResponse>(
+                                          contentPadding:
+                                              EdgeInsetsDirectional.zero,
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(item.name),
+                                              Text(
+                                                  '(+ ${item.price}${item.currency.symbol})',
+                                                  style: textStyle.bodyText
+                                                      .copyWith(
+                                                          color: Colors
+                                                              .green.shade600))
+                                            ],
+                                          ),
+                                          activeColor:
+                                              AppStaticColor.primaryColor,
+                                          value: item,
+                                          groupValue:
+                                              _selectedValueGroup[e.name],
+                                          dense: true,
+                                          controlAffinity:
+                                              ListTileControlAffinity.trailing,
+                                          onChanged: (newVal) {
+                                            _selectedValueGroup[e.name] =
+                                                newVal!;
+                                            setState(() {});
+                                          }),
+                                    )
+                                    .toList(),
+                              ),
+                            ],
+                          );
+                        },
+                      ).toList()),
+                ],
+              ),
             ),
             12.5.ph,
-            Container(
-              decoration: BoxDecoration(
-                  color: AppStaticColor.accentColor,
-                  borderRadius: BorderRadius.circular(8.r)),
-              padding: EdgeInsets.all(10.r),
-              child: Row(
+
+            ///addOns
+            Visibility(
+              visible: product.addons.isNotEmpty,
+              child: Column(
                 children: [
-                  SvgPicture.asset(
-                    Assets.svg.iconStore,
-                    color: AppStaticColor.grayColor,
+                  AppCustomDivider(
+                    width: double.infinity,
+                    color: colors(context).bodyTextColor!.withOpacity(0.5),
                   ),
-                  9.5.pw,
-                  Expanded(
-                    child: Text(
-                      shopDetails.name,
-                      style: textStyle.bodyTextSmall.copyWith(
-                          color: AppStaticColor.blackColor,
-                          fontWeight: FontWeight.w700),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  12.ph,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(S.current.addOns,
+                          style: textStyle.bodyTextSmall.copyWith(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      Container(
+                          decoration: BoxDecoration(
+                              color: AppStaticColor.blackColor,
+                              borderRadius:
+                                  BorderRadiusDirectional.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(
+                              S.current.optional,
+                              style: textStyle.bodyTextSmall.copyWith(
+                                  color: AppStaticColor.accentColor,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ))
+                    ],
                   ),
-                  9.5.pw,
-                  Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 14.r,
-                  ),
-                  5.4.pw,
-                  Text(
-                    shopDetails.rating,
-                    style: textStyle.bodyTextSmall.copyWith(
-                        fontSize: 12.sp,
-                        color: AppStaticColor.blackColor,
-                        fontWeight: FontWeight.w500),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: product.addons
+                        .map(
+                          (item) => CheckboxListTile(
+                              activeColor: AppStaticColor.primaryColor,
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(child: Text(item.name)),
+                                  Text(
+                                    '(+ ${item.price}${item.currency.symbol})',
+                                    style: textStyle.bodyText
+                                        .copyWith(color: Colors.green.shade600),
+                                  ),
+                                ],
+                              ),
+                              dense: true,
+                              value: addonsItems.contains(item),
+                              contentPadding: EdgeInsetsDirectional.zero,
+                              onChanged: (va) {
+                                if (va ?? false) {
+                                  addonsItems.add(item);
+
+                                  (item.price);
+                                } else {
+                                  addonsItems.remove(item);
+
+                                }
+                                calculateTotalPrice();
+                                setState(() {});
+                              }),
+                        )
+                        .toList(),
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRelatedCard(
-    Shop shopDetails,
-    List<ProductResponse> relatedProducts,
-  ) {
-    final textStyle = AppTextStyle(context);
-    return Container(
-      decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          boxShadow: [
-            BoxShadow(
-              color: colors(context).accentColor ?? AppStaticColor.accentColor,
-              blurRadius: 1,
-            )
-          ]),
-      padding: EdgeInsets.all(16.r),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  S.of(context).distanceFML,
-                  style:
-                      textStyle.bodyText.copyWith(fontWeight: FontWeight.w400),
-                ),
-              ),
-              Text(
-                shopDetails.distance,
-                style: textStyle.bodyText.copyWith(fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-          20.ph,
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  S.of(context).edtimatedDT,
-                  style:
-                      textStyle.bodyText.copyWith(fontWeight: FontWeight.w400),
-                ),
-              ),
-              Text(
-                shopDetails.deliveryTime,
-                style: textStyle.bodyText.copyWith(fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-          12.5.ph,
-          AppCustomDivider(
-            width: double.infinity,
-            color: colors(context).bodyTextColor!.withOpacity(0.5),
-          ),
-          12.5.ph,
-          relatedProducts.isNotEmpty
-              ? Text(
-                  S.of(context).relatedItems,
-                  style: textStyle.subTitle,
-                )
-              : const SizedBox(),
-          // 12.ph,
-          // RelatedProductsCard(
-          //   relatedProducts: relatedProducts,
-          // )
-        ],
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    initPrice();
+    if (widget.product?.variations.isNotEmpty ?? false) {
+      initSelectItems();
+    }
+  }
+
+  initSelectItems() {
+    List<VariationResponse> ir = widget.product?.variations ?? [];
+    for (var variation in ir) {
+      _selectedValueGroup[variation.name] = variation.items.first;
+      totalPrice.value += variation.items.first.price;
+    }
+  }
+  initPrice (){
+    totalPrice.value += widget.product?.pricing.price ?? 0.0;
+  }
+
+  calculateTotalPrice(){
+    num totalAddons = 0.0;
+    addonsItems.forEach((element) => totalAddons +=element.price ,);
+   var subTotal = ( widget.product?.pricing.price ?? 0.0 ) + totalAddons;
+
+   totalPrice.value = subTotal * productQuantity.value;
   }
 }

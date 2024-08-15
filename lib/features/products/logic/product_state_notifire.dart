@@ -14,8 +14,8 @@ class ProductStateNotifier extends StateNotifier<bool> {
       int? subcategoryId,
       String? search,
     required int? count,
-      int? maxPrice,
-      int? minPrice,
+      num? maxPrice,
+    num? minPrice,
       String? type,
   }) async {
     state = true;
@@ -42,21 +42,21 @@ class ProductStateNotifier extends StateNotifier<bool> {
     }
   }
 
-  Future<ProductDetails?> getProductDetails({required int productId}) async {
-    // state = true;
-    try {
-      final productDetails =
-          await ref.read(productRepo).getProductDetails(productId: productId);
-      state = false;
-      return productDetails;
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      state = false;
-      return null;
-    } finally {
-      state = false;
-    }
-  }
+  // Future<ProductDetails?> getProductDetails({required int productId}) async {
+  //   // state = true;
+  //   try {
+  //     final productDetails =
+  //         await ref.read(productRepo).getProductDetails(productId: productId);
+  //     state = false;
+  //     return productDetails;
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //     state = false;
+  //     return null;
+  //   } finally {
+  //     state = false;
+  //   }
+  // }
 }

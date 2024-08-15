@@ -8,7 +8,7 @@ part of 'product_response.dart';
 
 ProductResponse _$ProductResponseFromJson(Map<String, dynamic> json) =>
     ProductResponse(
-      (json['id'] as num?)?.toInt(),
+      (json['id'] as num).toInt(),
       json['title'] as String?,
       json['feature_image'] as String?,
       json['rating'] as String?,

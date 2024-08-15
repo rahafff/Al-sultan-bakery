@@ -10,20 +10,24 @@ class HiveCartModel {
   double price;
   double oldPrice;
   int productsQTY;
+
+  List<HiveAddonsItem> addons;
+  List<HiveAddonsItem> variant;
+
   HiveCartModel({
     required this.id,
-
     required this.name,
     required this.productImage,
     required this.price,
     required this.oldPrice,
     required this.productsQTY,
+    required this.variant,
+    required this.addons,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-
       'name': name,
       'productImage': productImage,
       'price': price,
@@ -34,14 +38,15 @@ class HiveCartModel {
 
   factory HiveCartModel.fromMap(Map<dynamic, dynamic> map) {
     return HiveCartModel(
-      id: map['id'] as int,
-
-      name: map['name'] as String,
-      productImage: map['productImage'] as String,
-      price: map['price'] as double,
-      oldPrice: map['old_price'] as double,
-      productsQTY: map['productsQTY'] as int,
-    );
+        id: map['id'] as int,
+        name: map['name'] as String,
+        productImage: map['productImage'] as String,
+        price: map['price'] as double,
+        oldPrice: map['old_price'] as double,
+        productsQTY: map['productsQTY'] as int,
+        addons:  map['addons'].map((product) => HiveAddonsItem.fromJson(product)),
+      variant:  map['variant'].map((product) => HiveAddonsItem.fromJson(product))
+     );
   }
 
   String toJson() => json.encode(toMap());
@@ -63,4 +68,30 @@ class HiveCartModelAdapter extends TypeAdapter<HiveCartModel> {
   void write(BinaryWriter writer, HiveCartModel obj) {
     writer.writeMap(obj.toMap());
   }
+}
+
+class HiveAddonsItem {
+  String name;
+  num price;
+
+  HiveAddonsItem({required this.name, required this.price});
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+      'price': price,
+    };
+  }
+
+  factory HiveAddonsItem.fromMap(Map<dynamic, dynamic> map) {
+    return HiveAddonsItem(
+      name: map['name'] as String,
+      price: map['price'] as double,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory HiveAddonsItem.fromJson(String source) =>
+      HiveAddonsItem.fromMap(json.decode(source) as Map<String, dynamic>);
 }

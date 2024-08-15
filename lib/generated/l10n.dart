@@ -1469,6 +1469,186 @@ class S {
       args: [],
     );
   }
+
+  /// `Sort By`
+  String get sortBy {
+    return Intl.message(
+      'Sort By',
+      name: 'sortBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Newest`
+  String get newest {
+    return Intl.message(
+      'Newest',
+      name: 'newest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oldest`
+  String get oldest {
+    return Intl.message(
+      'Oldest',
+      name: 'oldest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High To Low`
+  String get highToLow {
+    return Intl.message(
+      'High To Low',
+      name: 'highToLow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Low To High`
+  String get lowToHigh {
+    return Intl.message(
+      'Low To High',
+      name: 'lowToHigh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filter By`
+  String get filterBy {
+    return Intl.message(
+      'Filter By',
+      name: 'filterBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get price {
+    return Intl.message(
+      'Price',
+      name: 'price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear Filter`
+  String get clearFilter {
+    return Intl.message(
+      'Clear Filter',
+      name: 'clearFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 Star and above`
+  String get oneStar {
+    return Intl.message(
+      '1 Star and above',
+      name: 'oneStar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `2 Star and above`
+  String get twoStar {
+    return Intl.message(
+      '2 Star and above',
+      name: 'twoStar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `3 Star and above`
+  String get threeStar {
+    return Intl.message(
+      '3 Star and above',
+      name: 'threeStar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `4 Star and above`
+  String get fourStar {
+    return Intl.message(
+      '4 Star and above',
+      name: 'fourStar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AddOns`
+  String get addOns {
+    return Intl.message(
+      'AddOns',
+      name: 'addOns',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Required`
+  String get required {
+    return Intl.message(
+      'Required',
+      name: 'required',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Optional`
+  String get optional {
+    return Intl.message(
+      'Optional',
+      name: 'optional',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Variation`
+  String get variation {
+    return Intl.message(
+      'Variation',
+      name: 'variation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select`
+  String get select {
+    return Intl.message(
+      'Select',
+      name: 'select',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add To Cart`
+  String get addItem {
+    return Intl.message(
+      'Add To Cart',
+      name: 'addItem',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

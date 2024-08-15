@@ -150,7 +150,7 @@ Route generatedRoutes(RouteSettings settings) {
     //   break;
     case Routes.productDetailsScreen:
       child = ProductDetailsScreen(
-        productId: settings.arguments as int,
+        product: settings.arguments as ProductResponse,
       );
       break;
     // case Routes.storeDetailsScreen:

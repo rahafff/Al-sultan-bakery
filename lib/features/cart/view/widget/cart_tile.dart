@@ -7,6 +7,7 @@ import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/logic/cart_repo.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
+import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/util/entensions.dart';
 import 'package:grocerymart/widgets/buttons/add_to_cart_button.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -43,6 +44,7 @@ class _CartTileState extends State<CartTile> {
           ),
           padding: EdgeInsets.only(bottom: 2.h, top: 16.h),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
                 height: 72.h,
@@ -72,42 +74,85 @@ class _CartTileState extends State<CartTile> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
+                    Visibility(
+                      visible: widget.cartItem.addons.isNotEmpty,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${S.current.addOns}: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Wrap(
+                            children: widget.cartItem.addons
+                                .map(
+                                  (e) => Text('${e.name}, '),
+                                )
+                                .toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                      visible: widget.cartItem.variant.isNotEmpty,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${S.current.variation}: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Wrap(
+                            children: widget.cartItem.variant
+                                .map(
+                                  (e) => Text('${e.name}, '),
+                                )
+                                .toList(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
-              AppIconButton(
-                size: 28,
-                iconData: Icons.remove,
-                btnColor:
-                    colors(context).accentColor ?? AppStaticColor.accentColor,
-                iconColor: AppStaticColor.blackColor,
-                onTap: () {
-                  ref.read(cartRepo).decrementProductQuantity(
-                        productId: widget.cartItem.id,
-                        cartBox: widget.box,
-                        index: widget.index,
-                      );
-                },
-              ),
-              5.pw,
-              Text(
-                widget.cartItem.productsQTY.toString(),
-                style: textStyle.subTitle,
-              ),
-              5.pw,
-              AppIconButton(
-                size: 28,
-                iconData: Icons.add,
-                btnColor:
-                    colors(context).primaryColor ?? AppStaticColor.primaryColor,
-                onTap: () {
-                  ref.read(cartRepo).incrementProductQuantity(
-                        productId: widget.cartItem.id,
-                        box: widget.box,
-                        index: widget.index,
-                      );
-                },
-              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AppIconButton(
+                    size: 28,
+                    iconData: Icons.remove,
+                    btnColor: colors(context).accentColor ??
+                        AppStaticColor.accentColor,
+                    iconColor: AppStaticColor.blackColor,
+                    onTap: () {
+                      ref.read(cartRepo).decrementProductQuantity(
+                            productId: widget.cartItem.id,
+                            cartBox: widget.box,
+                            index: widget.index,
+                          );
+                    },
+                  ),
+                  5.pw,
+                  Text(
+                    widget.cartItem.productsQTY.toString(),
+                    style: textStyle.subTitle,
+                  ),
+                  5.pw,
+                  AppIconButton(
+                    size: 28,
+                    iconData: Icons.add,
+                    btnColor: colors(context).primaryColor ??
+                        AppStaticColor.primaryColor,
+                    onTap: () {
+                      ref.read(cartRepo).incrementProductQuantity(
+                            productId: widget.cartItem.id,
+                            box: widget.box,
+                            index: widget.index,
+                          );
+                    },
+                  ),
+                ],
+              )
             ],
           ),
         );

@@ -17,8 +17,8 @@ class ProductRepo {
     required int? subcategoryId,
     required String? search,
     required String? type,
-    required int? minPrice,
-    required int? maxPrice,
+    required num? minPrice,
+    required num? maxPrice,
     required int? count,
   }) async {
     Map<String, String> queryParams = {};
@@ -49,13 +49,13 @@ class ProductRepo {
     return ProductModel(productList: products);
   }
 
-  Future<ProductDetails> getProductDetails({required int productId}) async {
-    final response = await ref
-        .read(apiClientProvider)
-        .get("${AppConstant.getProductDetails}/$productId");
-    final productDetails = ProductDetails.fromMap(response.data['data']);
-    return productDetails;
-  }
+  // Future<ProductDetails> getProductDetails({required int productId}) async {
+  //   final response = await ref
+  //       .read(apiClientProvider)
+  //       .get("${AppConstant.getProductDetails}/$productId");
+  //   final productDetails = ProductDetails.fromMap(response.data['data']);
+  //   return productDetails;
+  // }
 }
 
 final productRepo = Provider((ref) => ProductRepo(ref));

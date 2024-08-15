@@ -8,6 +8,9 @@ import 'package:grocerymart/features/categories/model/responses/product_response
 import 'package:grocerymart/features/home/model/product.dart';
 import 'package:grocerymart/features/home/view/widget/basic_product_card.dart';
 import 'package:grocerymart/features/products/logic/product_provider.dart';
+import 'package:grocerymart/features/products/model/review_model.dart';
+import 'package:grocerymart/features/products/model/sort_product_by.dart';
+import 'package:grocerymart/features/products/view/bottom_sheet_filter_prduct.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/util/context_less_nav.dart';
 import 'package:grocerymart/widgets/busy_loader.dart';
@@ -30,11 +33,19 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
   int count = 1;
   bool scrollLoading = false;
 
+  bool isFiltered = false;
+
+
+  SortProductBy? selectedSort;
+  double? minPrice;
+  double? maxPrice;
+  int? _selectedStarCount;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      getProducts(isSearch: false);
+      getProducts(isScroll: false);
       scrollController.addListener(scrollListener);
     });
   }
@@ -44,7 +55,7 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
       if (ref.watch(productNotifierProvider) == false) {
         scrollLoading = true;
         count++;
-        getProducts(isSearch: false);
+        getProducts(isScroll: true);
       }
     }
   }
@@ -69,7 +80,7 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
               onChanged: (value) {
                 if (value!.isEmpty) {
                   FocusScope.of(context).unfocus();
-                  getProducts(isSearch: false);
+                  getProducts(isScroll: false);
                 }
               },
             ),
@@ -92,18 +103,39 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
                   EdgeInsets.symmetric(horizontal: 20.w).copyWith(bottom: 10),
               child: GestureDetector(
                 onTap: () async {
-                  scrollLoading = false;
-                  FocusScope.of(context).unfocus();
-                  if (searchController.text.isNotEmpty) {
-                    getProducts(isSearch: true);
-                  }
+                  showModalBottomSheet(
+                      builder: (context) =>   BottomSheetFilterProduct(
+                        onClearFilter: () => _clearFilter(),
+                        onFilter: (min ,max,stars){
+                          minPrice = min;
+                          maxPrice = max;
+                          _selectedStarCount = stars;
+
+                          isFiltered = true;
+                          count = 1;
+
+                          scrollLoading = false;
+                          getProducts(isScroll: false);
+                        },
+
+                        max: maxPrice,min: minPrice,
+                        starCount: _selectedStarCount,
+
+                      ),
+                      isScrollControlled: false,shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)
+                  ), context: context);
                 },
                 child: CircleAvatar(
                   radius: 25.r,
-                  backgroundColor: colors(context).accentColor,
+                  backgroundColor: isFiltered
+                      ? colors(context).primaryColor
+                      : colors(context).accentColor,
                   child: Icon(
-                    Icons.search,
-                    color: colors(context).primaryColor,
+                    Icons.tune,
+                    color: isFiltered
+                        ? colors(context).accentColor
+                        : colors(context).primaryColor,
                   ),
                 ),
               ),
@@ -124,6 +156,46 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
                 },
                 child: Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 10),
+                      child: Align(
+                        alignment: AlignmentDirectional.topEnd,
+                        child: DropdownButtonHideUnderline(
+                            child: DropdownButton<SortProductBy>(
+                          padding: EdgeInsetsDirectional.zero,
+                          alignment: AlignmentDirectional.topEnd,
+                          value: selectedSort,
+                          isExpanded: false,
+                          isDense: false,
+                          hint: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              S.current.sortBy,
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          items: SortProductBy.values
+                              .map(
+                                (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(
+                                      e.getMessage(),
+                                      style: TextStyle(fontSize: 12),
+                                    )),
+                              )
+                              .toList(),
+                          onChanged: (newVal) {
+                            selectedSort = newVal;
+                            setState(() {});
+
+                            count = 1;
+
+                            scrollLoading = false;
+                            getProducts(isScroll: false);
+                          },
+                        )),
+                      ),
+                    ),
                     Expanded(
                       child: AnimationLimiter(
                         child: GridView.builder(
@@ -170,22 +242,42 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
     );
   }
 
-  List<ProductResponse> _products = [];
-  Future<void> getProducts({required bool isSearch}) async {
+  final List<ProductResponse> _products = [];
+
+  Future<void> getProducts({required bool isScroll}) async {
     await ref
         .read(productNotifierProvider.notifier)
         .getProducts(
-          // categoryId: null,
-          // search: searchController.text,
-          count: count,
-        )
+            type: selectedSort?.value,
+            search: searchController.text,
+            count: count,
+            minPrice: minPrice,
+            maxPrice: maxPrice)
         .then((response) {
-      _products.addAll(response.productList);
-      if (isSearch) {
-        // widget.products = response.productList;
-      } else {
-        // widget.products.addAll(response.productList);
+      if (!isScroll) {
+        _products.clear();
       }
+      _products.addAll(response.productList);
     });
+  }
+
+  _clearFilter(){
+    minPrice = null;
+    maxPrice = null;
+    isFiltered= false;
+    searchController.text = '';
+    selectedSort = null;
+    count = 1;
+    scrollLoading = false;
+    _selectedStarCount = null;
+    getProducts(isScroll: false);
+  }
+
+  _search() {
+    scrollLoading = false;
+    FocusScope.of(context).unfocus();
+    if (searchController.text.isNotEmpty) {
+      getProducts(isScroll: true);
+    }
   }
 }

@@ -6,7 +6,7 @@ part 'product_response.g.dart';
 
 @JsonSerializable()
 class ProductResponse {
-  final int? id;
+  final int  id;
   final String? title;
 
   @JsonKey(name: 'feature_image')
@@ -27,4 +27,6 @@ class ProductResponse {
 
   factory ProductResponse.fromJson(Map<String, dynamic> json) =>
       _$ProductResponseFromJson(json);
+
+  String get discountPercentage => pricing.isPrevious == 1 ? ((((pricing.oldPrice ?? 0) - (pricing.price ?? 0)) * 100) / (pricing.oldPrice ?? 1) ).toStringAsFixed(0):'-';
 }
