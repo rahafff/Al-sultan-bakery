@@ -28,5 +28,5 @@ class ProductResponse {
   factory ProductResponse.fromJson(Map<String, dynamic> json) =>
       _$ProductResponseFromJson(json);
 
-  String get discountPercentage => pricing.isPrevious == 1 ? ((((pricing.oldPrice ?? 0) - (pricing.price ?? 0)) * 100) / (pricing.oldPrice ?? 1) ).toStringAsFixed(0):'-';
+  String get discountPercentage =>( pricing.isPrevious == 1 && (pricing.oldPrice ?? 0) > 0 )? ((((pricing.oldPrice ?? 0) - (pricing.price ?? 0)) * 100) / (pricing.oldPrice ?? 1) ).toStringAsFixed(0):'';
 }

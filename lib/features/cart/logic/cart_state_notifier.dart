@@ -14,10 +14,10 @@ class CouponStateNotifier extends StateNotifier<bool> {
     state = true;
     try {
       final response = await ref.read(cartRepo).applyCouponCode(
-
             couponCode: couponCode,
             amount: amount,
           );
+      print('rrrreturrnrnrnr');
       return response;
     } catch (error) {
       state = false;

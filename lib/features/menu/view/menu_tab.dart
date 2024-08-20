@@ -34,6 +34,17 @@ class MenuTab extends ConsumerStatefulWidget {
 
 class _MenuTabState extends ConsumerState<MenuTab> {
   final bool isLoading1 = true;
+  bool isLoggedIn = false;
+ late User userInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(hiveStorageProvider).getAuthToken().then((value) {
+      isLoggedIn = value !=null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final textStyle = AppTextStyle(context);
@@ -49,11 +60,15 @@ class _MenuTabState extends ConsumerState<MenuTab> {
           : ValueListenableBuilder<Box>(
               valueListenable: Hive.box(AppHSC.userBox).listenable(),
               builder: (context, userBox, _) {
-                final Map<dynamic, dynamic> userData = userBox.values.first;
-                Map<String, dynamic> userInfoStringKeys =
-                    userData.cast<String, dynamic>();
-                final userInfo = User.fromMap(userInfoStringKeys);
-                return Stack(
+                if(isLoggedIn) {
+                  final Map<dynamic, dynamic> userData = userBox.values.first;
+                  Map<String, dynamic> userInfoStringKeys =
+                  userData.cast<String, dynamic>();
+                  userInfo = User.fromMap(userInfoStringKeys);
+                }else {
+                  userInfo = User.empty();
+                }
+                return  Stack(
                   children: [
                     Column(
                       children: [
@@ -74,7 +89,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
                           ),
                           subtitle:
                               Text(userInfo.email, style: textStyle.bodyText),
-                          trailingIcon: InkWell(
+                          trailingIcon:userInfo.username.isNotEmpty ? InkWell(
                             borderRadius: BorderRadius.circular(8),
                             onTap: () async {
                               showDialog(
@@ -86,7 +101,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
                               color: colors(context).primaryColor,
                               width: 40.w,
                             ),
-                          ),
+                          ):SizedBox(width: 0,height: 0,),
                         ),
                         SizedBox(height: 75.h),
                         Expanded(
@@ -104,10 +119,15 @@ class _MenuTabState extends ConsumerState<MenuTab> {
                                   child: FadeInAnimation(
                                     child: ListTile(
                                       onTap: () {
-                                        menuNavigator(
+                                        if(userInfo.username.isNotEmpty) {
+                                          menuNavigator(
                                             index: index,
                                             userInfo: userInfo,
                                             context: context);
+                                        }else {
+                                          context.nav.pushNamed(Routes.login);
+                                        }
+
                                       },
                                       visualDensity:
                                           const VisualDensity(vertical: -4),
@@ -118,6 +138,10 @@ class _MenuTabState extends ConsumerState<MenuTab> {
                                           color: colors(context).bodyTextColor,
                                         ),
                                       ),
+                                      subtitle:userInfo.username.isEmpty? Text(S.current.loginFirst,style: textStyle.buttonText.copyWith(
+                                        fontSize: 10.sp,
+                                        color: AppStaticColor.redColor,
+                                      ) ) :const SizedBox(width: 0,height: 0,),
                                       leading: SvgPicture.asset(
                                         getList(context)[index].icon,
                                         width: 30.sp,
@@ -193,7 +217,8 @@ class _MenuTabState extends ConsumerState<MenuTab> {
                       ),
                     ),
                   ],
-                );
+                )  ;
+
               },
             ),
     );
@@ -217,9 +242,9 @@ class _MenuTabState extends ConsumerState<MenuTab> {
       case 3:
         context.nav.pushNamed(Routes.manageBillingAddressScreen);
         break;
+
       case 4:
         context.nav.pushNamed(Routes.privacyPolicyScreen);
-
         break;
       case 5:
         context.nav.pushNamed(Routes.termsAndConditionsScreen);

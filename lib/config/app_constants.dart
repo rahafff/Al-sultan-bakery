@@ -28,6 +28,10 @@ class AppConstant {
   static const String getOrderDetails = '$baseUrl/order/details';
 
 
+  static const String getPaymentOffline = '$baseUrl/payment/offline';
+  static const String getPaymentOnLine = '$baseUrl/payment/online';
+
+
 ///news
   static const String news = '/news';
   static const String getBlogList = '$baseUrl$news/getAll';
@@ -39,22 +43,23 @@ class AppConstant {
   static const String getProducts = '$baseUrl/products/getAll';
 
 
+  static const String applyCouponCode = '$baseUrl/payment/coupon/check';
 
+///home
+  static const String getRecommendedProducts = '$baseUrl/home/section/special';
+  static const String getHomeNews = '$baseUrl/home/section/news'; //for slider
+  static const String getTestimonial = '$baseUrl/home/section/testimonial';
+  static const String getFeature = '$baseUrl/home/section/feature';
 
 
   static const String getBanners = '$baseUrl/banners';
-  static const String getRecommendedProducts = '$baseUrl/products/getAll';
 
   static const String getProductDetails = '$baseUrl/product/details';
   static const String placeOrder = '$baseUrl/order/store';
-
-
   static const String updatePaymentStatus =
       '$baseUrl/order/update-payment-status';
-
   static const String getUserReview = '$baseUrl/shop/reviews';
 
-  static const String applyCouponCode = '$baseUrl/coupons/apply';
 
   static const String getPrivacyPolicy = '$baseUrl/legal-pages/privacy_policy';
   static const String getTermsAndConditions =

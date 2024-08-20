@@ -10,6 +10,7 @@ import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/hive_contants.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/logic/cart_provider.dart';
+import 'package:grocerymart/features/cart/model/discount_enum.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
 import 'package:grocerymart/features/cart/view/widget/address_selection_dialog.dart';
 import 'package:grocerymart/features/cart/view/widget/cart_summary_text.dart';
@@ -17,6 +18,7 @@ import 'package:grocerymart/features/cart/view/widget/cart_tile.dart';
 import 'package:grocerymart/features/checkout/model/place_order.dart';
 import 'package:grocerymart/features/checkout/model/shipping_billing_response.dart';
 import 'package:grocerymart/features/menu/model/user_address.dart';
+import 'package:grocerymart/features/menu/view/widgets/account_delete_dialog.dart';
 import 'package:grocerymart/features/menu/view/widgets/address_card.dart';
 import 'package:grocerymart/gen/assets.gen.dart';
 import 'package:grocerymart/generated/l10n.dart';
@@ -39,13 +41,15 @@ class CartScreen extends ConsumerStatefulWidget {
 
 class _CartScreenState extends ConsumerState<CartScreen> {
   final TextEditingController couponController = TextEditingController();
-  ShippingBillingResponse? deliveryAddress;
+  // ShippingBillingResponse? deliveryAddress;
   double couponDiscountAmount = 0;
   int? couponId;
   bool isCouponApply = false;
+  bool isDiscountPercentage = false;
 
   List<double> previousSubtotals = [];
   bool isDark = false;
+  bool isLoggedIn = false;
 
   @override
   void initState() {
@@ -55,6 +59,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         isDark = value;
       });
     });
+    ref.read(hiveStorageProvider).getAuthToken().then((value) {
+       isLoggedIn = value !=null;
+    });
+
   }
 
   @override
@@ -69,7 +77,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           builder: (context, box, _) {
             final cartItems = box.values.toList();
             final subTotal = calculateSubtotal(cartItems);
-            // final oldPrice = calculateOldPrice(cartItems);
+            final addonsTotal = calculateAddonsTotal(cartItems);
+            final variationTotal = calculateVariantTotal(cartItems);
             final products = getProducts(cartItems);
 
             if (previousSubtotals.length == 2) {
@@ -132,8 +141,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               //     if (address != null) {
                               //       Map<String, dynamic> addressStringKey =
                               //           address.cast<String, dynamic>();
-                              //       deliveryAddress =
-                              //           UserAddress.fromMap(addressStringKey);
+                              //       deliveryAddress = ShippingBillingResponse.fromJson(addressStringKey);
                               //     }
                               //     return deliveryAddress != null
                               //         ? Column(
@@ -168,10 +176,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               //                         ),
                               //                       ),
                               //                       onPressed: () {
-                              //                         showDialog(
-                              //                           context: context,
-                              //                           builder: (context) =>
-                              //                               const SelectAddressDialog(),
+                              //                         context.nav
+                              //                             .pushNamed(
+                              //                           Routes.addUserAddressScreen,
+                              //                           arguments: deliveryAddress,
                               //                         );
                               //                       },
                               //                       child: Center(
@@ -215,7 +223,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               //   },
                               // ),
                               SizedBox(height: 10.h),
-                              Row(
+                              isLoggedIn ?    Row(
                                 children: [
                                   Expanded(
                                     child: TextField(
@@ -269,16 +277,27 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                                         couponStateNotifierProvider
                                                             .notifier)
                                                     .applyCouponCode(
-
                                                       couponCode:
                                                           couponController.text,
                                                       amount: subTotal,
                                                     )
                                                     .then((coupon) {
                                                   if (coupon != null) {
+                                                    DiscountEnum type =
+                                                        DiscountEnum
+                                                            .getEnumValue(
+                                                                coupon.type);
+                                                    if (type ==
+                                                        DiscountEnum.percentage)
+                                                      isDiscountPercentage =
+                                                          true;
+
                                                     isCouponApply = true;
                                                     couponDiscountAmount =
-                                                        coupon.discount;
+                                                        double.tryParse(
+                                                                coupon.value) ??
+                                                            0.0;
+
                                                     couponId = coupon.id;
                                                   }
                                                 });
@@ -299,17 +318,20 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                               : colors(context).primaryColor,
                                         )
                                 ],
-                              ),
+                              ) :Container(),
                               16.ph,
                               _cartSummaryWidget(
-                                subTotal: subTotal,
-                                discount: couponDiscountAmount,
-                                deliveryCharge: 30.0,
-                                payableAmount: payableAmount(
-                                    subTotal: subTotal,
-                                    deliveryCharge: 30,
-                                    couponDiscountAmount: couponDiscountAmount),
-                              ),
+                                  subTotal: subTotal,
+                                  discount: couponDiscountAmount,
+                                  deliveryCharge: 0.0,
+                                  payableAmount: payableAmount(
+                                    addons: addonsTotal,
+                                      subTotal: subTotal,
+                                      deliveryCharge: 0,
+                                      couponDiscountAmount:
+                                          couponDiscountAmount),
+                                  addOnsTotal: addonsTotal,
+                                  isDiscountPercentage: isDiscountPercentage),
                               12.ph,
                             ],
                           ),
@@ -342,7 +364,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                       textStyle.subTitle.copyWith(fontSize: 16),
                                 ),
                                 Text(
-                                  '\$${payableAmount(subTotal: subTotal, deliveryCharge: 30, couponDiscountAmount: couponDiscountAmount)}',
+                                  '€${payableAmount(
+                                      addons: addonsTotal,
+                                      subTotal: subTotal, deliveryCharge: 0, couponDiscountAmount: couponDiscountAmount).toStringAsFixed(2)}',
                                   style: textStyle.subTitle,
                                 )
                               ],
@@ -354,24 +378,24 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 onTap: () {
                                   CheckoutArgument checkoutArgument =
                                       CheckoutArgument(
-                                    userAddress: deliveryAddress!,
+                                    // userAddress: deliveryAddress!,
                                     products: products,
                                     couponId: couponId,
                                     deliverCharge: 30,
                                     payable: payableAmount(
+                                      addons: addonsTotal,
                                       subTotal: subTotal,
-                                      deliveryCharge: 30,
+                                      deliveryCharge: 0,
                                       couponDiscountAmount:
                                           couponDiscountAmount,
                                     ),
-
                                     cartBox: box,
                                   );
-                                  Navigator.pushNamed(
+                                  isLoggedIn ?  Navigator.pushNamed(
                                     context,
                                     Routes.checkoutScreen,
                                     arguments: checkoutArgument,
-                                  );
+                                  ) : showDialog(context: context, builder: (context) => LoginDialog(),);
                                 },
                                 title: S.of(context).checkOut,
                                 icon: Icons.arrow_right_alt,
@@ -439,9 +463,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Widget _cartSummaryWidget({
     required double subTotal,
+
+    ///items price
+    required double addOnsTotal,
+
+    ///sum of addons price
     required double discount,
     required double deliveryCharge,
     required double payableAmount,
+    bool isDiscountPercentage = false,
   }) {
     return Container(
       padding: EdgeInsets.all(16.r),
@@ -453,17 +483,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         children: [
           CartSummaryText(
             title: S.of(context).subTotal,
-            subTitle: '\$${subTotal.toStringAsFixed(2)}',
+            subTitle: '€${subTotal.toStringAsFixed(2)}',
           ),
           12.ph,
           CartSummaryText(
             title: S.of(context).deliveryCharge,
-            subTitle: '\$$deliveryCharge',
+            subTitle: '€$deliveryCharge',
+          ),
+          12.ph,
+          CartSummaryText(
+            title: S.of(context).addOns,
+            subTitle: '€$addOnsTotal',
           ),
           12.ph,
           CartSummaryText(
             title: S.of(context).discount,
-            subTitle: '-\$${discount.toStringAsFixed(2)}',
+            subTitle:
+                '-€${discount.toStringAsFixed(2)}${isDiscountPercentage ? '%' : ''}',
             isDicount: true,
           ),
           12.ph,
@@ -474,7 +510,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           12.ph,
           CartSummaryText(
             title: S.of(context).payableAmount,
-            subTitle: '\$${payableAmount.toStringAsFixed(2)}',
+            subTitle: '€${payableAmount.toStringAsFixed(2)}',
             shouldBold: true,
           ),
         ],
@@ -490,32 +526,40 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     return subTotal;
   }
 
-  double calculateOldPrice(List<HiveCartModel> cartItems) {
-    double discount = 0.0;
+  double calculateAddonsTotal(List<HiveCartModel> cartItems) {
+    double addonsTotal = 0.0;
     for (var item in cartItems) {
-      discount += item.oldPrice * item.productsQTY;
+      for (var addons in item.addons) {
+        addonsTotal += addons.price * item.productsQTY;
+      }
     }
-    return discount;
+    return addonsTotal;
   }
+  double calculateVariantTotal(List<HiveCartModel> cartItems) {
+    double addonsTotal = 0.0;
+    for (var item in cartItems) {
+      for (var addons in item.variant) {
+        addonsTotal += addons.price * item.productsQTY;
+      }
+    }
+    return addonsTotal;
+  }
+
 
   double payableAmount(
-      {required double subTotal,
+      {required double subTotal, ///price + vareation
       required double deliveryCharge,
+      required double addons,
       required double couponDiscountAmount}) {
-    return (subTotal + deliveryCharge) - couponDiscountAmount;
+
+    if(isDiscountPercentage){
+      couponDiscountAmount = (subTotal + deliveryCharge + addons) * (couponDiscountAmount / 100);
+    }
+
+    return (subTotal + deliveryCharge + addons) -    couponDiscountAmount;
   }
 
-  double discountAmount({
-    required double oldPrice,
-    required double subTotal,
-    required double couponDiscountAmount,
-  }) {
-    if (oldPrice > subTotal) {
-      return (oldPrice - subTotal) + couponDiscountAmount;
-    } else {
-      return couponDiscountAmount;
-    }
-  }
+
 
   List<Product> getProducts(List<HiveCartModel> cartItems) {
     List<Product> products = [];
@@ -542,8 +586,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   }
 }
 
+
 class CheckoutArgument {
-  ShippingBillingResponse userAddress;
+  // ShippingBillingResponse userAddress;
   List<Product> products;
   int? couponId;
   int deliverCharge;
@@ -551,12 +596,11 @@ class CheckoutArgument {
 
   Box<HiveCartModel> cartBox;
   CheckoutArgument({
-    required this.userAddress,
+    // required this.userAddress,
     required this.products,
     this.couponId,
     required this.deliverCharge,
     required this.payable,
-
     required this.cartBox,
   });
 }

@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocerymart/config/hive_contants.dart';
 import 'package:grocerymart/utils/request_handler.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:ui' as ui;
 class ApiClient {
   final Dio _dio = Dio(
 
@@ -16,9 +18,9 @@ class ApiClient {
 
   Map<String, dynamic> defaultHeaders = {
     HttpHeaders.authorizationHeader: null,
-    "lang":"en",
+    "lang":Hive.box(AppHSC.appSettingsBox).get(AppHSC.appLocal) ?? 'en',
+    "Cookie":"XSRF-TOKEN=eyJpdiI6IkZzeklaRzI1aTZtQTczeHQ5Nk01M0E9PSIsInZhbHVlIjoibitaa1JOaEl0aUxKWUhZZGw0UENya0UvcG52SlBKKzZZeVZKQ010bFc5M1VHUmVoY0IzVFhrbmRmUFVDTmRmY0Q2NUdHaE9BRHgvY0tjRmlkRThSKzFCV3VucDkrU2Y1VTY5Y1paOW94VWlmV3FaN2RuZmhWbE02RnJMSmhsMkciLCJtYWMiOiJlZWM2YzY2MjE5NWMyZWI2MmQ0NmZlMzBjYjA0ODU1NjM2OGMwODZjZjRlZmJiZDlhZDFmMGQ2NDkzOGQ5ZmZhIiwidGFnIjoiIn0%3D; alsultanbakkerij_session=eyJpdiI6IlhMRVNlR0kwM2VRNTJPSUlBYWV3b1E9PSIsInZhbHVlIjoibVI3UnI1cWU2ZDdFT2VmOStMazd6Slp1TDVVZFUrK0oxUDRQa1hmRkZNanROMzVadDF6cTI5YmdUd0VDRDhPRWw3WXVUWldOYUk1R093QndoVy9uQW9OeUw3ZWJRU2RiNlJ6UXQrQ2J2MkVvVzFnWUJWaHc1amo0UnkyTU9HK1EiLCJtYWMiOiIzNjMyZjI3YmUxYjkzZTk4ZmUxYjQ5MGI2ZjIxYjY4NmQyYWY2MGM0MWI2YTMxZGIxNmUyYjVlYjQyOWU1N2I0IiwidGFnIjoiIn0%3D; laravel_maintenance=eyJleHBpcmVzX2F0IjoxNzI0MTM5NTA1LCJtYWMiOiJlMWFkNTdjYzhkNjUzMzQzMGY1MGQ0ZDRjNDQzOTM4NzlhYWUzOTMyNjMzNjMxNDM3NzViZjY1ODgxY2MzMTYyIn0%3D"
      // HttpHeaders.acceptHeader:'application/json'
-    "Cookie":"XSRF-TOKEN=eyJpdiI6InBmMzQycVRZV0JWZFp0ckJtbndOV2c9PSIsInZhbHVlIjoiOEx0WWF4MVZTa0JGcjJ0MGZOMXJ0SnhrWDNVbG8wOXpRQU1IMWhmMGpUNlJMOGFuTUtyamp0SUNCN2l0cmhCV0ZDUkNSQUltUElpRm5NY3RUek9QWEpQclI4Y2xTbXlEZU1QMG9yanpTYzhvOW53RDB6ZVd3U1lXN3F1SzN4OEgiLCJtYWMiOiIwNjY2YmQ3MjE1NTNhZGU3YjM2ZWZlMTMxODFmMGRlZmVhNWJhZDdmMjU0ZTM3N2E2NTBiNmRhZTVkMjE2MWRhIiwidGFnIjoiIn0%3D; alsultanbakkerij_session=eyJpdiI6ImtqVHR2SXFZakVOVTFtanJYbmVzSmc9PSIsInZhbHVlIjoiOFg4aENOMUNtaEk2K1ZDc2ZHdUs1MGpUMDFKaVNNM2ZjN053dXI4ZHlqeXJOcktmMndVTlh4QlZDNzd2RlBncE40d0tkNWVsc0NEWU80cm9pcTA5d2JHdW0rUjA3RklBdTJxbVUvOUlTZzJoKzBSeWFId21xRmthZWloeXJOcGoiLCJtYWMiOiJhN2NlNjE4ZDVjZWU0YjE4ZTM1NGEzZjFkZGFiNGRjZWM5YzY2ZWFhMTYyNTIwZGE0ZDc4MTgxNTVkOTZkOWYwIiwidGFnIjoiIn0%3D; laravel_maintenance=eyJleHBpcmVzX2F0IjoxNzIzODAyNzczLCJtYWMiOiI4MGU4ZDBhMjFiZmY0ZmFiNWRhYmZhYzU0NzE0MDQ0ZjIwMTgzOGRiMWMzYTczYjkzNTk1ZjQ5NmZhNDM4NWU5In0%3D"
   };
 
   Future<Response> get(String url, {Map<String, dynamic>? query}) async {
@@ -85,6 +87,10 @@ class ApiClient {
 
   void updateToken({required String token}) {
     defaultHeaders[HttpHeaders.authorizationHeader] = 'Bearer $token';
+  }
+
+  void updateLang({required String lan}) {
+    defaultHeaders['lang'] = lan;
   }
 
 }

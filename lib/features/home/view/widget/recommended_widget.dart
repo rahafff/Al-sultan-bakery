@@ -7,14 +7,14 @@ import 'package:grocerymart/config/app_color.dart';
 import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/categories/model/responses/product_response.dart';
-import 'package:grocerymart/features/home/model/product.dart';
+import 'package:grocerymart/features/home/model/product_special.dart';
 import 'package:grocerymart/features/home/view/widget/basic_product_card.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
 
 class RecommendedWidget extends ConsumerWidget {
-  final List<ProductResponse> products;
+  final ProductSpecial products;
 
   const RecommendedWidget({
     Key? key,
@@ -43,7 +43,7 @@ class RecommendedWidget extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                S.of(context).recommendedProduct,
+                products.title,
                 style: textStyle.subTitle,
               ),
               GestureDetector(
@@ -61,7 +61,7 @@ class RecommendedWidget extends ConsumerWidget {
               ),
             ],
           ),
-          products.isNotEmpty
+          products.specialProduct.isNotEmpty
               ? AnimationLimiter(
                   child: GridView.count(
                     shrinkWrap: true,
@@ -72,7 +72,7 @@ class RecommendedWidget extends ConsumerWidget {
                     crossAxisSpacing: 16.w,
                     childAspectRatio: 171.w / 250.h,
                     children: List.generate(
-                      products.length < 4 ? products.length : 4,
+                      products.specialProduct.length < 4 ? products.specialProduct.length : 4,
                       (index) {
                         return AnimationConfiguration.staggeredGrid(
                           position: index,
@@ -81,7 +81,7 @@ class RecommendedWidget extends ConsumerWidget {
                           child: ScaleAnimation(
                             child: FadeInAnimation(
                               child: MainProductCard(
-                                product: products[index],
+                                product: products.specialProduct[index],
                                 cardColor: colors(context).accentColor,
                               ),
                             ),

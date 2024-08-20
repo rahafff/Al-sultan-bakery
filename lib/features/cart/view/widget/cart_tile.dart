@@ -28,7 +28,8 @@ class CartTile extends StatefulWidget {
 }
 
 class _CartTileState extends State<CartTile> {
-  int count = 0;
+  num totalItemPrice = 0.0;
+
   @override
   Widget build(BuildContext context) {
     final textStyle = AppTextStyle(context);
@@ -66,14 +67,14 @@ class _CartTileState extends State<CartTile> {
                       widget.cartItem.name,
                       style: textStyle.subTitle.copyWith(fontSize: 16),
                     ),
-                    SizedBox(height: 8.h),
                     Text(
-                      '\$${widget.cartItem.price}',
+                      '€${totalItemPrice.toStringAsFixed(2)}',
                       style: textStyle.bodyText.copyWith(
                         color: colors(context).primaryColor,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
+                    SizedBox(height: 8.h),
                     Visibility(
                       visible: widget.cartItem.addons.isNotEmpty,
                       child: Column(
@@ -126,10 +127,11 @@ class _CartTileState extends State<CartTile> {
                     iconColor: AppStaticColor.blackColor,
                     onTap: () {
                       ref.read(cartRepo).decrementProductQuantity(
-                            productId: widget.cartItem.id,
+                            cartItem: widget.cartItem,
                             cartBox: widget.box,
                             index: widget.index,
                           );
+                      _calculatePrice();
                     },
                   ),
                   5.pw,
@@ -145,10 +147,11 @@ class _CartTileState extends State<CartTile> {
                         AppStaticColor.primaryColor,
                     onTap: () {
                       ref.read(cartRepo).incrementProductQuantity(
-                            productId: widget.cartItem.id,
+                            cartItem: widget.cartItem,
                             box: widget.box,
                             index: widget.index,
                           );
+                      _calculatePrice();
                     },
                   ),
                 ],
@@ -158,5 +161,28 @@ class _CartTileState extends State<CartTile> {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _calculatePrice();
+  }
+
+  _calculatePrice() {
+    totalItemPrice =0.0;
+    num totalAddons = 0.0;
+    num totalVariant = 0.0;
+    num price = widget.cartItem.price;
+
+    widget.cartItem.addons.forEach(
+      (element) => totalAddons += element.price,
+    );
+    widget.cartItem.variant.forEach(
+      (element) => totalVariant += element.price,
+    );
+
+    totalItemPrice =
+        (totalAddons + totalVariant + price) * widget.cartItem.productsQTY;
   }
 }

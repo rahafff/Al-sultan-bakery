@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/categories/model/responses/product_response.dart';
-import 'package:grocerymart/features/home/model/product.dart';
+import 'package:grocerymart/features/home/model/product_special.dart';
 import 'package:grocerymart/features/home/view/widget/basic_product_card.dart';
 import 'package:grocerymart/features/products/logic/product_provider.dart';
 import 'package:grocerymart/features/products/model/review_model.dart';

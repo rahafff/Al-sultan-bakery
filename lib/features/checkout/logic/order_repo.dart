@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocerymart/config/app_constants.dart';
+import 'package:grocerymart/features/checkout/model/offline_mode.dart';
+import 'package:grocerymart/features/checkout/model/online_mode.dart';
 import 'package:grocerymart/features/checkout/model/order.dart';
 import 'package:grocerymart/features/checkout/model/order_details.dart';
 import 'package:grocerymart/features/checkout/model/order_response.dart';
@@ -31,24 +33,26 @@ class OrderRepo {
     return orders;
   }
 
-  // Future<OrderDetails> getOrderDetails({required int orderId}) async {
-  //   final response = await ref
-  //       .read(apiClientProvider)
-  //       .get("${AppConstant.getOrderDetails}/$orderId");
-  //
-  //   final OrderDetails orderDetails =
-  //       OrderDetails.fromMap(response.data['data']);
-  //   return orderDetails;
-  // }
-  //
-  // Future<String> cancelOrder({required int orderId}) async {
-  //   final response = await ref
-  //       .read(apiClientProvider)
-  //       .post("${AppConstant.orderCancel}/$orderId");
-  //
-  //   final String messages = response.data['message'];
-  //   return messages;
-  // }
+  Future<OnlineMode> getOnline() async {
+    final response =
+        await ref.read(apiClientProvider).get(AppConstant.getPaymentOnLine);
+    dynamic addressesData = response.data['data']['stripe'];
+    OnlineMode userAddresses = OnlineMode.fromJson(addressesData);
+
+    return userAddresses;
+  }
+
+  Future<List<OfflineMode>> getOffline() async {
+    final response =
+        await ref.read(apiClientProvider).get(AppConstant.getPaymentOffline);
+    List<dynamic> offlineData = response.data['data'];
+
+    final List<OfflineMode> orders =
+    offlineData.map((order) => OfflineMode.fromJson(order)).toList();
+
+
+    return orders;
+  }
 }
 
 final orderRepo = Provider((ref) => OrderRepo(ref));

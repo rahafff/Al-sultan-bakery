@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -6,6 +8,7 @@ import 'package:grocerymart/config/app_color.dart';
 import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/hive_contants.dart';
 import 'package:grocerymart/config/theme.dart';
+import 'package:grocerymart/features/blogs/model/blog_response.dart';
 import 'package:grocerymart/features/categories/logic/category_provider.dart';
 import 'package:grocerymart/features/categories/model/responses/category_response.dart';
 import 'package:grocerymart/features/categories/model/responses/product_response.dart';
@@ -13,10 +16,16 @@ import 'package:grocerymart/features/checkout/model/shipping_billing_response.da
 import 'package:grocerymart/features/dashboard/logic/misc_providers.dart';
 import 'package:grocerymart/features/home/logic/home_provider.dart';
 import 'package:grocerymart/features/home/model/banner.dart';
+import 'package:grocerymart/features/home/model/feature_item.dart';
+import 'package:grocerymart/features/home/model/home_feature.dart';
+import 'package:grocerymart/features/home/model/product_special.dart';
+import 'package:grocerymart/features/home/model/testimonial_response.dart';
 import 'package:grocerymart/features/home/view/widget/category_tile.dart';
+import 'package:grocerymart/features/home/view/widget/feature_widget.dart';
 import 'package:grocerymart/features/home/view/widget/home_page_hero_slider.dart';
 import 'package:grocerymart/features/home/view/widget/home_shimmer.dart';
 import 'package:grocerymart/features/home/view/widget/recommended_widget.dart';
+import 'package:grocerymart/features/home/view/widget/testimonial_widget.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
@@ -42,9 +51,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> init() async {
-    // getBanners();
+    getBanners();
     getRecommendedProducts();
     getCategories();
+    getHomeFeature();
+    getTestimonial();
   }
 
   bool loader = true;
@@ -72,14 +83,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           : HomePageHeroSlider(
                               banners: _banners,
                             ),
+                      featureLoading
+                      ? _builderLoader():
+                      _buildFeatureWidget(features),
+
                       productLoading
                           ? _builderLoader()
                           : RecommendedWidget(
-                              products: _products,
+                              products: _productSpecial,
                             ),
                       categoryLoading
                           ? _builderLoader()
                           : _buildCategoriesWidget(),
+
+                      testimonialLoading
+                      ? _builderLoader()
+                      : _buildTestimonial(testimonial)
                     ],
                   ),
                 )
@@ -164,6 +183,92 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+  Container _buildFeatureWidget( HomeFeature features) {
+    final textStyle = AppTextStyle(context);
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 10.w,
+        vertical: 10.h,
+      ),
+      padding: EdgeInsets.all(10.sp),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: colors(context).accentColor ?? AppStaticColor.accentColor,
+            blurRadius: 5,
+            blurStyle: BlurStyle.outer,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            features.title,
+            style: textStyle.subTitle,
+          ),
+          SizedBox(
+            height: 150.h,
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 10),
+              scrollDirection: Axis.horizontal,
+              itemCount: features.items.length,
+              itemBuilder: (context, index) => FeatureWidget(
+                item: features.items[index],
+              )
+
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _buildTestimonial( TestimonialResponse features) {
+    final textStyle = AppTextStyle(context);
+    return Container(
+      height: 300.h,
+      margin: EdgeInsets.symmetric(
+        horizontal: 10.w,
+        vertical: 10.h,
+      ),
+      padding: EdgeInsets.all(10.sp),
+      // width: double.infinity,
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(12.r),
+      //   color: Theme.of(context).scaffoldBackgroundColor,
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: colors(context).accentColor ?? AppStaticColor.accentColor,
+      //       blurRadius: 5,
+      //       blurStyle: BlurStyle.outer,
+      //     ),
+      //   ],
+      // ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            features.title ?? '',
+            style: textStyle.subTitle,
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 10),
+              scrollDirection: Axis.horizontal,
+              itemCount: features.points.length,
+              itemBuilder: (context, index) => TestimonialWidget(clientComments: features.points[index])
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   CustomAppBar _buildAppBar(BuildContext context) {
     final textStyle = AppTextStyle(context);
@@ -174,7 +279,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       searchController: searchController,
       readOnly: true,
       onPressed: () {
-        context.nav.pushNamed(Routes.ownProductScreen, arguments: _products);
+        context.nav.pushNamed(Routes.ownProductScreen);
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -235,20 +340,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  final List<BannerModel> _banners = [];
-  final List<ProductResponse> _products = [];
+  final List<BlogResponse> _banners = [];
+  ProductSpecial  _productSpecial=  ProductSpecial('','',[]);
   final List<CategoryResponse> _categories = [];
+  HomeFeature features =HomeFeature('',[]);
+  TestimonialResponse testimonial =TestimonialResponse('',[]);
 
   bool productLoading = false;
+  bool featureLoading = false;
+  bool testimonialLoading = false;
 
-  // Future<void> getBanners() async {
-  //   await ref.read(homeStateNotifierProvider.notifier).getBanners().then(
-  //     (banners) {
-  //       _banners.addAll(banners);
-  //       setState(() {});
-  //     },
-  //   );
-  // }
+  Future<void> getBanners() async {
+    await ref.read(homeStateNotifierProvider.notifier).getBanners().then(
+      (banners) {
+        _banners.addAll(banners);
+        setState(() {});
+      },
+    );
+  }
 
   Future<void> getRecommendedProducts() async {
     setState(() {
@@ -261,7 +370,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() {
         productLoading = false;
       });
-      _products.addAll(products);
+      _productSpecial = products;
+    });
+  }
+
+
+  Future<void> getHomeFeature() async {
+    setState(() {
+      featureLoading = true;
+    });
+    await ref
+        .read(homeStateNotifierProvider.notifier)
+        .getHomeFeature()
+        .then((products) {
+      setState(() {
+        featureLoading = false;
+      });
+      features = products;
+    });
+  }
+
+
+  Future<void> getTestimonial() async {
+    setState(() {
+      testimonialLoading = true;
+    });
+    await ref
+        .read(homeStateNotifierProvider.notifier)
+        .getTestimonial()
+        .then((products) {
+      setState(() {
+        testimonialLoading = false;
+      });
+      testimonial = products;
     });
   }
 
@@ -277,6 +418,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
     );
   }
+
+
+
 
 
 

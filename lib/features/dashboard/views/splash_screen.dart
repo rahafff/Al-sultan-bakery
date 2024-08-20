@@ -25,7 +25,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ]).then((data) {
       if (data.first?[0] == true &&
           (data.first?[1] == null || data.first![2] == null)) {
-        context.nav.pushNamedAndRemoveUntil(Routes.login, (route) => false);
+        // context.nav.pushNamedAndRemoveUntil(Routes.login, (route) => false);
+        context.nav.pushNamedAndRemoveUntil(Routes.dashboard, (route) => false);
       } else if ((data.first![1] != null) && (data.first![2] != null)) {
         ref.read(apiClientProvider).updateToken(token: data.first![1]);
         context.nav.pushNamedAndRemoveUntil(Routes.dashboard, (route) => false);

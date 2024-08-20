@@ -11,6 +11,7 @@ import 'package:grocerymart/features/checkout/model/shipping_billing_response.da
 import 'package:grocerymart/features/menu/logic/menu_provider.dart';
 import 'package:grocerymart/features/menu/model/user_address.dart';
 import 'package:grocerymart/generated/l10n.dart';
+import 'package:grocerymart/service/hive_logic.dart';
 import 'package:grocerymart/util/entensions.dart';
 import 'package:grocerymart/widgets/busy_loader.dart';
 import 'package:grocerymart/widgets/buttons/full_width_button.dart';
@@ -119,7 +120,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                       buildTextField(
                         name: S.of(context).phoneNumber,
                         hintText: S.of(context).enterPhone,
-                        focusNode: fNodes[0],
+                        focusNode: fNodes[1],
                         textInputType: TextInputType.phone,
                         controller: phoneNumController,
                         width: double.infinity,
@@ -128,7 +129,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                       buildTextField(
                         name: S.of(context).email,
                         hintText: S.of(context).email,
-                        focusNode: fNodes[1],
+                        focusNode: fNodes[2],
                         textInputType: TextInputType.text,
                         controller: emailController,
                         width: double.infinity,
@@ -140,7 +141,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                           buildTextField(
                             name: S.of(context).country,
                             hintText: S.of(context).enterFlatNo,
-                            focusNode: fNodes[2],
+                            focusNode: fNodes[3],
                             textInputType: TextInputType.number,
                             controller: countryController,
                             width: null,
@@ -148,7 +149,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                           buildTextField(
                             name: S.of(context).city,
                             hintText: S.of(context).enterPC,
-                            focusNode: fNodes[3],
+                            focusNode: fNodes[4],
                             textInputType: TextInputType.text,
                             controller: cityController,
                             width: null,
@@ -156,7 +157,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                           buildTextField(
                             name: S.of(context).state,
                             hintText: S.of(context).state,
-                            focusNode: fNodes[4],
+                            focusNode: fNodes[5],
                             textInputType: TextInputType.text,
                             controller: stateController,
                             width: null,
@@ -167,7 +168,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                       buildTextField(
                         name: S.of(context).addressLine1,
                         hintText: S.of(context).enterAddressLine1,
-                        focusNode: fNodes[5],
+                        focusNode: fNodes[6],
                         textInputType: TextInputType.text,
                         controller: addressController,
                         width: double.infinity,
@@ -226,6 +227,10 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
           .read(menuStateNotifierProvider.notifier)
           .manageUserAddress(userAddress: userAddress,isShipping: widget.userAddress?.isShipping ?? true);
       nav.pop(true);
+      ref
+              .read(hiveStorageProvider)
+              .saveDeliveryAddress(
+          userAddress: ShippingBillingResponse(number:userAddress.phone,email: userAddress.email,state: userAddress.state,country: userAddress.country,city: userAddress.city,address: userAddress.address,countryCode: userAddress.countryCode ));
       EasyLoading.showSuccess(message!);
     } else {
       return;

@@ -285,31 +285,25 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.h),
-                  decoration: BoxDecoration(
-                    color: colors(context).primaryColor,
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Text(
-                    '-${product.discountPercentage}%',
-                    style: textStyle.bodyTextSmall.copyWith(
-                      color: AppStaticColor.whiteColor,
-                    ),
+            Visibility(
+              visible: product.discountPercentage.isNotEmpty,
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 8.h),
+                decoration: BoxDecoration(
+                  color: colors(context).primaryColor,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Text(
+                  '-${product.discountPercentage}%',
+                  style: textStyle.bodyTextSmall.copyWith(
+                    color: AppStaticColor.whiteColor,
                   ),
                 ),
-                Text(
-                  '\$${product.pricing.price}',
-                  style: textStyle.subTitle
-                      .copyWith(color: colors(context).primaryColor),
-                )
-              ],
+              ),
             ),
             12.5.ph,
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
@@ -317,6 +311,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                     style: textStyle.subTitle,
                   ),
                 ),
+                Text(
+                  '\$${product.pricing.price}',
+                  style: textStyle.subTitle
+                      .copyWith(color: colors(context).primaryColor),
+                )
               ],
             ),
             12.5.ph,

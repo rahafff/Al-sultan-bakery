@@ -132,6 +132,11 @@ class HiveService {
       return false;
     }
   }
+
+  Future<bool> isLoggedUser () async {
+   String? token =  await getAuthToken();
+    return  token == null;
+  }
 }
 
 final hiveStorageProvider = Provider((ref) => HiveService(ref));

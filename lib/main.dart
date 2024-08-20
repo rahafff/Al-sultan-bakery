@@ -29,6 +29,7 @@ void main() async {
   await Hive.openBox(AppHSC.deliveryAddressBox);
   await Hive.openBox(AppHSC.appSettingsBox);
   Hive.registerAdapter(HiveCartModelAdapter());
+  Hive.registerAdapter(HiveAddonsItemAdapter());
   await Hive.openBox<HiveCartModel>(AppHSC.cartBox);
   runApp(
     const ProviderScope(

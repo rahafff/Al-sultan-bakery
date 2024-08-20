@@ -10,31 +10,40 @@ class User {
   final String state;
   final String address;
   final String country;
-  User({
-    required this.username,
-    required this.email,
-    required this.number,
-    required this.photo,
-    required this.city,
-    required this.address,
-    required this.state,
-    required this.country
-  });
-
+  User(
+      {required this.username,
+      required this.email,
+      required this.number,
+      required this.photo,
+      required this.city,
+      required this.address,
+      required this.state,
+      required this.country});
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      username: map['username'] ??'',
+      username: map['username'] ?? '',
       email: map['email'] ?? '',
-      number: map['number'] ??'',
+      number: map['number'] ?? '',
       photo: map['photo'] ?? '',
       address: map['address'] ?? '',
       country: map['country'] ?? '',
       city: map['city'] ?? '',
-      state: map['state'] ??'',
+      state: map['state'] ?? '',
     );
   }
-
+  factory User.empty() {
+    return User(
+      username: '',
+      email: '',
+      number: '',
+      photo: '',
+      address: '',
+      country: '',
+      city: '',
+      state: '',
+    );
+  }
 
   Map<String, String> toMap() {
     return <String, String>{
@@ -48,7 +57,7 @@ class User {
       'address': address,
     };
   }
+
   factory User.fromJson(String source) =>
       User.fromMap(json.decode(source) as Map<String, dynamic>);
-
 }

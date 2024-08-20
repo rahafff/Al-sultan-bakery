@@ -3,7 +3,7 @@
 // import 'package:flutter/foundation.dart';
 // import 'package:grocerymart/features/categories/model/responses/product_response.dart';
 // import 'package:grocerymart/features/home/model/banner.dart';
-// import 'package:grocerymart/features/home/model/product.dart';
+// import 'package:grocerymart/features/home/model/product_special.dart';
 //
 // class ProductDetails {
 //   final ProductWithShop product;

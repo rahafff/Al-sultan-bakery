@@ -172,5 +172,10 @@
 
   "select": "Select",
 
-  "addItem": "Add To Cart"
+  "addItem": "Add To Cart",
+
+  "cardInfo" : "Card Info",
+  "loginFirst": "Login first",
+
+  "youNeedLoginFirst": "You need to login first to complete order"
 }

@@ -11,7 +11,7 @@ import 'package:grocerymart/features/cart/logic/cart_repo.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
 import 'package:grocerymart/features/cart/view/widget/cart_remove_dialog.dart';
 import 'package:grocerymart/features/categories/model/responses/product_response.dart';
-import 'package:grocerymart/features/home/model/product.dart';
+import 'package:grocerymart/features/home/model/product_special.dart';
 import 'package:grocerymart/features/products/view/product_details.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
@@ -117,7 +117,7 @@ class MainProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              product.pricing.isPrevious == 1
+              product.discountPercentage.isNotEmpty
                   ? Positioned(
                 top: 10.h,
                 child: Container(

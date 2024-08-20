@@ -10,39 +10,34 @@ class CartRepo {
   CartRepo(this.ref);
 
   void incrementProductQuantity(
-      {required int productId,
+      {required HiveCartModel cartItem,
       required Box<HiveCartModel> box,
       required int index}) {
-    final cartItem = getCartItemById(productId: productId, cartBox: box);
-    if (cartItem != null) {
-      cartItem.productsQTY++;
-      box.putAt(index, cartItem);
+
+    cartItem.productsQTY++;
+    box.putAt(index, cartItem);
     }
-  }
 
   void decrementProductQuantity(
-      {required int productId,
+      {required HiveCartModel cartItem,
       required Box<HiveCartModel> cartBox,
       required int index}) {
-    final cartItem = getCartItemById(productId: productId, cartBox: cartBox);
-    if (cartItem != null) {
-      if (cartItem.productsQTY > 1) {
-        cartItem.productsQTY--;
-        cartBox.putAt(index, cartItem);
-      } else {
-        cartBox.deleteAt(index);
-      }
+    if (cartItem.productsQTY > 1) {
+      cartItem.productsQTY--;
+      cartBox.putAt(index, cartItem);
+    } else {
+      cartBox.deleteAt(index);
     }
-  }
+    }
 
-  HiveCartModel? getCartItemById(
-      {required int productId, required Box<HiveCartModel> cartBox}) {
-    final HiveCartModel cartItem = cartBox.values.firstWhere((product) {
-      return product.id == productId;
-    });
-
-    return cartItem;
-  }
+  // HiveCartModel? getCartItemById(
+  //     {required int productId, required Box<HiveCartModel> cartBox}) {
+  //   final HiveCartModel cartItem = cartBox.values.firstWhere((product) {
+  //     return product.id == productId;
+  //   });
+  //
+  //   return cartItem;
+  // }
 
   Future<CouponCode?> applyCouponCode({
 
@@ -52,14 +47,15 @@ class CartRepo {
     final response = await ref.read(apiClientProvider).post(
       AppConstant.applyCouponCode,
       data: {
-
-        "coupon_code": couponCode,
-        "amount": amount,
+        "coupon": couponCode,
+        "total": amount,
       },
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = response.data['data']['coupon'];
-      final CouponCode couponCodeResponse = CouponCode.fromMap(data);
+      print('200000');
+      final Map<String, dynamic> data = response.data['data'];
+      final CouponCode couponCodeResponse = CouponCode.fromJson(data);
+      print('done');
       return couponCodeResponse;
     }
     return null;

@@ -7,6 +7,7 @@ import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/checkout/model/shipping_billing_response.dart';
 import 'package:grocerymart/features/menu/logic/menu_provider.dart';
 import 'package:grocerymart/features/menu/model/user_address.dart';
+import 'package:grocerymart/features/menu/view/widgets/address_card.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/service/hive_logic.dart';
 import 'package:grocerymart/util/context_less_nav.dart';
@@ -24,9 +25,9 @@ class _SelectAddressDialogState extends ConsumerState<SelectAddressDialog> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   getAddressList();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getAddress();
+    });
   }
 
   @override
@@ -77,7 +78,7 @@ class _SelectAddressDialogState extends ConsumerState<SelectAddressDialog> {
                         ),
                       ),
                     )
-                  : addressList.isEmpty
+                  : checkIfThereIsAddress(addresss)
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -113,80 +114,44 @@ class _SelectAddressDialogState extends ConsumerState<SelectAddressDialog> {
                             ),
                           ],
                         )
-                      : ListView.separated(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          shrinkWrap: true,
-                          itemCount: addressList.length,
-                          itemBuilder: (context, index) {
-                            ShippingBillingResponse address = addressList[index];
-                            // return ListTile(
-                            //   onTap: () {
-                            //     ref
-                            //         .read(hiveStorageProvider)
-                            //         .saveDeliveryAddress(userAddress: address);
-                            //     context.nav.pop();
-                            //   },
-                            //   leading: CircleAvatar(
-                            //     radius: 20.sp,
-                            //     child: Text(
-                            //       addressList[index].name[0],
-                            //     ),
-                            //   ),
-                            //   title: Text(
-                            //     addressList[index].name,
-                            //     style:
-                            //         textStyle.subTitle.copyWith(fontSize: 14),
-                            //   ),
-                            //   subtitle: Text(
-                            //     '${address.area}, ${address.flat}, ${address.addressLine1}, ${address.addressLine2}-${address.postCode}',
-                            //     style:
-                            //         textStyle.subTitle.copyWith(fontSize: 14),
-                            //   ),
-                            // );
-                            return Container();
-                          },
-                          separatorBuilder: (context, index) => Divider(
-                            color: colors(context).bodyTextColor,
-                          ),
+                      : Column(
+                          children: [
+                            Stack(
+                              children: [
+                                AddressCard(
+                                  userAddress: addresss!,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                          ],
                         ),
             ),
           ),
-          addressList.isNotEmpty
-              ? Positioned(
-                  bottom: 10,
-                  right: 10,
-                  child: CircleAvatar(
-                    radius: 28,
-                    backgroundColor: colors(context).accentColor,
-                    child: IconButton(
-                      splashRadius: 30,
-                      onPressed: () {
-                        context.nav.pop();
-                        context.nav.pushNamed(
-                          Routes.addUserAddressScreen,
-                          arguments: null,
-                        );
-                      },
-                      icon: Icon(
-                        Icons.add,
-                        color: colors(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                )
-              : const SizedBox()
         ],
       ),
     );
   }
 
-  List<ShippingBillingResponse> addressList = [];
-  Future<void> getAddressList() async {
+  ShippingBillingResponse? addresss;
+
+  Future<void> getAddress() async {
     ref
         .read(menuStateNotifierProvider.notifier)
         .getUserShippingAddresses()
         .then((address) {
-      // addressList.addAll(address);
+      addresss = address;
     });
+  }
+
+  bool checkIfThereIsAddress(ShippingBillingResponse? address) {
+    if (address?.number == null &&
+        address?.address == null &&
+        address?.email == null &&
+        address?.fName == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

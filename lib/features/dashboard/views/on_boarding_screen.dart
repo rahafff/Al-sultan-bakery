@@ -148,8 +148,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             ref
                                 .read(hiveStorageProvider)
                                 .setFirstOpenValue(value: true);
-                            context.nav.pushNamedAndRemoveUntil(
-                                Routes.login, (route) => false);
+                            context.nav.pushNamedAndRemoveUntil(Routes.dashboard, (route) => false);
                           },
                         );
                       }),

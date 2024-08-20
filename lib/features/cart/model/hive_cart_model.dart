@@ -7,8 +7,8 @@ class HiveCartModel {
 
   String name;
   String productImage;
-  double price;
-  double oldPrice;
+  num price;
+  num oldPrice;
   int productsQTY;
 
   List<HiveAddonsItem> addons;
@@ -26,6 +26,8 @@ class HiveCartModel {
   });
 
   Map<String, dynamic> toMap() {
+    print( addons.map((e) => e.toMap(),).toList());
+    print('toMap');
     return <String, dynamic>{
       'id': id,
       'name': name,
@@ -33,10 +35,15 @@ class HiveCartModel {
       'price': price,
       'old_price': oldPrice,
       'productsQTY': productsQTY,
+      'addons': addons.map((e) => e.toMap(),).toList(),
+      'variant':variant.map((e) => e.toMap(),).toList()
     };
   }
 
   factory HiveCartModel.fromMap(Map<dynamic, dynamic> map) {
+    print(map['addons'].map((product) => HiveAddonsItem.fromMap(product)));
+    print('from');
+
     return HiveCartModel(
         id: map['id'] as int,
         name: map['name'] as String,
@@ -44,8 +51,8 @@ class HiveCartModel {
         price: map['price'] as double,
         oldPrice: map['old_price'] as double,
         productsQTY: map['productsQTY'] as int,
-        addons:  map['addons'].map((product) => HiveAddonsItem.fromJson(product)),
-      variant:  map['variant'].map((product) => HiveAddonsItem.fromJson(product))
+        addons:  map['addons'].map<HiveAddonsItem>((x) => HiveAddonsItem.fromMap(x)).toList() ,
+      variant: map['variant'].map<HiveAddonsItem>((x) => HiveAddonsItem.fromMap(x)).toList(),
      );
   }
 
@@ -70,6 +77,22 @@ class HiveCartModelAdapter extends TypeAdapter<HiveCartModel> {
   }
 }
 
+
+class HiveAddonsItemAdapter extends TypeAdapter<HiveAddonsItem> {
+  @override
+  final typeId = 1;
+
+  @override
+  HiveAddonsItem read(BinaryReader reader) {
+    return HiveAddonsItem.fromMap(reader.readMap());
+  }
+
+  @override
+  void write(BinaryWriter writer, HiveAddonsItem obj) {
+    writer.writeMap(obj.toMap());
+  }
+}
+
 class HiveAddonsItem {
   String name;
   num price;
@@ -86,7 +109,7 @@ class HiveAddonsItem {
   factory HiveAddonsItem.fromMap(Map<dynamic, dynamic> map) {
     return HiveAddonsItem(
       name: map['name'] as String,
-      price: map['price'] as double,
+      price: map['price'],
     );
   }
 

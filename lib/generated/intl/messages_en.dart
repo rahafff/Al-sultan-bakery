@@ -47,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelOrder": MessageLookupByLibrary.simpleMessage("Cancel Order"),
         "card": MessageLookupByLibrary.simpleMessage("Credit Or Debit Card"),
+        "cardInfo": MessageLookupByLibrary.simpleMessage("Card Info"),
         "cart": MessageLookupByLibrary.simpleMessage("Cart"),
         "cashOnDelivery":
             MessageLookupByLibrary.simpleMessage("Cash On Delivery"),
@@ -115,6 +116,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "loginDes": MessageLookupByLibrary.simpleMessage(
             "Please login to continue shopping"),
+        "loginFirst": MessageLookupByLibrary.simpleMessage("Login first"),
         "logutConfirmation": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to log out?"),
         "lowToHigh": MessageLookupByLibrary.simpleMessage("Low To High"),
@@ -226,6 +228,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("We sent OTP code to"),
         "viewAll": MessageLookupByLibrary.simpleMessage("View All"),
         "whoops": MessageLookupByLibrary.simpleMessage("Whoops!!"),
+        "youNeedLoginFirst": MessageLookupByLibrary.simpleMessage(
+            "You need to login first to complete order"),
         "yourCartIsEmpty":
             MessageLookupByLibrary.simpleMessage("Your Cart is Empty"),
         "yourOrderID": MessageLookupByLibrary.simpleMessage("Your order ID is"),

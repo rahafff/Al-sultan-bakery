@@ -5,11 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grocerymart/config/app_color.dart';
 import 'package:grocerymart/config/theme.dart';
+import 'package:grocerymart/features/blogs/model/blog_response.dart';
 import 'package:grocerymart/features/home/model/banner.dart';
 import 'package:grocerymart/util/entensions.dart';
 
 class HomePageHeroSlider extends ConsumerStatefulWidget {
-  final List<BannerModel> banners;
+  final List<BlogResponse> banners;
   const HomePageHeroSlider({
     super.key,
     required this.banners,
@@ -52,7 +53,7 @@ class _HomePageHeroSliderState extends ConsumerState<HomePageHeroSlider> {
                                 color: AppStaticColor.accentColor,
                                 child: CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  imageUrl: e.media,
+                                  imageUrl: e.image,
                                   placeholder: (context, url) =>
                                       const Icon(Icons.image),
                                   errorWidget: (context, url, error) =>

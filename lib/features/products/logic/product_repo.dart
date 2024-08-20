@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocerymart/config/app_constants.dart';
 import 'package:grocerymart/config/parameter_constants.dart';
 import 'package:grocerymart/features/categories/model/responses/product_response.dart';
-import 'package:grocerymart/features/home/model/product.dart';
+import 'package:grocerymart/features/home/model/product_special.dart';
 import 'package:grocerymart/features/products/model/product_details.dart';
 import 'package:grocerymart/features/products/model/product_model.dart';
 import 'package:grocerymart/utils/api_client.dart';
