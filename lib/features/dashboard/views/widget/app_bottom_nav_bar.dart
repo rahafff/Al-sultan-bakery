@@ -6,6 +6,7 @@ import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/hive_contants.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
+import 'package:grocerymart/features/dashboard/model/app_bottom_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class AppBottomNavbar extends StatelessWidget {
@@ -16,7 +17,7 @@ class AppBottomNavbar extends StatelessWidget {
     required this.selectedIndex,
     required this.onSelect,
   });
-  final List<String> itemSvgs;
+  final List<AppBottomModel> itemSvgs;
   final String menuSvg;
   final int selectedIndex;
   final Function(int? index) onSelect;
@@ -60,13 +61,23 @@ class AppBottomNavbar extends StatelessWidget {
                             onSelect(index - 1);
                           },
                           child: SizedBox(
-                            height: 20.h,
-                            width: 20.h,
-                            child: SvgPicture.asset(
-                              itemSvgs[index - 1],
-                              color: selectedIndex == index - 1
-                                  ? colors(context).primaryColor
-                                  : AppStaticColor.grayColor,
+                            height: 45.h,
+                            width: 60.h,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  width: 20,
+                                  height: 20,
+                                  itemSvgs[index - 1].image,
+                                  color: selectedIndex == index - 1
+                                      ? colors(context).primaryColor
+                                      : AppStaticColor.backBasket,
+                                ),
+                                Text( itemSvgs[index - 1].title,style: textStyle.bodyTextSmall.copyWith(color:selectedIndex == index - 1
+                                    ? colors(context).primaryColor
+                                    : AppStaticColor.backBasket),)
+                              ],
                             ),
                           ),
                         );
@@ -76,13 +87,23 @@ class AppBottomNavbar extends StatelessWidget {
                             onSelect(index);
                           },
                           child: SizedBox(
-                            height: 20.h,
-                            width: 20.h,
-                            child: SvgPicture.asset(
-                              itemSvgs[index],
-                              color: selectedIndex == index
-                                  ? colors(context).primaryColor
-                                  : AppStaticColor.grayColor,
+                            height: 45.h,
+                            width: 60.h,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  itemSvgs[index].image,
+                                  color: selectedIndex == index
+                                      ? colors(context).primaryColor
+                                      : AppStaticColor.backBasket,
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                Text(itemSvgs[index].title,style: textStyle.bodyTextSmall.copyWith(color: selectedIndex == index
+                                    ? colors(context).primaryColor
+                                    : AppStaticColor.backBasket),)
+                              ],
                             ),
                           ),
                         );
@@ -109,12 +130,12 @@ class AppBottomNavbar extends StatelessWidget {
                       width: 71.h,
                       padding: EdgeInsets.all(13.r),
                       decoration: const BoxDecoration(
-                        color: AppStaticColor.whiteColor,
+                        color: AppStaticColor.backBasket,
                       ),
                       child: Container(
                         padding: EdgeInsets.all(12.r),
                         decoration: BoxDecoration(
-                          color: AppStaticColor.grayColor,
+                          color: AppStaticColor.frontBasket,
                           borderRadius: BorderRadius.circular(35.h),
                         ),
                         child: SizedBox(

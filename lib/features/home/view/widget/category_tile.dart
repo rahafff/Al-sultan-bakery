@@ -32,7 +32,7 @@ class CategoryTile extends StatelessWidget {
               width: 78.w,
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
-                imageUrl: category.icon ?? 'https://alsultanbakkerij.nl/assets/front/img/product/featured/1721036529.jpg',
+                imageUrl: category.image ?? 'https://alsultanbakkerij.nl/assets/front/img/product/featured/1721036529.jpg',
                 placeholder: (context, url) => const Icon(Icons.image),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),

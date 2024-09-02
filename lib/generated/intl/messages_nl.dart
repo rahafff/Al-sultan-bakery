@@ -47,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "areYouSure":
             MessageLookupByLibrary.simpleMessage("Weet je het zeker?"),
         "area": MessageLookupByLibrary.simpleMessage("Gebied"),
+        "blogs": MessageLookupByLibrary.simpleMessage("Blogs"),
         "cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
         "cancelOrder":
             MessageLookupByLibrary.simpleMessage("Bestelling annuleren"),
@@ -134,6 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manageShippingAddress":
             MessageLookupByLibrary.simpleMessage("Beheer het verzendadres"),
         "message": MessageLookupByLibrary.simpleMessage("Bericht"),
+        "more": MessageLookupByLibrary.simpleMessage("More"),
         "myorder": MessageLookupByLibrary.simpleMessage("Mijn bestelling"),
         "name": MessageLookupByLibrary.simpleMessage("Naam"),
         "nearByStore":

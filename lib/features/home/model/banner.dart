@@ -28,7 +28,7 @@ class BannerModel {
   factory BannerModel.fromMap(Map<String, dynamic> map) {
     return BannerModel(
       id: map['id'].toInt() as int,
-      media: map['media'] as String,
+      media: map['image'] as String,
     );
   }
 
@@ -37,7 +37,7 @@ class BannerModel {
   factory BannerModel.fromJson(String source) => BannerModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'BannerModel(id: $id, media: $media)';
+  String toString() => 'BannerModel(id: $id, image: $media)';
 
   @override
   bool operator ==(covariant BannerModel other) {

@@ -12,12 +12,12 @@ class HomeStateNotifier extends StateNotifier<bool> {
   final Ref ref;
   HomeStateNotifier(this.ref) : super(false);
 
-  Future<List<BlogResponse>> getBanners() async {
+  Future<List<BannerModel>> getBanners() async {
     state = true;
     try {
-      final bannerList = await ref.read(homeRepo).getHomeNews();
+      final bannerList = await ref.read(homeRepo).getBanners();
       state = false;
-      return bannerList.blogs;
+      return bannerList;
     } catch (error) {
       state = false;
       if (kDebugMode) {
@@ -33,6 +33,22 @@ class HomeStateNotifier extends StateNotifier<bool> {
     state = true;
     try {
       final products = await ref.read(homeRepo).getRecommendedProducts();
+      state = false;
+      return products;
+    } catch (error) {
+      state = false;
+      if (kDebugMode) {
+        print(error);
+      }
+      return ProductSpecial('','',[]);
+    } finally {
+      state = false;
+    }
+  }
+  Future<ProductSpecial> getFeatureProducts() async {
+    state = true;
+    try {
+      final products = await ref.read(homeRepo).getFeatureProducts();
       state = false;
       return products;
     } catch (error) {

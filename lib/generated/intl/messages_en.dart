@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "apply": MessageLookupByLibrary.simpleMessage("Apply"),
         "areYouSure": MessageLookupByLibrary.simpleMessage("Are you sure?"),
         "area": MessageLookupByLibrary.simpleMessage("Area"),
+        "blogs": MessageLookupByLibrary.simpleMessage("Blogs"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelOrder": MessageLookupByLibrary.simpleMessage("Cancel Order"),
         "card": MessageLookupByLibrary.simpleMessage("Credit Or Debit Card"),
@@ -52,6 +53,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cashOnDelivery":
             MessageLookupByLibrary.simpleMessage("Cash On Delivery"),
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
+        "category": MessageLookupByLibrary.simpleMessage("Category"),
         "change": MessageLookupByLibrary.simpleMessage("Change"),
         "checkInternetConnection":
             MessageLookupByLibrary.simpleMessage("Check Internet Connection"),
@@ -128,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manageShippingAddress":
             MessageLookupByLibrary.simpleMessage("Manage Shipping Address"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
+        "more": MessageLookupByLibrary.simpleMessage("More"),
         "myorder": MessageLookupByLibrary.simpleMessage("My Order"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "nearByStore": MessageLookupByLibrary.simpleMessage("Nearby store"),

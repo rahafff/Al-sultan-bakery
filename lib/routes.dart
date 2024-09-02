@@ -20,6 +20,8 @@ import 'package:grocerymart/features/dashboard/views/on_boarding_screen.dart';
 import 'package:grocerymart/features/dashboard/views/splash_screen.dart';
 
 import 'package:grocerymart/features/menu/view/manage_shipping_address.dart';
+import 'package:grocerymart/features/menu/view/menu_tab.dart';
+import 'package:grocerymart/features/menu/view/page_details_screen.dart';
 import 'package:grocerymart/features/menu/view/profile.dart';
 import 'package:grocerymart/features/menu/view/add_user_address.dart';
 import 'package:grocerymart/features/other/view/about_us.dart';
@@ -73,6 +75,7 @@ class Routes {
   static const termsAndConditionsScreen = '/termsAndConditionsScreen';
   static const aboutUsScreen = '/aboutUsScreen';
   static const profileScreen = '/profileScreen';
+  static const pageDetails = '/pageDetails';
 }
 
 Route generatedRoutes(RouteSettings settings) {
@@ -181,14 +184,17 @@ Route generatedRoutes(RouteSettings settings) {
         userInfo: settings.arguments as User,
       );
       break;
-    case Routes.privacyPolicyScreen:
-      child = const PrivacyPolicyScreen();
+    case Routes.pageDetails:
+      child = PageDetailsScreen(arguments: settings.arguments as PageDetailsArguments,);
       break;
-    case Routes.termsAndConditionsScreen:
-      child = const TermsAndConditions();
-      break;
-    case Routes.aboutUsScreen:
-      child = const AboutUs();
+    // case Routes.privacyPolicyScreen:
+    //   child = const PrivacyPolicyScreen();
+    //   break;
+    // case Routes.termsAndConditionsScreen:
+    //   child = const TermsAndConditions();
+    //   break;
+    // case Routes.aboutUsScreen:
+    //   child = const AboutUs();
       break;
 
     default:

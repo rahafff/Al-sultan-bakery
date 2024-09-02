@@ -56,6 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     getCategories();
     getHomeFeature();
     getTestimonial();
+    getFeatureProducts();
   }
 
   bool loader = true;
@@ -86,6 +87,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       featureLoading
                       ? _builderLoader():
                       _buildFeatureWidget(features),
+
+                      productFeatureLoading
+                          ? _builderLoader()
+                          : RecommendedWidget(
+                        products: _productFeature,
+                      ),
 
                       productLoading
                           ? _builderLoader()
@@ -120,11 +127,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         borderRadius: BorderRadius.circular(12.r),
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow: [
-          BoxShadow(
-            color: colors(context).accentColor ?? AppStaticColor.accentColor,
-            blurRadius: 5,
-            blurStyle: BlurStyle.outer,
-          ),
+          // BoxShadow(
+          //   color: colors(context).accentColor ?? AppStaticColor.accentColor,
+          //   blurRadius: 5,
+          //   blurStyle: BlurStyle.outer,
+          // ),
         ],
       ),
       child: AnimationLimiter(
@@ -195,13 +202,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
         color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-            color: colors(context).accentColor ?? AppStaticColor.accentColor,
-            blurRadius: 5,
-            blurStyle: BlurStyle.outer,
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: colors(context).accentColor ?? AppStaticColor.accentColor,
+        //     blurRadius: 5,
+        //     blurStyle: BlurStyle.outer,
+        //   ),
+        // ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,13 +347,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  final List<BlogResponse> _banners = [];
+  final List<BannerModel> _banners = [];
   ProductSpecial  _productSpecial=  ProductSpecial('','',[]);
+  ProductSpecial  _productFeature=  ProductSpecial('','',[]);
   final List<CategoryResponse> _categories = [];
   HomeFeature features =HomeFeature('',[]);
   TestimonialResponse testimonial =TestimonialResponse('',[]);
 
   bool productLoading = false;
+  bool productFeatureLoading = false;
   bool featureLoading = false;
   bool testimonialLoading = false;
 
@@ -371,6 +380,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         productLoading = false;
       });
       _productSpecial = products;
+    });
+  }
+
+  Future<void> getFeatureProducts() async {
+    setState(() {
+      productFeatureLoading = true;
+    });
+    await ref
+        .read(homeStateNotifierProvider.notifier)
+        .getFeatureProducts()
+        .then((products) {
+      setState(() {
+        productFeatureLoading = false;
+      });
+      _productFeature = products;
     });
   }
 

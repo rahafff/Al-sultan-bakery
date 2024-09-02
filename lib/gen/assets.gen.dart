@@ -31,6 +31,9 @@ class $AssetsImagesGen {
   AssetGenImage get locationPin =>
       const AssetGenImage('assets/images/location_pin.png');
 
+  /// File path: assets/images/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
+
   /// File path: assets/images/no_internet_connection.png
   AssetGenImage get noInternetConnection =>
       const AssetGenImage('assets/images/no_internet_connection.png');
@@ -65,6 +68,7 @@ class $AssetsImagesGen {
         emaptyCart,
         fruit,
         locationPin,
+        logo,
         noInternetConnection,
         onboardingFoods,
         onboardingImage1,
@@ -150,6 +154,15 @@ class $AssetsSvgGen {
   /// File path: assets/svg/language.svg
   String get language => 'assets/svg/language.svg';
 
+  /// File path: assets/svg/news-paper.svg
+  String get newsPaper => 'assets/svg/news-paper.svg';
+
+  /// File path: assets/svg/news.svg
+  String get news => 'assets/svg/news.svg';
+
+  /// File path: assets/svg/news1.svg
+  String get news1 => 'assets/svg/news1.svg';
+
   /// File path: assets/svg/theme.svg
   String get theme => 'assets/svg/theme.svg';
 
@@ -179,6 +192,9 @@ class $AssetsSvgGen {
         iconTerms,
         iconUser,
         language,
+        newsPaper,
+        news,
+        news1,
         theme
       ];
 }

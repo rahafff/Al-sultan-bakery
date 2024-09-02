@@ -46,13 +46,14 @@ class AppConstant {
   static const String applyCouponCode = '$baseUrl/payment/coupon/check';
 
 ///home
-  static const String getRecommendedProducts = '$baseUrl/home/section/special';
+  static const String getSpecialProducts = '$baseUrl/home/section/special';
+  static const String getFeatureProducts = '$baseUrl/products/feature';
   static const String getHomeNews = '$baseUrl/home/section/news'; //for slider
   static const String getTestimonial = '$baseUrl/home/section/testimonial';
   static const String getFeature = '$baseUrl/home/section/feature';
 
 
-  static const String getBanners = '$baseUrl/banners';
+  static const String getBanners = '$baseUrl/home/section/galleries';
 
   static const String getProductDetails = '$baseUrl/product/details';
   static const String placeOrder = '$baseUrl/order/store';
@@ -65,6 +66,11 @@ class AppConstant {
   static const String getTermsAndConditions =
       '$baseUrl/legal-pages/trams_of_service';
   static const String getAboutUsContent = '$baseUrl/legal-pages/about_us';
+
+
+
+  static const String getAllPages = '$baseUrl/pages/getAll';
+  static const String getPageInfo = '$baseUrl/pages/getInfoById';
 
 
 

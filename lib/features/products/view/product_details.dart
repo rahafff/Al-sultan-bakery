@@ -76,7 +76,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         return ScreenWrapper(
           bottomNavigationBar: Container(
               decoration: const BoxDecoration(
-                  color: AppStaticColor.whiteColor,
+                  // color: AppStaticColor.whiteColor,
                   boxShadow: [
                     BoxShadow(
                         blurStyle: BlurStyle.outer,
@@ -122,7 +122,6 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                               builder: (context, value, child) => Text(
                                 productQuantity.value.toString(),
                                 style: textStyle.bodyTextSmall.copyWith(
-                                  color: AppStaticColor.blackColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -295,6 +294,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                 ),
                 child: Text(
                   '-${product.discountPercentage}%',
+                  textDirection: TextDirection.ltr,
                   style: textStyle.bodyTextSmall.copyWith(
                     color: AppStaticColor.whiteColor,
                   ),
@@ -312,7 +312,8 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   ),
                 ),
                 Text(
-                  '\$${product.pricing.price}',
+                  textDirection: TextDirection.ltr,
+                  '${product.pricing.currency?.symbol} ${product.pricing.price} ',
                   style: textStyle.subTitle
                       .copyWith(color: colors(context).primaryColor),
                 )
@@ -396,9 +397,11 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(item.name),
+                                              Text(item.name,),
                                               Text(
-                                                  '(+ ${item.price}${item.currency.symbol})',
+                                                  '(+ ${item.currency.symbol}${item.price})',
+                          textDirection: TextDirection.ltr
+                          ,
                                                   style: textStyle.bodyText
                                                       .copyWith(
                                                           color: Colors
@@ -473,9 +476,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(child: Text(item.name)),
+                                  Expanded(child: Text(item.name, style: textStyle.bodyTextSmall)),
                                   Text(
-                                    '(+ ${item.price}${item.currency.symbol})',
+                                    '(+ ${item.currency.symbol}${item.price})',
                                     style: textStyle.bodyText
                                         .copyWith(color: Colors.green.shade600),
                                   ),

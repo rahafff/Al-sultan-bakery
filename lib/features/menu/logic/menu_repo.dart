@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocerymart/config/app_constants.dart';
 import 'package:grocerymart/features/checkout/model/shipping_billing_response.dart';
+import 'package:grocerymart/features/menu/model/pages_model.dart';
 import 'package:grocerymart/features/menu/model/update_profile.dart';
 import 'package:grocerymart/features/menu/model/user_address.dart';
 import 'package:grocerymart/service/hive_logic.dart';
@@ -86,6 +87,36 @@ class MenuRepo {
       return userAddresses;
     }
     return ShippingBillingResponse();
+  }
+
+
+  Future<List<PagesModel>> getAllPages() async {
+    final response = await ref.read(apiClientProvider).get(
+      AppConstant.getAllPages,
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> reviewData = response.data['data'];
+
+      final List<PagesModel> pages = reviewData
+          .map((review) => PagesModel.fromJson(review))
+          .toList();
+      return pages;
+    }
+    return [];
+  }
+
+  Future<PagesModel> getPageInfo(int? pageId) async {
+    Map<String, String> queryParams = {};
+    if (pageId != null) queryParams['pageId'] = pageId.toString();
+    final response = await ref.read(apiClientProvider).get(
+      AppConstant.getPageInfo,query: queryParams
+    );
+    if (response.statusCode == 200) {
+      dynamic addressesData = response.data['data'];
+      PagesModel page = PagesModel.fromJson(addressesData);
+      return page;
+    }
+    return PagesModel(-1,'', '', '');
   }
 }
 

@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "apply": MessageLookupByLibrary.simpleMessage("يتقدم"),
         "areYouSure": MessageLookupByLibrary.simpleMessage("هل أنت متأكد؟"),
         "area": MessageLookupByLibrary.simpleMessage("منطقة"),
+        "blogs": MessageLookupByLibrary.simpleMessage("الاخبار"),
         "cancel": MessageLookupByLibrary.simpleMessage("يلغي"),
         "cancelOrder": MessageLookupByLibrary.simpleMessage("إلغاء الطلب"),
         "card": MessageLookupByLibrary.simpleMessage("بطاقة الائتمان أو الخصم"),
@@ -105,7 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "goToHome": MessageLookupByLibrary.simpleMessage("اذهب إلى المنزل"),
         "highToLow":
             MessageLookupByLibrary.simpleMessage("من الأعلى إلى الأقل"),
-        "home": MessageLookupByLibrary.simpleMessage("بيت"),
+        "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
         "incorrectPin":
             MessageLookupByLibrary.simpleMessage("رمز التعريف الشخصي غير صحيح"),
         "items": MessageLookupByLibrary.simpleMessage("أغراض"),
@@ -129,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manageShippingAddress":
             MessageLookupByLibrary.simpleMessage("إدارة عنوان الشحن"),
         "message": MessageLookupByLibrary.simpleMessage("رسالة"),
+        "more": MessageLookupByLibrary.simpleMessage("المزيد"),
         "myorder": MessageLookupByLibrary.simpleMessage("طلبي"),
         "name": MessageLookupByLibrary.simpleMessage("اسم"),
         "nearByStore": MessageLookupByLibrary.simpleMessage("متجر قريب"),

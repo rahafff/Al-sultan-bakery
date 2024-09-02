@@ -30,12 +30,12 @@ class RecommendedWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
         color: Theme.of(context).scaffoldBackgroundColor,
-        boxShadow: [
-          BoxShadow(
-              color: colors(context).accentColor ?? AppStaticColor.accentColor,
-              blurRadius: 5,
-              blurStyle: BlurStyle.outer),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //       color: colors(context).accentColor ?? AppStaticColor.accentColor,
+        //       blurRadius: 5,
+        //       blurStyle: BlurStyle.outer),
+        // ],
       ),
       child: Column(
         children: [

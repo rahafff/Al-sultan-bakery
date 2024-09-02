@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:grocerymart/config/app_color.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/blogs/blog-logic/blog_provider.dart';
 import 'package:grocerymart/features/blogs/model/blog_response.dart';
@@ -70,7 +71,7 @@ class _BlogsListScreenState extends ConsumerState<BlogsListScreen> {
               title: S.of(context).ourBlogs,
               showNotifIcon: false,
               showBack: false,
-              centerTitle: false,
+              centerTitle: true,
               trails: [
                 DropdownButtonHideUnderline(
                   child: DropdownButton<NewsCategoryResponse>(
@@ -85,7 +86,7 @@ class _BlogsListScreenState extends ConsumerState<BlogsListScreen> {
                     items: categories
                         .map(
                           (e) =>
-                              DropdownMenuItem(value: e, child: Text(e.name,style: TextStyle(fontSize: 12),)),
+                              DropdownMenuItem(value: e, child: Text(e.name,style: TextStyle(fontSize: 12,color: AppStaticColor.grayColor),)),
                         )
                         .toList(),
                     onChanged: (newVal) {
@@ -173,7 +174,7 @@ class _BlogsListScreenState extends ConsumerState<BlogsListScreen> {
     await ref
         .read(blogNotifierProvider.notifier)
         .getBlogList(
-          categoryId: selectedCategory?.id ?? 3,
+          categoryId: selectedCategory?.id,
           count: limit,
           page: page,
         )

@@ -10,7 +10,7 @@ import 'package:grocerymart/features/home/model/banner.dart';
 import 'package:grocerymart/util/entensions.dart';
 
 class HomePageHeroSlider extends ConsumerStatefulWidget {
-  final List<BlogResponse> banners;
+  final List<BannerModel> banners;
   const HomePageHeroSlider({
     super.key,
     required this.banners,
@@ -53,7 +53,7 @@ class _HomePageHeroSliderState extends ConsumerState<HomePageHeroSlider> {
                                 color: AppStaticColor.accentColor,
                                 child: CachedNetworkImage(
                                   fit: BoxFit.cover,
-                                  imageUrl: e.image,
+                                  imageUrl: e.media,
                                   placeholder: (context, url) =>
                                       const Icon(Icons.image),
                                   errorWidget: (context, url, error) =>

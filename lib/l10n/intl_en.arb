@@ -18,6 +18,7 @@
   "deliverTo": "Deliver to",
   "recommendedProduct": " Recommended for you",
   "categories": "Categories",
+  "category": "Category",
   "nearByStore": "Nearby store",
   "viewAll": "View All",
   "noProductFound": "No Product Found!",
@@ -177,5 +178,8 @@
   "cardInfo" : "Card Info",
   "loginFirst": "Login first",
 
-  "youNeedLoginFirst": "You need to login first to complete order"
+  "youNeedLoginFirst": "You need to login first to complete order",
+
+  "more": "More",
+  "blogs": "Blogs"
 }

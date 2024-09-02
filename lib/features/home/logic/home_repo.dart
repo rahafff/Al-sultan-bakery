@@ -12,14 +12,14 @@ class HomeRepo {
   final Ref ref;
   HomeRepo(this.ref);
 
-  // Future<List<BannerModel>> getBanners() async {
-  //   final response =
-  //       await ref.read(apiClientProvider).get(AppConstant.getBanners);
-  //   final List<dynamic> bannersData = response.data['data']['banners'];
-  //   final List<BannerModel> bannerList =
-  //       bannersData.map((banner) => BannerModel.fromMap(banner)).toList();
-  //   return bannerList;
-  // }
+  Future<List<BannerModel>> getBanners() async {
+    final response =
+        await ref.read(apiClientProvider).get(AppConstant.getBanners);
+    final List<dynamic> bannersData = response.data['data'];
+    final List<BannerModel> bannerList =
+        bannersData.map((banner) => BannerModel.fromMap(banner)).toList();
+    return bannerList;
+  }
   Future<HomeNews> getHomeNews() async {
     final response = await ref.read(apiClientProvider).get(
       AppConstant.getHomeNews,
@@ -33,7 +33,17 @@ class HomeRepo {
 
   Future<ProductSpecial> getRecommendedProducts() async {
     final response = await ref.read(apiClientProvider).get(
-          AppConstant.getRecommendedProducts,
+          AppConstant.getSpecialProducts,
+        );
+    final  dynamic  productsData = response.data['data'];
+    print(productsData);
+    print('productsData');
+    final ProductSpecial recommendedProducts = ProductSpecial.fromJson(productsData);
+    return recommendedProducts;
+  }
+  Future<ProductSpecial> getFeatureProducts() async {
+    final response = await ref.read(apiClientProvider).get(
+          AppConstant.getFeatureProducts,
         );
     final  dynamic  productsData = response.data['data'];
     print(productsData);

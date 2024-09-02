@@ -6,11 +6,11 @@ class CategoryResponse {
   final int id;
 
   final String? name;
-  final String? icon;
+  final String? image;
   final List<SubCategoryResponse> subCategories;
 
   CategoryResponse(
-      {required this.id, this.name, this.icon, required this.subCategories});
+      {required this.id, this.name, this.image, required this.subCategories});
 
   factory CategoryResponse.fromJson(Map<String, dynamic> json) =>
       _$CategoryResponseFromJson(json);

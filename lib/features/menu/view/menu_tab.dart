@@ -10,6 +10,8 @@ import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/hive_contants.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/auth/logic/auth_provider.dart';
+import 'package:grocerymart/features/menu/logic/menu_repo.dart';
+import 'package:grocerymart/features/menu/model/pages_model.dart';
 import 'package:grocerymart/features/menu/view/widgets/account_delete_dialog.dart';
 import 'package:grocerymart/features/menu/view/widgets/custom_listtile.dart';
 import 'package:grocerymart/features/menu/view/widgets/localization_selector.dart';
@@ -21,6 +23,7 @@ import 'package:grocerymart/service/hive_logic.dart';
 import 'package:grocerymart/service/hive_model.dart';
 import 'package:grocerymart/util/context_less_nav.dart';
 import 'package:grocerymart/widgets/busy_loader.dart';
+import 'package:grocerymart/widgets/misc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:shimmer/shimmer.dart';
@@ -34,15 +37,15 @@ class MenuTab extends ConsumerStatefulWidget {
 
 class _MenuTabState extends ConsumerState<MenuTab> {
   final bool isLoading1 = true;
-  bool isLoggedIn = false;
+  // bool isLoggedIn = false;
  late User userInfo;
 
   @override
   void initState() {
     super.initState();
-    ref.read(hiveStorageProvider).getAuthToken().then((value) {
-      isLoggedIn = value !=null;
-    });
+    // ref.read(hiveStorageProvider).getAuthToken().then((value) {
+    //   isLoggedIn = value !=null;
+    // });
   }
 
   @override
@@ -60,7 +63,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
           : ValueListenableBuilder<Box>(
               valueListenable: Hive.box(AppHSC.userBox).listenable(),
               builder: (context, userBox, _) {
-                if(isLoggedIn) {
+                if(userBox.values.isNotEmpty) {
                   final Map<dynamic, dynamic> userData = userBox.values.first;
                   Map<String, dynamic> userInfoStringKeys =
                   userData.cast<String, dynamic>();
@@ -104,66 +107,123 @@ class _MenuTabState extends ConsumerState<MenuTab> {
                           ):SizedBox(width: 0,height: 0,),
                         ),
                         SizedBox(height: 75.h),
-                        Expanded(
-                          child: AnimationLimiter(
-                            child: ListView.separated(
-                              padding: EdgeInsets.symmetric(vertical: 20.h)
-                                  .copyWith(bottom: 80.h),
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) =>
-                                  AnimationConfiguration.staggeredList(
-                                position: index,
-                                duration: const Duration(milliseconds: 375),
-                                child: SlideAnimation(
-                                  verticalOffset: 50.h,
-                                  child: FadeInAnimation(
-                                    child: ListTile(
-                                      onTap: () {
-                                        if(userInfo.username.isNotEmpty) {
-                                          menuNavigator(
-                                            index: index,
-                                            userInfo: userInfo,
-                                            context: context);
-                                        }else {
-                                          context.nav.pushNamed(Routes.login);
-                                        }
 
-                                      },
-                                      visualDensity:
-                                          const VisualDensity(vertical: -4),
-                                      title: Text(
-                                        getList(context)[index].title,
-                                        style: textStyle.subTitle.copyWith(
-                                          fontSize: 16.sp,
-                                          color: colors(context).bodyTextColor,
-                                        ),
-                                      ),
-                                      subtitle:userInfo.username.isEmpty? Text(S.current.loginFirst,style: textStyle.buttonText.copyWith(
-                                        fontSize: 10.sp,
-                                        color: AppStaticColor.redColor,
-                                      ) ) :const SizedBox(width: 0,height: 0,),
-                                      leading: SvgPicture.asset(
-                                        getList(context)[index].icon,
-                                        width: 30.sp,
+                        AnimationLimiter(
+                          child: ListView.separated(
+                            padding:EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) =>
+                                AnimationConfiguration.staggeredList(
+                              position: index,
+                              duration: const Duration(milliseconds: 375),
+                              child: SlideAnimation(
+                                verticalOffset: 50.h,
+                                child: FadeInAnimation(
+                                  child: ListTile(
+                                    onTap: () {
+                                      if(userInfo.username.isNotEmpty) {
+                                        menuNavigator(
+                                          index: index,
+                                          userInfo: userInfo,
+                                          context: context);
+                                      }else {
+                                        context.nav.pushNamed(Routes.login);
+                                      }
+
+                                    },
+                                    visualDensity:
+                                        const VisualDensity(vertical: -4),
+                                    title: Text(
+                                      getList(context)[index].title,
+                                      style: textStyle.subTitle.copyWith(
+                                        fontSize: 16.sp,
                                         color: colors(context).bodyTextColor,
                                       ),
-                                      trailing: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 20.sp,
-                                        color: colors(context).bodyTextColor,
-                                      ),
+                                    ),
+                                    subtitle:userInfo.username.isEmpty?
+                                    Text(S.current.loginFirst,style: textStyle.buttonText.copyWith(
+                                      fontSize: 10.sp,
+                                      color: AppStaticColor.redColor,
+                                    ) ) :const SizedBox(width: 0,height: 0,),
+                                    leading: SvgPicture.asset(
+                                      getList(context)[index].icon,
+                                      width: 30.sp,
+                                      color: colors(context).bodyTextColor,
+                                    ),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 20.sp,
+                                      color: colors(context).bodyTextColor,
                                     ),
                                   ),
                                 ),
                               ),
-                              itemCount: getList(context).length,
-                              separatorBuilder: (context, index) => Divider(
-                                indent: 20,
-                                color: colors(context).bodyTextColor,
-                              ),
+                            ),
+                            itemCount: getList(context).length,
+                            separatorBuilder: (context, index) => Divider(
+                              indent: 20,
+                              color: colors(context).bodyTextColor,
                             ),
                           ),
-                        )
+                        ),
+                        Divider(
+                          indent: 20,
+                          color: colors(context).bodyTextColor,
+                        ),
+                        ///pages
+                        FutureBuilder(
+                          future: ref.read(menuRepo).getAllPages(),
+                          builder: ((context, AsyncSnapshot<List<PagesModel>> snapshot) {
+                            if (snapshot.hasError) {
+                              return Center(
+                                child: Text(
+                                  S.of(context).someThingWrong,
+                                  style: textStyle.subTitle,
+                                ),
+                              );
+                            }
+                            if (snapshot.connectionState == ConnectionState.done) {
+                              final List<PagesModel>  details = snapshot.data ?? [];
+
+                              return ListView.separated(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                itemCount: details.length,
+                                itemBuilder: (context, index) => ListTile(
+                                  onTap: () {
+                                    context.nav.pushNamed(Routes.pageDetails
+                                        ,arguments: PageDetailsArguments(pageId: details[index].id ?? -1, title: details[index].title ?? ''));
+
+                                  },
+                                  visualDensity:
+                                  const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    details[index].title ?? '',
+                                    style: textStyle.subTitle.copyWith(
+                                      fontSize: 16.sp,
+                                      color: colors(context).bodyTextColor,
+                                    ),
+                                  ),
+                                  leading: SvgPicture.asset(Assets.svg.iconPrivacy,
+                                    width: 30.sp,
+                                    color: colors(context).bodyTextColor,
+                                  ),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 20.sp,
+                                    color: colors(context).bodyTextColor,
+                                  ),
+                                ),
+                                separatorBuilder: (context, index) => Divider(
+                                  indent: 20,
+                                  color: colors(context).bodyTextColor,
+                                ),
+
+                              );
+                            }
+                            return _buildLoader(context);
+                          }),
+                        ),
                       ],
                     ),
                     Positioned(
@@ -243,20 +303,20 @@ class _MenuTabState extends ConsumerState<MenuTab> {
         context.nav.pushNamed(Routes.manageBillingAddressScreen);
         break;
 
-      case 4:
-        context.nav.pushNamed(Routes.privacyPolicyScreen);
-        break;
-      case 5:
-        context.nav.pushNamed(Routes.termsAndConditionsScreen);
-        break;
-      case 6:
-        context.nav.pushNamed(Routes.aboutUsScreen);
-      case 7:
-        showDialog(
-          context: context,
-          builder: (builder) => const DeleteAccountDialog(),
-        );
-        break;
+      // case 4:
+      //   context.nav.pushNamed(Routes.privacyPolicyScreen);
+      //   break;
+      // case 5:
+      //   context.nav.pushNamed(Routes.termsAndConditionsScreen);
+      //   break;
+      // case 6:
+      //   context.nav.pushNamed(Routes.aboutUsScreen);
+      // case 4:
+      //   showDialog(
+      //     context: context,
+      //     builder: (builder) => const DeleteAccountDialog(),
+      //   );
+      //   break;
       default:
         // Handle the default case if needed
         break;
@@ -322,11 +382,26 @@ class _MenuTabState extends ConsumerState<MenuTab> {
       Menu(
           icon: Assets.svg.iconManageAddress,
           title: S.of(context).manageBillingAddress),
-      Menu(icon: Assets.svg.iconSupport, title: S.of(context).privacyPolicy),
-      Menu(icon: Assets.svg.iconTerms, title: S.of(context).termsConditions),
-      Menu(icon: Assets.svg.iconPrivacy, title: S.of(context).aboutUs),
-      Menu(icon: Assets.svg.delete, title: S.of(context).deleteAccount),
+      // Menu(icon: Assets.svg.iconSupport, title: S.of(context).privacyPolicy),
+      // Menu(icon: Assets.svg.iconTerms, title: S.of(context).termsConditions),
+      // Menu(icon: Assets.svg.iconPrivacy, title: S.of(context).aboutUs),
+      // Menu(icon: Assets.svg.delete, title: S.of(context).deleteAccount),
     ];
+  }
+
+  _buildLoader(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: BoxConstraints(maxHeight: 120.h, minWidth: 100.w),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+            color: colors(context).accentColor),
+        width: 200,
+        child: const BusyLoader(
+          size: 120,
+        ),
+      ),
+    );
   }
 
   // String imageUrl =
@@ -338,6 +413,14 @@ class Menu {
   String title;
   Menu({
     required this.icon,
+    required this.title,
+  });
+}
+class PageDetailsArguments {
+  String title;
+  int pageId;
+  PageDetailsArguments({
+    required this.pageId,
     required this.title,
   });
 }

@@ -230,6 +230,16 @@ class S {
     );
   }
 
+  /// `Category`
+  String get category {
+    return Intl.message(
+      'Category',
+      name: 'category',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nearby store`
   String get nearByStore {
     return Intl.message(
@@ -1675,6 +1685,26 @@ class S {
     return Intl.message(
       'You need to login first to complete order',
       name: 'youNeedLoginFirst',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `More`
+  String get more {
+    return Intl.message(
+      'More',
+      name: 'more',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Blogs`
+  String get blogs {
+    return Intl.message(
+      'Blogs',
+      name: 'blogs',
       desc: '',
       args: [],
     );

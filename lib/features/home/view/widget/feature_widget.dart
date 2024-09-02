@@ -41,7 +41,7 @@ class FeatureWidget extends StatelessWidget {
               item.title ?? '',
               overflow: TextOverflow.ellipsis,
               style:
-              textStyle.bodyTextSmall.copyWith(fontWeight: FontWeight.w500),
+              textStyle.bodyTextSmall.copyWith(fontWeight: FontWeight.w500,color: AppStaticColor.blackColor),
             )
           ],),
         ),

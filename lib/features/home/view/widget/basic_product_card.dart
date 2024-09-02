@@ -133,6 +133,7 @@ class MainProductCard extends StatelessWidget {
                       style: textStyle.bodyTextSmall.copyWith(
                           color: AppStaticColor.whiteColor,
                           fontWeight: FontWeight.bold),
+                      textDirection: TextDirection.ltr,
                     ),
                   ),
                 ),
@@ -149,10 +150,11 @@ class MainProductCard extends StatelessWidget {
     final textStyle = AppTextStyle(context);
     return product.pricing?.oldPrice != 0
         ? RichText(
+      textDirection: TextDirection.ltr,
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: '\$ ${product.pricing?.price?.toStringAsFixed(2)} ',
+                  text: '${product.pricing.currency?.symbol} ${product.pricing?.price?.toStringAsFixed(2)} ',
                   style: textStyle.bodyTextSmall.copyWith(
                       color: colors(context).primaryColor,
                       fontWeight: FontWeight.w500),

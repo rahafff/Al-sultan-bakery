@@ -126,7 +126,7 @@ class HiveService {
       await removeUserAuthToken();
       await removeDeliveryAddress();
       await removeCartITems();
-      // await removeUserData();
+      await removeUserData();
       return true;
     } catch (e) {
       return false;

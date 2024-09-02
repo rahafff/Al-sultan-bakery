@@ -1,4 +1,6 @@
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,20 +10,23 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:grocerymart/config/hive_contants.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
+import 'package:grocerymart/firebase_options.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/service/hive_logic.dart';
 import 'package:grocerymart/util/global_function.dart';
+import 'package:grocerymart/utils/notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // await setupFlutterNotifications();
-  // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  // firebaseMessagingForgroundHandler();
-  // String? fcmToken = await FirebaseMessaging.instance.getToken();
-  // debugPrint(fcmToken);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await setupFlutterNotifications();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  firebaseMessagingForgroundHandler();
+  String? fcmToken = await FirebaseMessaging.instance.getToken();
+  debugPrint(fcmToken);
+  debugPrint('fcmTokeeeeeeeeeeeeen');
   // Stripe.publishableKey = AppConstant.publishableKey;
   await Hive.initFlutter();
   await Hive.openBox(AppHSC.authBox);
@@ -47,7 +52,7 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool isDarkTheme = false;
+    bool isDarkTheme = true;
     return ScreenUtilInit(
       designSize: const Size(390, 844), // XD Design Sizes
       minTextAdapt: true,

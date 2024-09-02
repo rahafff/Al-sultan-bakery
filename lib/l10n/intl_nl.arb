@@ -162,5 +162,8 @@
   "addItem": "Voeg toe aan winkelwagen",
   "cardInfo": "Kaartinformatie",
   "loginFirst": "Log eerst in",
-  "youNeedLoginFirst": "U dient eerst in te loggen om de bestelling af te ronden"
+  "youNeedLoginFirst": "U dient eerst in te loggen om de bestelling af te ronden",
+
+  "more": "More",
+  "blogs": "Blogs"
 }

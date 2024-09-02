@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocerymart/features/blogs/view/blogs_list_screen.dart';
 import 'package:grocerymart/features/categories/views/all_categories_tab.dart';
 import 'package:grocerymart/features/dashboard/logic/misc_providers.dart';
+import 'package:grocerymart/features/dashboard/model/app_bottom_model.dart';
 import 'package:grocerymart/features/dashboard/views/widget/app_bottom_nav_bar.dart';
 import 'package:grocerymart/features/dashboard/views/widget/offline.dart';
 import 'package:grocerymart/features/home/view/home.dart';
 import 'package:grocerymart/features/menu/view/menu_tab.dart';
 import 'package:grocerymart/gen/assets.gen.dart';
+import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
 import 'package:grocerymart/widgets/screen_wrapper.dart';
@@ -31,10 +33,10 @@ class _HomeScreenState extends ConsumerState<DashboardScreen> {
       child: ScreenWrapper(
         bottomNavigationBar: AppBottomNavbar(
           itemSvgs: [
-            Assets.svg.iconHome,
-            Assets.svg.iconGrid,
-            Assets.svg.iconStore,
-            Assets.svg.iconMore,
+            AppBottomModel(Assets.svg.iconHome, S.current.home),
+            AppBottomModel( Assets.svg.iconGrid, S.current.category),
+            AppBottomModel(  Assets.svg.newsPaper, S.current.blogs),
+            AppBottomModel(  Assets.svg.iconMore, S.current.more),
           ],
           menuSvg: Assets.svg.iconBasket,
           selectedIndex: selectedIndex,
