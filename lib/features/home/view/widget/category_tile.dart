@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/features/categories/model/responses/category_response.dart';
+import 'package:grocerymart/features/categories/views/sub_categories_view.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
 
@@ -20,8 +21,8 @@ class CategoryTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.nav.pushNamed(
-          Routes.subcategoryProductScreen,
-          arguments: category.subCategories);
+            Routes.subCategoriesView,
+          arguments: SubCategoriesArguments(title: category.name ?? '',subCategories: category.subCategories ?? []));
       },
       child: Column(
         children: [

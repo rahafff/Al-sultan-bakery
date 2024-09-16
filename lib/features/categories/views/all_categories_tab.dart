@@ -62,9 +62,9 @@ class _AllCategoriesTabState extends ConsumerState<AllCategoriesTab> {
         children: [
           CustomAppBar(
             title: S.of(context).allCategories,
-            showNotifIcon: true,
+            showNotifIcon: false,
             showBack: false,
-            centerTitle: false,
+            centerTitle: true,
           ),
           Expanded(
             child: isLoading && !scrollLoading

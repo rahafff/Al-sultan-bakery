@@ -24,12 +24,12 @@ class FeatureWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(39.r),
+              borderRadius: BorderRadius.circular(15.r),
               child: SizedBox(
                 height: 78.h,
                 width: 78.w,
                 child: CachedNetworkImage(
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   imageUrl: item.image ?? 'https://alsultanbakkerij.nl/assets/front/img/product/featured/1721036529.jpg',
                   placeholder: (context, url) => const Icon(Icons.image),
                   errorWidget: (context, url, error) => const Icon(Icons.error),

@@ -20,11 +20,13 @@ class CategoryResponse {
 class SubCategoryResponse {
   final int id;
   final String? name;
+  final String? image;
   final List<ProductResponse>? products;
   SubCategoryResponse({
     required this.id,
     this.name,
     this.products  ,
+    this.image  ,
   });
 
   factory SubCategoryResponse.fromJson(Map<String, dynamic> json) =>

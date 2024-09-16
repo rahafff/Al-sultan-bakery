@@ -18,6 +18,7 @@
   "deliverTo": "Bezorgen aan",
   "recommendedProduct": " Aanbevolen voor jou",
   "categories": "Categorieën",
+  "category": "Categorieën",
   "nearByStore": "Winkel in de buurt",
   "viewAll": "Bekijk alles",
   "noProductFound": "Geen product gevonden!",
@@ -165,5 +166,16 @@
   "youNeedLoginFirst": "U dient eerst in te loggen om de bestelling af te ronden",
 
   "more": "More",
-  "blogs": "Blogs"
+  "blogs": "Blogs",
+  "BTW": "BTW",
+
+  "pickUp": "haal de bestelling op bij onze locatie",
+  "homeDelivery": "bezorg de bestelling bij u thuis",
+
+  "selectDeliveryArea": "Selecteer bezorggebied",
+  "billingIsSameShipping": "Het factuuradres is hetzelfde als het verzendadres",
+  "countryCode": "Landcode",
+
+  "addShippingAddress": "verzendadres toevoegen",
+  "addBillingAddress": "factuuradres toevoegen"
 }

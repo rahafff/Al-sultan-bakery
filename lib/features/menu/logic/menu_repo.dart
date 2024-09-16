@@ -49,7 +49,7 @@ class MenuRepo {
       ShippingBillingResponse userAddresses =
           ShippingBillingResponse.fromJson(addressesData);
       if (userAddresses.address != null) {
-        ref.read(hiveStorageProvider).saveDeliveryAddress(userAddress: userAddresses);
+        ref.read(hiveStorageProvider).saveDeliveryShippingAddress(userAddress: userAddresses);
       }
       return userAddresses;
     }
@@ -57,6 +57,7 @@ class MenuRepo {
   }
 
   Future<ShippingBillingResponse?> getUserBillingAddresses() async {
+    print('billllllllllll');
     final response = await ref.read(apiClientProvider).get(
           AppConstant.getUserBillingAddresses,
         );
@@ -64,9 +65,9 @@ class MenuRepo {
       dynamic addressesData = response.data['data'];
       ShippingBillingResponse userAddresses =
           ShippingBillingResponse.fromJson(addressesData);
-      // if (userAddresses.address != null) {
-      //   ref.read(hiveStorageProvider).saveDeliveryAddress(userAddress: userAddresses);
-      // }
+      if (userAddresses.address != null) {
+        ref.read(hiveStorageProvider).saveDeliveryBillingAddress(userAddress: userAddresses);
+      }
       return userAddresses;
     }
     return null;
@@ -81,9 +82,11 @@ class MenuRepo {
       dynamic addressesData = response.data['data'];
       ShippingBillingResponse userAddresses =
       ShippingBillingResponse.fromJson(addressesData);
-      // if (userAddresses.address != null) {
-      //   ref.read(hiveStorageProvider).saveDeliveryAddress(userAddress: userAddresses);
-      // }
+      if (userAddresses.address != null && isShipping) {
+        ref.read(hiveStorageProvider).saveDeliveryShippingAddress(userAddress: userAddresses);
+      }else if(userAddresses.address != null && !isShipping){
+        ref.read(hiveStorageProvider).saveDeliveryBillingAddress(userAddress: userAddresses);
+      }
       return userAddresses;
     }
     return ShippingBillingResponse();

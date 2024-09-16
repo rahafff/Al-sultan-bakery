@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:grocerymart/config/app_constants.dart';
 import 'package:grocerymart/features/cart/model/coupon_apply.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
+import 'package:grocerymart/features/cart/model/postal_code.dart';
 import 'package:grocerymart/utils/api_client.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -40,7 +41,6 @@ class CartRepo {
   // }
 
   Future<CouponCode?> applyCouponCode({
-
     required String couponCode,
     required double amount,
   }) async {
@@ -59,6 +59,18 @@ class CartRepo {
       return couponCodeResponse;
     }
     return null;
+  }
+
+
+  Future<List<PostalCode>> getPostalCode() async {
+    final response =
+    await ref.read(apiClientProvider).get(AppConstant.getPostalCode);
+    List<dynamic> postal = response.data['data'];
+    print(postal);
+     final List<PostalCode> postalList =
+    postal.map((order) => PostalCode.fromJson(order)).toList();
+
+    return postalList;
   }
 }
 

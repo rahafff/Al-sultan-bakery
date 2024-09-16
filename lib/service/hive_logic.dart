@@ -31,9 +31,14 @@ class HiveService {
   }
 
   // save default delivery address
-  Future saveDeliveryAddress({required ShippingBillingResponse userAddress}) async {
+  Future saveDeliveryShippingAddress({required ShippingBillingResponse userAddress}) async {
     final addressBox = await Hive.openBox(AppHSC.deliveryAddressBox);
-    addressBox.put(AppHSC.deliveryAddress, userAddress.toMap());
+    addressBox.put(AppHSC.shippingAddress, userAddress.toMap());
+  }
+
+  Future saveDeliveryBillingAddress({required ShippingBillingResponse userAddress}) async {
+    final addressBox = await Hive.openBox(AppHSC.deliveryAddressBox);
+    addressBox.put(AppHSC.billingAddress, userAddress.toMap());
   }
 
   // remove user data

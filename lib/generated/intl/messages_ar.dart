@@ -22,15 +22,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "BTW": MessageLookupByLibrary.simpleMessage("BTW"),
         "Shipping": MessageLookupByLibrary.simpleMessage("عنوان التسليم"),
         "aboutUs": MessageLookupByLibrary.simpleMessage("معلومات عنا"),
         "accountDeleteDes": MessageLookupByLibrary.simpleMessage(
             "لا يمكن التراجع عن هذا الإجراء. سيتم فقدان كافة القيم المرتبطة بهذا الحقل."),
         "addAddress": MessageLookupByLibrary.simpleMessage("إضافة عنوان"),
+        "addBillingAddress":
+            MessageLookupByLibrary.simpleMessage("أضف عنوان الفاتورة"),
         "addItem": MessageLookupByLibrary.simpleMessage("أضف إلى السلة"),
         "addNewAddress":
             MessageLookupByLibrary.simpleMessage("إضافة عنوان جديد"),
         "addOns": MessageLookupByLibrary.simpleMessage("الإضافات"),
+        "addShippingAddress":
+            MessageLookupByLibrary.simpleMessage("أضف عنوان الشحن"),
         "additionalInfo":
             MessageLookupByLibrary.simpleMessage("اكتب هنا أي معلومات إضافية"),
         "addressLine1": MessageLookupByLibrary.simpleMessage("العنوان سطر 1"),
@@ -41,9 +46,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "allReadyHaveAccount":
             MessageLookupByLibrary.simpleMessage("هل لديك حساب بالفعل؟"),
         "applied": MessageLookupByLibrary.simpleMessage("مُطبَّق"),
-        "apply": MessageLookupByLibrary.simpleMessage("يتقدم"),
+        "apply": MessageLookupByLibrary.simpleMessage("تطبيق"),
         "areYouSure": MessageLookupByLibrary.simpleMessage("هل أنت متأكد؟"),
         "area": MessageLookupByLibrary.simpleMessage("منطقة"),
+        "billingIsSameShipping": MessageLookupByLibrary.simpleMessage(
+            "عنوان الفاتورة نفس عنوان الشحن"),
         "blogs": MessageLookupByLibrary.simpleMessage("الاخبار"),
         "cancel": MessageLookupByLibrary.simpleMessage("يلغي"),
         "cancelOrder": MessageLookupByLibrary.simpleMessage("إلغاء الطلب"),
@@ -53,6 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cashOnDelivery":
             MessageLookupByLibrary.simpleMessage("الدفع عند الاستلام"),
         "categories": MessageLookupByLibrary.simpleMessage("فئات"),
+        "category": MessageLookupByLibrary.simpleMessage("التصنيفات"),
         "change": MessageLookupByLibrary.simpleMessage("يتغير"),
         "checkInternetConnection":
             MessageLookupByLibrary.simpleMessage("تحقق من اتصال الإنترنت"),
@@ -67,17 +75,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "continueShopping":
             MessageLookupByLibrary.simpleMessage("مواصلة التسوق"),
         "country": MessageLookupByLibrary.simpleMessage("دولة"),
+        "countryCode": MessageLookupByLibrary.simpleMessage("رمز الدولة"),
         "createNewPass":
             MessageLookupByLibrary.simpleMessage("إنشاء كلمة مرور جديدة"),
         "dark": MessageLookupByLibrary.simpleMessage("مظلم"),
         "deleteAccount": MessageLookupByLibrary.simpleMessage("حذف الحساب"),
         "deliverTo": MessageLookupByLibrary.simpleMessage("تسليم إلى"),
         "deliveryCharge": MessageLookupByLibrary.simpleMessage("رسوم التوصيل"),
-        "discount": MessageLookupByLibrary.simpleMessage("تخفيض"),
+        "discount": MessageLookupByLibrary.simpleMessage("خصم"),
         "distanceFML": MessageLookupByLibrary.simpleMessage("المسافة من موقعي"),
         "dontHaveAccount":
             MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟"),
-        "edit": MessageLookupByLibrary.simpleMessage("يحرر"),
+        "edit": MessageLookupByLibrary.simpleMessage("تعديل"),
         "edtimatedDT":
             MessageLookupByLibrary.simpleMessage("وقت التسليم المقدر"),
         "email": MessageLookupByLibrary.simpleMessage("بريد إلكتروني"),
@@ -95,7 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enterPC": MessageLookupByLibrary.simpleMessage("أدخل جهاز الكمبيوتر"),
         "enterPhone": MessageLookupByLibrary.simpleMessage("أدخل رقم هاتفك"),
         "enterPromoCode":
-            MessageLookupByLibrary.simpleMessage("أدخل الرمز الترويجي"),
+            MessageLookupByLibrary.simpleMessage("أدخل قسيمة الخصم"),
         "filterBy": MessageLookupByLibrary.simpleMessage("تصفية حسب"),
         "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
         "flat": MessageLookupByLibrary.simpleMessage("مستوي"),
@@ -107,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "highToLow":
             MessageLookupByLibrary.simpleMessage("من الأعلى إلى الأقل"),
         "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
+        "homeDelivery":
+            MessageLookupByLibrary.simpleMessage("توصيل سريع إلى منزلك"),
         "incorrectPin":
             MessageLookupByLibrary.simpleMessage("رمز التعريف الشخصي غير صحيح"),
         "items": MessageLookupByLibrary.simpleMessage("أغراض"),
@@ -171,7 +182,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "paymentStatus": MessageLookupByLibrary.simpleMessage("حالة الدفع"),
         "pending": MessageLookupByLibrary.simpleMessage("قيد الانتظار"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("رقم التليفون"),
-        "placeOrder": MessageLookupByLibrary.simpleMessage("وضع النظام"),
+        "pickUp": MessageLookupByLibrary.simpleMessage(
+            "استلم مشترياتك من المخبز مباشرة مجاناً"),
+        "placeOrder": MessageLookupByLibrary.simpleMessage("إنشاء الطلب"),
         "postalCode": MessageLookupByLibrary.simpleMessage("رمز بريدي"),
         "price": MessageLookupByLibrary.simpleMessage("سعر"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
@@ -199,11 +212,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchShop": MessageLookupByLibrary.simpleMessage("ابحث عن متجر"),
         "sec": MessageLookupByLibrary.simpleMessage("ثانية"),
         "select": MessageLookupByLibrary.simpleMessage("يختار"),
+        "selectDeliveryArea":
+            MessageLookupByLibrary.simpleMessage("أختر منطقة التوصيل"),
         "selectPaymentMethod":
             MessageLookupByLibrary.simpleMessage("الرجاء تحديد طريقة الدفع!"),
         "sendOtp":
             MessageLookupByLibrary.simpleMessage("أرسل كلمة مرور لمرة واحدة"),
-        "servingMethod": MessageLookupByLibrary.simpleMessage("طريقة التقديم"),
+        "servingMethod":
+            MessageLookupByLibrary.simpleMessage("احصل على طلبك عبر"),
         "setPass": MessageLookupByLibrary.simpleMessage("تعيين كلمة المرور"),
         "shop": MessageLookupByLibrary.simpleMessage("محل"),
         "shopNotfound":

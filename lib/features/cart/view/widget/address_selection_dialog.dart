@@ -103,10 +103,7 @@ class _SelectAddressDialogState extends ConsumerState<SelectAddressDialog> {
                                 ),
                                 onPressed: () {
                                   context.nav.pop();
-                                  context.nav.pushNamed(
-                                    Routes.addUserAddressScreen,
-                                    arguments: null,
-                                  );
+
                                 },
                                 icon: const Icon(Icons.add),
                                 label: const Text('Add Address'),

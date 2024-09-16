@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:grocerymart/config/app_color.dart';
 import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/theme.dart';
-import 'package:grocerymart/features/categories/model/responses/product_response.dart';
 import 'package:grocerymart/features/home/model/product_special.dart';
 import 'package:grocerymart/features/home/view/widget/basic_product_card.dart';
+import 'package:grocerymart/features/products/view/view_all_product.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
@@ -48,8 +47,8 @@ class RecommendedWidget extends ConsumerWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.nav
-                      .pushNamed(Routes.ownProductScreen, arguments: products);
+                  context.nav.pushNamed(Routes.viewAllProduct,
+                      arguments: ViewProductArguments(products: products.specialProduct, title: products.title));
                 },
                 child: Text(
                   S.of(context).viewAll,

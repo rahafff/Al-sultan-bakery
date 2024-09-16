@@ -8,35 +8,39 @@ class HiveCartModel {
   String name;
   String productImage;
   num price;
-  num oldPrice;
+  num priceWithTax;
+  num tax;
+  // num oldPrice;
   int productsQTY;
 
   List<HiveAddonsItem> addons;
-  List<HiveAddonsItem> variant;
+   HiveAddonsItem?  variant;
 
   HiveCartModel({
     required this.id,
     required this.name,
     required this.productImage,
     required this.price,
-    required this.oldPrice,
+    // required this.oldPrice,
     required this.productsQTY,
-    required this.variant,
+      this.variant,
     required this.addons,
+    required this.priceWithTax,
+    required this.tax,
   });
 
   Map<String, dynamic> toMap() {
-    print( addons.map((e) => e.toMap(),).toList());
-    print('toMap');
+
     return <String, dynamic>{
       'id': id,
       'name': name,
       'productImage': productImage,
       'price': price,
-      'old_price': oldPrice,
+      'price_tax': priceWithTax,
+      'tax':tax,
       'productsQTY': productsQTY,
       'addons': addons.map((e) => e.toMap(),).toList(),
-      'variant':variant.map((e) => e.toMap(),).toList()
+      'variant':variant?.toMap()
     };
   }
 
@@ -49,10 +53,11 @@ class HiveCartModel {
         name: map['name'] as String,
         productImage: map['productImage'] as String,
         price: map['price'] as double,
-        oldPrice: map['old_price'] as double,
+        priceWithTax: map['price_tax'] as double,
+        tax: map['tax'] ,
         productsQTY: map['productsQTY'] as int,
         addons:  map['addons'].map<HiveAddonsItem>((x) => HiveAddonsItem.fromMap(x)).toList() ,
-      variant: map['variant'].map<HiveAddonsItem>((x) => HiveAddonsItem.fromMap(x)).toList(),
+      variant:map['variant'] != null ?  HiveAddonsItem.fromMap( map['variant']) : null,
      );
   }
 
@@ -96,13 +101,15 @@ class HiveAddonsItemAdapter extends TypeAdapter<HiveAddonsItem> {
 class HiveAddonsItem {
   String name;
   num price;
+  num priceWithTax;
 
-  HiveAddonsItem({required this.name, required this.price});
+  HiveAddonsItem({required this.name, required this.price , required this.priceWithTax});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
       'price': price,
+      'price_tax': priceWithTax,
     };
   }
 
@@ -110,6 +117,7 @@ class HiveAddonsItem {
     return HiveAddonsItem(
       name: map['name'] as String,
       price: map['price'],
+      priceWithTax: map['price_tax'],
     );
   }
 

@@ -55,17 +55,13 @@ class AppConstant {
 
   static const String getBanners = '$baseUrl/home/section/galleries';
 
-  static const String getProductDetails = '$baseUrl/product/details';
-  static const String placeOrder = '$baseUrl/order/store';
-  static const String updatePaymentStatus =
-      '$baseUrl/order/update-payment-status';
-  static const String getUserReview = '$baseUrl/shop/reviews';
 
 
-  static const String getPrivacyPolicy = '$baseUrl/legal-pages/privacy_policy';
-  static const String getTermsAndConditions =
-      '$baseUrl/legal-pages/trams_of_service';
-  static const String getAboutUsContent = '$baseUrl/legal-pages/about_us';
+
+  static const String getPostalCode = '$baseUrl/checkout/postcodes/getAll';
+  static const String checkOutOnline = '$baseUrl/checkout/online';
+  static const String checkOutOffline = '$baseUrl/checkout/offline';
+
 
 
 
@@ -75,13 +71,13 @@ class AppConstant {
 
 
 
-  // payment api url
-
-  static const String paymentUrl = 'https://api.stripe.com/v1/payment_intents';
-
-  // secret keys
-  static const String publishableKey = 'pk_test_TYooMQauvdEDq54NiTphI7jx';
-  static const String paymentSecret = 'sk_test_4eC39HqLyjWDarjtT1zdp7dc';
-  static const String merchantCountryCode = 'USA';
-  static const String currencyCode = 'USD';
+  // // payment api url
+  //
+  // static const String paymentUrl = 'https://api.stripe.com/v1/payment_intents';
+  //
+  // // secret keys
+  // static const String publishableKey = 'pk_test_TYooMQauvdEDq54NiTphI7jx';
+  // static const String paymentSecret = 'sk_test_4eC39HqLyjWDarjtT1zdp7dc';
+  // static const String merchantCountryCode = 'USA';
+  // static const String currencyCode = 'USD';
 }

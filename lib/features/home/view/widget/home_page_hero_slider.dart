@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,8 +23,42 @@ class HomePageHeroSlider extends ConsumerStatefulWidget {
 }
 
 class _HomePageHeroSliderState extends ConsumerState<HomePageHeroSlider> {
-  final controller = PageController();
   int selectedIndex = 0;
+  final controller = PageController(
+    initialPage: 0
+  );
+  bool end = false;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      Timer.periodic(Duration(seconds: 5), (Timer timer) {
+        if (selectedIndex == 2) {
+          end = true;
+        } else if (selectedIndex == 0) {
+          end = false;
+        }
+
+        if (end == false) {
+          selectedIndex++;
+        } else {
+          selectedIndex--;
+        }
+
+        if(controller.hasClients){
+          controller.animateToPage(
+            selectedIndex,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeIn,
+
+          );
+        }
+      });
+    });
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

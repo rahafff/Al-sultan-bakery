@@ -82,12 +82,12 @@ class _CartTileState extends State<CartTile> {
                         children: [
                           Text(
                             '${S.current.addOns}: ',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: textStyle.bodyText,
                           ),
                           Wrap(
                             children: widget.cartItem.addons
                                 .map(
-                                  (e) => Text('${e.name}, '),
+                                  (e) => Text('${e.name}, ',style: textStyle.bodyTextSmall,),
                                 )
                                 .toList(),
                           ),
@@ -95,7 +95,7 @@ class _CartTileState extends State<CartTile> {
                       ),
                     ),
                     Visibility(
-                      visible: widget.cartItem.variant.isNotEmpty,
+                      visible: widget.cartItem.variant!=null,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -103,13 +103,7 @@ class _CartTileState extends State<CartTile> {
                             '${S.current.variation}: ',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Wrap(
-                            children: widget.cartItem.variant
-                                .map(
-                                  (e) => Text('${e.name}, '),
-                                )
-                                .toList(),
-                          ),
+                          Text('${widget.cartItem.variant?.name} ')
                         ],
                       ),
                     ),
@@ -173,14 +167,17 @@ class _CartTileState extends State<CartTile> {
     totalItemPrice =0.0;
     num totalAddons = 0.0;
     num totalVariant = 0.0;
-    num price = widget.cartItem.price;
+    num price = widget.cartItem.priceWithTax;
 
     widget.cartItem.addons.forEach(
-      (element) => totalAddons += element.price,
+      (element) => totalAddons += element.priceWithTax,
     );
-    widget.cartItem.variant.forEach(
-      (element) => totalVariant += element.price,
-    );
+    if(widget.cartItem.variant != null){
+      totalAddons += widget.cartItem.variant?.priceWithTax ?? 0;
+    }
+    // widget.cartItem.variant.forEach(
+    //   (element) => totalVariant += element.priceWithTax,
+    // );
 
     totalItemPrice =
         (totalAddons + totalVariant + price) * widget.cartItem.productsQTY;

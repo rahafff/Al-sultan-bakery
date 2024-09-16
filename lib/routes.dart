@@ -10,7 +10,8 @@ import 'package:grocerymart/features/blogs/view/blogs_list_screen.dart';
 import 'package:grocerymart/features/cart/view/cart_view.dart';
 import 'package:grocerymart/features/categories/model/responses/category_response.dart';
 import 'package:grocerymart/features/categories/model/responses/product_response.dart';
-import 'package:grocerymart/features/categories/views/category_view.dart';
+import 'package:grocerymart/features/categories/views/sub_categories_view.dart';
+import 'package:grocerymart/features/categories/views/sub_category_product_view.dart';
 import 'package:grocerymart/features/checkout/model/order_response.dart';
 import 'package:grocerymart/features/checkout/model/shipping_billing_response.dart';
 import 'package:grocerymart/features/checkout/view/order_details.dart';
@@ -18,17 +19,18 @@ import 'package:grocerymart/features/checkout/view/order_screen.dart';
 import 'package:grocerymart/features/dashboard/views/dashboard.dart';
 import 'package:grocerymart/features/dashboard/views/on_boarding_screen.dart';
 import 'package:grocerymart/features/dashboard/views/splash_screen.dart';
+import 'package:grocerymart/features/menu/view/manage_address.dart';
 
 import 'package:grocerymart/features/menu/view/manage_shipping_address.dart';
 import 'package:grocerymart/features/menu/view/menu_tab.dart';
 import 'package:grocerymart/features/menu/view/page_details_screen.dart';
 import 'package:grocerymart/features/menu/view/profile.dart';
 import 'package:grocerymart/features/menu/view/add_user_address.dart';
-import 'package:grocerymart/features/other/view/about_us.dart';
-import 'package:grocerymart/features/other/view/privacy_policy.dart';
-import 'package:grocerymart/features/other/view/terms_and_conditions.dart';
-import 'package:grocerymart/features/products/view/own_products.dart';
+
+import 'package:grocerymart/features/products/view/search_products.dart';
 import 'package:grocerymart/features/products/view/product_details.dart';
+import 'package:grocerymart/features/products/view/view_all_product.dart';
+// import 'package:grocerymart/features/products/view/view_all_product.dart';
 import 'package:grocerymart/service/hive_model.dart';
 import 'package:grocerymart/util/entensions.dart';
 import 'package:page_transition/page_transition.dart';
@@ -76,6 +78,8 @@ class Routes {
   static const aboutUsScreen = '/aboutUsScreen';
   static const profileScreen = '/profileScreen';
   static const pageDetails = '/pageDetails';
+  static const viewAllProduct = '/viewAllProduct';
+  static const subCategoriesView = '/subCategoriesView';
 }
 
 Route generatedRoutes(RouteSettings settings) {
@@ -136,7 +140,7 @@ Route generatedRoutes(RouteSettings settings) {
       break;
 
     case Routes.manageBillingAddressScreen:
-      child = const ManageShippingAddressScreen( );
+      child = const ManageBillingAddressScreen();
       break;
 
 
@@ -146,21 +150,21 @@ Route generatedRoutes(RouteSettings settings) {
         subCategoryList: args,
       );
       break;
-    // case Routes.categoryWiseShop:
-    //   child = CategoryWiseShop(
-    //     categoryId: settings.arguments as int,
-    //   );
-    //   break;
+    case Routes.viewAllProduct:
+      child = ViewAllProduct(
+        arguments: settings.arguments as ViewProductArguments,
+      );
+      break;
     case Routes.productDetailsScreen:
       child = ProductDetailsScreen(
         product: settings.arguments as ProductResponse,
       );
       break;
-    // case Routes.storeDetailsScreen:
-    //   child = StoreDetailsScreen(
-    //     shopDetails: settings.arguments as Shop,
-    //   );
-    //   break;
+    case Routes.subCategoriesView:
+      child = SubCategoriesView(
+         arguments: settings.arguments as SubCategoriesArguments,
+      );
+      break;
     case Routes.cartScreen:
       child = const CartScreen();
       break;

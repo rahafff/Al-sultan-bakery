@@ -1709,6 +1709,86 @@ class S {
       args: [],
     );
   }
+
+  /// `BTW`
+  String get BTW {
+    return Intl.message(
+      'BTW',
+      name: 'BTW',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `pick up the order from our location`
+  String get pickUp {
+    return Intl.message(
+      'pick up the order from our location',
+      name: 'pickUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `deliver the order to your home`
+  String get homeDelivery {
+    return Intl.message(
+      'deliver the order to your home',
+      name: 'homeDelivery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Delivery Area`
+  String get selectDeliveryArea {
+    return Intl.message(
+      'Select Delivery Area',
+      name: 'selectDeliveryArea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Billing Address will be Same as Shipping Address`
+  String get billingIsSameShipping {
+    return Intl.message(
+      'Billing Address will be Same as Shipping Address',
+      name: 'billingIsSameShipping',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country Code`
+  String get countryCode {
+    return Intl.message(
+      'Country Code',
+      name: 'countryCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Shipping Address`
+  String get addShippingAddress {
+    return Intl.message(
+      'Add Shipping Address',
+      name: 'addShippingAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Billing Address`
+  String get addBillingAddress {
+    return Intl.message(
+      'Add Billing Address',
+      name: 'addBillingAddress',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -45,7 +45,7 @@ class MainProductCard extends StatelessWidget {
           return Stack(
             children: [
               Container(
-                padding: EdgeInsets.all(12.r),
+                padding: EdgeInsets.all(10.r),
                 decoration: BoxDecoration(
                   color: cardColor,
                   borderRadius: BorderRadius.circular(16.r),
@@ -148,19 +148,19 @@ class MainProductCard extends StatelessWidget {
 
   Widget priceWidget(BuildContext context) {
     final textStyle = AppTextStyle(context);
-    return product.pricing?.oldPrice != 0
+    return product.pricing.isPrevious != 0
         ? RichText(
       textDirection: TextDirection.ltr,
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: '${product.pricing.currency?.symbol} ${product.pricing?.price?.toStringAsFixed(2)} ',
+                  text: '${product.pricing.currency?.symbol} ${product.priceWithTax.toStringAsFixed(2)} ',
                   style: textStyle.bodyTextSmall.copyWith(
                       color: colors(context).primaryColor,
                       fontWeight: FontWeight.w500),
                 ),
                 TextSpan(
-                  text: product.pricing?.oldPrice?.toStringAsFixed(2),
+                  text: product.oldPriceWithTax.toStringAsFixed(2),
                   style: textStyle.bodyTextSmall.copyWith(
                     fontSize: 12.sp,
                     color: AppStaticColor.grayColor,
@@ -170,6 +170,9 @@ class MainProductCard extends StatelessWidget {
               ],
             ),
           )
-        : Text('\$ ${product.pricing?.price?.toStringAsFixed(2)}');
+        : Text(
+        '${product.pricing.currency?.symbol} ${product.priceWithTax.toStringAsFixed(2)}',textDirection: TextDirection.ltr,style: textStyle.bodyTextSmall.copyWith(
+        color: colors(context).primaryColor,
+        fontWeight: FontWeight.w500),);
   }
 }

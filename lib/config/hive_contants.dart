@@ -11,7 +11,9 @@ class AppHSC {
 
   // User variable names
   static const String userInfo = 'user_data';
-  static const String deliveryAddress = 'delivery_address';
+
+  static const String shippingAddress = 'shipping_address';
+  static const String billingAddress = 'billing_address';
 
   //Settings Variable Names
   static const String firstOpen = 'firstOpen';

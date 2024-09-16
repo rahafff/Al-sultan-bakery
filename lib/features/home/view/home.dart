@@ -99,6 +99,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           : RecommendedWidget(
                               products: _productSpecial,
                             ),
+
+
                       categoryLoading
                           ? _builderLoader()
                           : _buildCategoriesWidget(),
@@ -306,7 +308,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 builder: (context, addressBox, _) {
                   ShippingBillingResponse? deliveryAddress;
                   Map<dynamic, dynamic>? address =
-                      addressBox.get(AppHSC.deliveryAddress);
+                      addressBox.get(AppHSC.shippingAddress);
                   if (address != null) {
                     Map<String, dynamic> addressStringKey =
                         address.cast<String, dynamic>();

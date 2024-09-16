@@ -41,7 +41,10 @@ class CustomSearchField extends StatelessWidget {
       ),
       textInputAction: TextInputAction.next,
       controller: searchController,
-      onChanged: onChanged,
+
+      onSubmitted: (value) {
+         onChanged!(value);
+      },
     );
   }
 }

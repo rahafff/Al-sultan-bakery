@@ -181,5 +181,16 @@
   "youNeedLoginFirst": "You need to login first to complete order",
 
   "more": "More",
-  "blogs": "Blogs"
+  "blogs": "Blogs",
+
+  "BTW": "BTW",
+  "pickUp": "pick up the order from our location",
+  "homeDelivery": "deliver the order to your home",
+
+  "selectDeliveryArea": "Select Delivery Area",
+  "billingIsSameShipping": "Billing Address will be Same as Shipping Address",
+  "countryCode": "Country Code",
+
+  "addShippingAddress": "Add Shipping Address",
+  "addBillingAddress": "Add Billing Address"
 }

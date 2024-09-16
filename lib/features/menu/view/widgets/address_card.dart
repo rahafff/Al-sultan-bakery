@@ -25,7 +25,7 @@ class _AddressCardState extends State<AddressCard> {
     final textStyle = AppTextStyle(context);
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: colors(context).accentColor,
         borderRadius: BorderRadius.circular(12.sp),
@@ -43,7 +43,7 @@ class _AddressCardState extends State<AddressCard> {
               Text(S.current.deliverTo)
             ],
           ),
-          // buildCardHeader(userAddress: widget.userAddress, context: context),
+
           SizedBox(height: 5.h),
           SizedBox(
             child: Padding(
@@ -79,7 +79,7 @@ class _AddressCardState extends State<AddressCard> {
                   ),
                   Row(
                     children: [
-                      const Text('${'Country Code'}: ',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(S.current.countryCode,style: TextStyle(fontWeight: FontWeight.bold),),
                       Text(
                         widget.userAddress.countryCode ?? '',
                         style: textStyle.bodyText.copyWith(
@@ -91,14 +91,17 @@ class _AddressCardState extends State<AddressCard> {
                   ),
                   SizedBox(height: 3.h),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('${S.current.fullAddress}: ',style: const TextStyle(fontWeight: FontWeight.bold),),
-                      Text(
-                        '${widget.userAddress.country ?? ''}, ${widget.userAddress.city ?? ''}, ${widget.userAddress.state ?? ''}, ${widget.userAddress.address ?? ''}',
-                        style: textStyle.bodyTextSmall.copyWith(
-                          color: AppStaticColor.blackColor,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 14.sp,
+                      Expanded(
+                        child: Text(
+                          '${widget.userAddress.country ?? ''}, ${widget.userAddress.city ?? ''}, ${widget.userAddress.state ?? ''}, ${widget.userAddress.address ?? ''}',
+                          style: textStyle.bodyTextSmall.copyWith(
+                            color: AppStaticColor.blackColor,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 14.sp,
+                          ),
                         ),
                       ),
                     ],
@@ -112,46 +115,7 @@ class _AddressCardState extends State<AddressCard> {
     );
   }
 
-  Widget buildCardHeader(
-      {required ShippingBillingResponse userAddress, required BuildContext context}) {
-    final textStyle = AppTextStyle(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Assets.images.locationPin
-                .image(width: 30.sp, color: colors(context).primaryColor),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5.sp),
-                color: AppStaticColor.blackColor,
-              ),
-              child: Center(
-                child: Text(
-                  '${userAddress.city}',
-                  style: textStyle.bodyTextSmall.copyWith(
-                    color: AppStaticColor.whiteColor,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ],
-    );
-  }
 
-  // String getAddressTag(String tag) {
-  //   if (tag == "home") {
-  //     return S.of(context).home;
-  //   } else if (tag == "office") {
-  //     return S.of(context).office;
-  //   } else {
-  //     return S.of(context).other;
-  //   }
-  // }
+
+
 }

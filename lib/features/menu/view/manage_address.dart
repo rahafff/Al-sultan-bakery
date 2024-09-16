@@ -33,7 +33,7 @@ class _ManageAddressScreenState extends ConsumerState<ManageBillingAddressScreen
         title: Text(S.of(context).manageAddress),
       ),
       body: FutureBuilder(
-        future: ref.read(menuRepo).getUserShippingAddresses(),
+        future: ref.read(menuRepo).getUserBillingAddresses(),
         builder: (context, AsyncSnapshot<ShippingBillingResponse?> snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -49,44 +49,49 @@ class _ManageAddressScreenState extends ConsumerState<ManageBillingAddressScreen
           if (snapshot.connectionState == ConnectionState.done) {
             final ShippingBillingResponse? userAddress = snapshot.data;
             return userAddress != null
-                ? Stack(
-                    children: [
-                      AddressCard(
-                        userAddress: userAddress,
+                ? Column(
+                  children: [
+                    Stack(
+                alignment: AlignmentDirectional.topEnd,
+                        children: [
+                          AddressCard(
+                            userAddress: userAddress,
+                          ),
+                          SizedBox(
+                            width: 100.w,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                minimumSize: Size(50.w, 35.h),
+                                foregroundColor: colors(context).primaryColor,
+                                backgroundColor: colors(context).primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.sp),
+                                ),
+                                side: BorderSide(
+                                  color: colors(context).primaryColor ??
+                                      AppStaticColor.primaryColor,
+                                ),
+                              ),
+                              onPressed: () {
+                                userAddress.isShipping = false;
+                                context.nav
+                                    .pushNamed(
+                                  Routes.addUserAddressScreen,
+                                  arguments: userAddress,
+                                )
+                                    .then((value) {
+                                  setState(() {});
+                                });
+                              },
+                              child: Center(
+                                child: Text(S.of(context).edit,style: TextStyle(color: AppStaticColor.whiteColor),),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                      Positioned(
-                        right: 14,
-                        top: 16,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            minimumSize: Size(50.w, 35.h),
-                            foregroundColor: colors(context).primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.sp),
-                            ),
-                            side: BorderSide(
-                              color: colors(context).primaryColor ??
-                                  AppStaticColor.primaryColor,
-                            ),
-                          ),
-                          onPressed: () {
-                            userAddress.isShipping = false;
-                            context.nav
-                                .pushNamed(
-                              Routes.addUserAddressScreen,
-                              arguments: userAddress,
-                            )
-                                .then((value) {
-                              setState(() {});
-                            });
-                          },
-                          child: Center(
-                            child: Text(S.of(context).edit),
-                          ),
-                        ),
-                      )
-                    ],
-                  )
+                  ],
+                )
                 : Center(
                     child: Text(
                       'Opps user address not found!',

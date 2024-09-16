@@ -22,15 +22,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "BTW": MessageLookupByLibrary.simpleMessage("BTW"),
         "Shipping": MessageLookupByLibrary.simpleMessage("Delivery address"),
         "aboutUs": MessageLookupByLibrary.simpleMessage("About Us"),
         "accountDeleteDes": MessageLookupByLibrary.simpleMessage(
             "This action cannot be undone.All values associated with this field will be lost."),
         "addAddress": MessageLookupByLibrary.simpleMessage("Add Address"),
+        "addBillingAddress":
+            MessageLookupByLibrary.simpleMessage("Add Billing Address"),
         "addItem": MessageLookupByLibrary.simpleMessage("Add To Cart"),
         "addNewAddress":
             MessageLookupByLibrary.simpleMessage("Add New Address"),
         "addOns": MessageLookupByLibrary.simpleMessage("AddOns"),
+        "addShippingAddress":
+            MessageLookupByLibrary.simpleMessage("Add Shipping Address"),
         "additionalInfo": MessageLookupByLibrary.simpleMessage(
             "Write here any additional info"),
         "addressLine1": MessageLookupByLibrary.simpleMessage("Address Line 1"),
@@ -44,6 +49,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "apply": MessageLookupByLibrary.simpleMessage("Apply"),
         "areYouSure": MessageLookupByLibrary.simpleMessage("Are you sure?"),
         "area": MessageLookupByLibrary.simpleMessage("Area"),
+        "billingIsSameShipping": MessageLookupByLibrary.simpleMessage(
+            "Billing Address will be Same as Shipping Address"),
         "blogs": MessageLookupByLibrary.simpleMessage("Blogs"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelOrder": MessageLookupByLibrary.simpleMessage("Cancel Order"),
@@ -67,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "continueShopping":
             MessageLookupByLibrary.simpleMessage("Continue Shopping"),
         "country": MessageLookupByLibrary.simpleMessage("Country"),
+        "countryCode": MessageLookupByLibrary.simpleMessage("Country Code"),
         "createNewPass":
             MessageLookupByLibrary.simpleMessage("Create New Password"),
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
@@ -107,6 +115,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "goToHome": MessageLookupByLibrary.simpleMessage("Go To Home"),
         "highToLow": MessageLookupByLibrary.simpleMessage("High To Low"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
+        "homeDelivery": MessageLookupByLibrary.simpleMessage(
+            "deliver the order to your home"),
         "incorrectPin":
             MessageLookupByLibrary.simpleMessage("Incorrect pin code"),
         "items": MessageLookupByLibrary.simpleMessage("Items"),
@@ -171,6 +181,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "paymentStatus": MessageLookupByLibrary.simpleMessage("Payment Status"),
         "pending": MessageLookupByLibrary.simpleMessage("Pending"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
+        "pickUp": MessageLookupByLibrary.simpleMessage(
+            "pick up the order from our location"),
         "placeOrder": MessageLookupByLibrary.simpleMessage("Place Order"),
         "postalCode": MessageLookupByLibrary.simpleMessage("Postal Code"),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
@@ -199,6 +211,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchShop": MessageLookupByLibrary.simpleMessage("Search for shop"),
         "sec": MessageLookupByLibrary.simpleMessage("sec"),
         "select": MessageLookupByLibrary.simpleMessage("Select"),
+        "selectDeliveryArea":
+            MessageLookupByLibrary.simpleMessage("Select Delivery Area"),
         "selectPaymentMethod": MessageLookupByLibrary.simpleMessage(
             "Please select the payment method!"),
         "sendOtp": MessageLookupByLibrary.simpleMessage("Send OTP"),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_credit_card/flutter_credit_card.dart';
-// import 'package:awesome_card/awesome_card.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+
 import 'dart:math' as math;
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grocerymart/config/app_color.dart';
@@ -13,11 +13,12 @@ import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/view/cart_view.dart';
 import 'package:grocerymart/features/cart/view/widget/address_selection_dialog.dart';
 import 'package:grocerymart/features/checkout/logic/order_provider.dart';
+import 'package:grocerymart/features/checkout/model/checkout/checkout_home_delivery.dart';
 import 'package:grocerymart/features/checkout/model/offline_mode.dart';
 import 'package:grocerymart/features/checkout/model/online_mode.dart';
 import 'package:grocerymart/features/checkout/model/paymnet_model.dart';
-import 'package:grocerymart/features/checkout/model/place_order.dart';
 import 'package:grocerymart/features/checkout/view/widget/confirm_dialog.dart';
+
 import 'package:grocerymart/features/menu/view/widgets/address_card.dart';
 import 'package:grocerymart/features/payment/logic/payment_repo.dart';
 import 'package:grocerymart/generated/l10n.dart';
@@ -42,16 +43,20 @@ class CheckoutScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _CheckoutScreenState();
 }
 
-final TextEditingController additionalInfoController = TextEditingController();
-
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   PaymentModel? _selectedPaymentMethod;
-  ShippingBillingResponse? deliveryAddress;
+  ShippingBillingResponse? shippingAddress;
+  ShippingBillingResponse? billingAddress;
   List<PaymentModel> paymentsMethod = [];
-  String? _selectedServingMethod = 'home_delivery';
+
+  bool isShippingSameBilling = true;
 
   TextEditingController cardNumberCtrl = TextEditingController();
   TextEditingController expiryFieldCtrl = TextEditingController();
+
+
+  final TextEditingController zipCodeController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,94 +73,226 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
                 child: Column(
                   children: [
-                    ValueListenableBuilder(
-                      valueListenable:
-                          Hive.box(AppHSC.deliveryAddressBox).listenable(),
-                      builder: (context, addressBox, _) {
-                        Map<dynamic, dynamic>? address =
-                            addressBox.get(AppHSC.deliveryAddress);
-                        if (address != null) {
-                          Map<String, dynamic> addressStringKey =
-                              address.cast<String, dynamic>();
-                          deliveryAddress = ShippingBillingResponse.fromJson(
-                              addressStringKey);
-                        }
-                        return deliveryAddress != null
-                            ? Column(
-                                children: [
-                                  Stack(
-                                    children: [
-                                      AddressCard(
-                                        userAddress: deliveryAddress!,
-                                      ),
-                                      Positioned(
-                                        right: 14,
-                                        top: 16,
-                                        child: TextButton(
-                                          style: TextButton.styleFrom(
-                                            minimumSize: Size(50.w, 30),
+                    Column(
+                      children: [
+                        ValueListenableBuilder(
+                          valueListenable:
+                              Hive.box(AppHSC.deliveryAddressBox).listenable(),
+                          builder: (context, addressBox, _) {
+                            Map<dynamic, dynamic>? addressShipping =
+                                addressBox.get(AppHSC.shippingAddress);
+                            if (addressShipping != null) {
+                              Map<String, dynamic> addressStringKey =
+                                  addressShipping.cast<String, dynamic>();
+                              shippingAddress =
+                                  ShippingBillingResponse.fromJson(
+                                      addressStringKey);
+                            }
+                            /*-----------------------------------------*/
+                            Map<dynamic, dynamic>? addressBilling =
+                                addressBox.get(AppHSC.billingAddress);
+                            if (addressBilling != null) {
+                              Map<String, dynamic> addressBillStringKey =
+                                  addressBilling.cast<String, dynamic>();
+                              billingAddress = ShippingBillingResponse.fromJson(
+                                  addressBillStringKey);
+                            }
+                            /*-----------------------------------------*/
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                shippingAddress != null
+                                    ? Column(
+                                        children: [
+                                          Stack(
+                                            alignment:
+                                                AlignmentDirectional.topEnd,
+                                            children: [
+                                              AddressCard(
+                                                userAddress: shippingAddress!,
+                                              ),
+                                              SizedBox(
+                                                width: 100.w,
+                                                child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    minimumSize: Size(50.w, 30),
+                                                    foregroundColor:
+                                                        colors(context)
+                                                            .primaryColor,
+                                                    backgroundColor:
+                                                    colors(context)
+                                                        .primaryColor,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              18.sp),
+                                                    ),
+                                                    side: BorderSide(
+                                                      color: colors(context)
+                                                              .primaryColor ??
+                                                          AppStaticColor
+                                                              .primaryColor,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    context.nav.pushNamed(
+                                                      Routes
+                                                          .addUserAddressScreen,
+                                                      arguments:
+                                                          shippingAddress,
+                                                    );
+                                                  },
+                                                  child: Center(
+                                                    child: Text(S.of(context).edit,style: TextStyle(color: AppStaticColor.whiteColor),),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(height: 10.h),
+                                        ],
+                                      )
+                                    : SizedBox(
+                                        height: 50.h,
+                                        child: TextButton.icon(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                        Color>(
+                                                    AppStaticColor.accentColor),
                                             foregroundColor:
-                                                colors(context).primaryColor,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(18.sp),
-                                            ),
-                                            side: BorderSide(
-                                              color: colors(context)
-                                                      .primaryColor ??
+                                                MaterialStateProperty.all<
+                                                    Color>(
+                                              colors(context).primaryColor ??
                                                   AppStaticColor.primaryColor,
                                             ),
                                           ),
                                           onPressed: () {
                                             context.nav.pushNamed(
                                               Routes.addUserAddressScreen,
-                                              arguments: deliveryAddress,
+                                              arguments: ShippingBillingResponse(isShipping: true),
                                             );
                                           },
-                                          child: Center(
-                                            child: Text(S.of(context).change),
-                                          ),
+                                          icon: const Icon(Icons.add),
+                                          label: Text(
+                                              S.of(context).addShippingAddress),
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 10.h),
-                                ],
-                              )
-                            : SizedBox(
-                                height: 50.h,
-                                child: TextButton.icon(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            AppStaticColor.accentColor),
-                                    foregroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                      colors(context).primaryColor ??
-                                          AppStaticColor.primaryColor,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (builder) =>
-                                          const SelectAddressDialog(),
-                                    ).then(
-                                      (value) {
-                                        setState(() {});
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.add),
-                                  label: Text(S.of(context).addAddress),
-                                ),
-                              );
-                      },
+                                      ),
+
+                                10.ph,
+
+                                ///billling
+                                ///
+
+                                Visibility(
+                                    visible: !isShippingSameBilling,
+                                    child: billingAddress != null
+                                        ? Column(
+                                            children: [
+                                              Stack(
+                                                alignment:
+                                                    AlignmentDirectional.topEnd,
+                                                children: [
+                                                  AddressCard(
+                                                    userAddress:
+                                                        billingAddress!,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 100.w,
+                                                    child: TextButton(
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                        minimumSize: Size(50.w, 30),
+                                                        backgroundColor: colors(context)
+                                                            .primaryColor,
+                                                        foregroundColor:
+                                                            colors(context)
+                                                                .primaryColor,
+
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      18.sp),
+                                                        ),
+                                                        side: BorderSide(
+                                                          color: colors(context)
+                                                                  .primaryColor ??
+                                                              AppStaticColor
+                                                                  .primaryColor,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        context.nav.pushNamed(
+                                                          Routes
+                                                              .addUserAddressScreen,
+                                                          arguments:
+                                                              billingAddress,
+                                                        );
+                                                      },
+                                                      child: Center(
+                                                        child: Text(S.of(context).edit,style: TextStyle(color: AppStaticColor.whiteColor),),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: 10.h),
+                                            ],
+                                          )
+                                        : SizedBox(
+                                            height: 50.h,
+                                            child: TextButton.icon(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all<
+                                                            Color>(
+                                                        AppStaticColor
+                                                            .accentColor),
+                                                foregroundColor:
+                                                    MaterialStateProperty.all<
+                                                        Color>(
+                                                  colors(context)
+                                                          .primaryColor ??
+                                                      AppStaticColor
+                                                          .primaryColor,
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                context.nav.pushNamed(
+                                                  Routes.addUserAddressScreen,
+                                                  arguments: ShippingBillingResponse(isShipping: false),
+                                                );
+                                              },
+                                              icon: const Icon(Icons.add),
+                                              label: Text(S
+                                                  .of(context)
+                                                  .addBillingAddress),
+                                            ),
+                                          ))
+                              ],
+                            );
+                          },
+                        ),
+                        15.ph,
+                        Card(
+                          child: CheckboxListTile(
+                            title: Text(S.current.billingIsSameShipping),
+                            value: isShippingSameBilling,
+                            activeColor: AppStaticColor.primaryColor,
+                            onChanged: (value) {
+                              isShippingSameBilling = value ?? false;
+                              setState(() {});
+                            },
+                          ),
+                        )
+                      ],
                     ),
                     15.ph,
                     _buildInfoField(),
-                    15.ph,
-                    _buildServingMethod(),
                     15.ph,
                     _buildPaymentCard(),
                     15.ph,
@@ -201,43 +338,60 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                               child: AppTextButton(
                                 title: S.of(context).placeOrder,
                                 onTap: () async {
-                                  if (_selectedPaymentMethod?.name != '') {
-                                    PlaceOrderModel orderData = PlaceOrderModel(
-                                      // addressId: widget
-                                      //     .checkoutArgument.userAddress.id!,
-                                      paymentMethod:
+
+                                  if (widget.checkoutArgument.servingMethod == 'home_delivery') {
+                                    print(int.tryParse(cardNumber));
+                                    print('dddddddd');
+                                    CheckoutHomeDeliveryModel orderData =
+                                        CheckoutHomeDeliveryModel(
+                                      gateway:
                                           _selectedPaymentMethod?.name ?? '',
+                                      gatewayId:
+                                          _selectedPaymentMethod?.id ?? -1,
+                                      postalCode: widget
+                                              .checkoutArgument.postalCodeId ??
+                                          -1,
+                                      sameAsShipping:
+                                          isShippingSameBilling ? 1 : 0,
+                                      note: widget.checkoutArgument.notes,
+                                      couponCode:
+                                          widget.checkoutArgument.couponCode,
                                       product: widget.checkoutArgument.products,
-                                      note: additionalInfoController.text,
-                                      deliveryCharge:
-                                          widget.checkoutArgument.deliverCharge,
-                                      couponId:
-                                          widget.checkoutArgument.couponId,
-                                      paymentVia: _selectedPaymentMethod?.name ?? '',
+                                      zipCode: zipCodeController.text,
+                                       shippingAddress: ShippingAddress(
+                                              countryCode: shippingAddress?.countryCode ?? '',
+                                            address:  shippingAddress?.address ?? '',
+                                            city:  shippingAddress?.city ?? '',
+                                            country:  shippingAddress?.country ?? '',
+                                            email:  shippingAddress?.email ?? '',
+                                            number:  shippingAddress?.number ?? '',
+                                            fname:  shippingAddress?.fName ?? '',
+                                            lname:  shippingAddress?.lName ?? ''
+                                          ),
+                                      billingAddress: ShippingAddress(
+                                              countryCode: billingAddress?.countryCode ?? '',
+                                              address:  billingAddress?.address ?? '',
+                                              city:  billingAddress?.city ?? '',
+                                              country:  billingAddress?.country ?? '',
+                                              email:  billingAddress?.email ?? '',
+                                              number:  billingAddress?.number ?? '',
+                                              fname:  billingAddress?.fName ?? '',
+                                              lname:  billingAddress?.lName ?? ''
+                                          ),
+                                          cardNumber: int.tryParse(cardNumber),
+                                          month: int.tryParse(expiryDate.split('/').first),
+                                          year: int.tryParse(expiryDate.split('/').last),
+                                          cardCVC: int.tryParse(cvvCode)
                                     );
-                                    await ref
-                                        .read(
-                                            orderStateNotifierProvider.notifier)
-                                        .placeOrder(orderData: orderData)
-                                        .then(
-                                      (orderId) async {
-                                        // widget.checkoutArgument.cartBox.clear();
-                                        if (orderId == null) {
-                                          debugPrint('order id null');
-                                        } else {
-                                          if (_selectedPaymentMethod?.type ==
-                                              'online') {
-                                            await ref
-                                                .read(paymentRepo)
-                                                .stripePayment(
-                                                  amount: widget
-                                                      .checkoutArgument.payable
-                                                      .toInt(),
-                                                  orderId: orderId,
-                                                  cartBox: widget
-                                                      .checkoutArgument.cartBox,
-                                                );
-                                          } else {
+                                    if (_selectedPaymentMethod?.type == 'online') {
+                                      await ref
+                                          .read(orderStateNotifierProvider.notifier).checkOutHomeOnline(
+                                              orderData: orderData)
+                                          .then(
+                                        (orderId) async {
+                                          if (orderId) {
+                                            widget.checkoutArgument.cartBox
+                                                .clear();
                                             return showDialog(
                                               barrierDismissible: false,
                                               context: context,
@@ -245,18 +399,41 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                                   ConfirmDialog(
                                                 cartBox: widget
                                                     .checkoutArgument.cartBox,
-                                                orderId: orderId,
+                                                orderId: 1,
                                               ),
                                             );
                                           }
-                                        }
-                                      },
-                                    );
-                                  } else {
-                                    EasyLoading.showError(
-                                      S.of(context).selectPaymentMethod,
-                                    );
+                                        },
+                                      );
+                                    } else {
+                                      await ref
+                                          .read(orderStateNotifierProvider
+                                              .notifier)
+                                          .checkOutHomeOffline(
+                                              orderData: orderData)
+                                          .then(
+                                        (orderId) async {
+                                          if (orderId) {
+                                            widget.checkoutArgument.cartBox
+                                                .clear();
+                                            return showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (builder) =>
+                                                  ConfirmDialog(
+                                                cartBox: widget
+                                                    .checkoutArgument.cartBox,
+                                                orderId: 1,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    }
                                   }
+
+                                  ///pickUp
+                                  else {}
                                 },
                               ),
                             ),
@@ -265,36 +442,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  Widget _buildInfoField() {
-    return Container(
-      height: 112.h,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.5),
-        ),
-      ),
-      child: TextField(
-        controller: additionalInfoController,
-        maxLines: 5,
-        style: TextStyle(fontSize: 14.sp),
-        decoration: InputDecoration(
-          hintText: S.of(context).additionalInfo,
-          hintStyle: TextStyle(
-            fontSize: 14.sp,
-            color: Colors.black.withOpacity(0.4),
-          ),
-          fillColor: AppStaticColor.accentColor,
-          filled: true,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide.none,
-          ),
-        ),
       ),
     );
   }
@@ -372,12 +519,43 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
     );
   }
+  Widget _buildInfoField() {
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Container(
+        height: 50.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.5),
+          ),
+        ),
+        child: TextField(
+          controller: zipCodeController,
+          maxLines: 1,
+          style: TextStyle(fontSize: 14.sp),
+          decoration: InputDecoration(
+            hintText: S.of(context).postalCode,
+            hintStyle: TextStyle(
+              fontSize: 14.sp,
+              color: Colors.black.withOpacity(0.4),
+            ),
+            fillColor: AppStaticColor.accentColor,
+            filled: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide.none,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   String cardNumber = '';
   String expiryDate = '';
-  String cardHolderName = '';
   String cvvCode = '';
-  bool isCvvFocused = false;
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   Widget _buildCardInfo() {
     return Card(
@@ -412,19 +590,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       decoration: InputDecoration(hintText: 'Card Number'),
                       maxLength: 16,
                       onChanged: (value) {
-                        final newCardNumber = value.trim();
-                        var newStr = '';
-                        final step = 4;
 
-                        for (var i = 0; i < newCardNumber.length; i += step) {
-                          newStr += newCardNumber.substring(
-                              i, math.min(i + step, newCardNumber.length));
-                          if (i + step < newCardNumber.length) newStr += ' ';
-                        }
-
-                        setState(() {
-                          cardNumber = newStr;
-                        });
+                        cardNumber = value.trim();
                       },
                     ),
                   ),
@@ -452,71 +619,42 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         }
                         setState(() {
                           expiryFieldCtrl.text = newDateValue;
-                          expiryFieldCtrl.selection = TextSelection.fromPosition(
-                              TextPosition(offset: newDateValue.length));
+                          expiryFieldCtrl.selection =
+                              TextSelection.fromPosition(
+                                  TextPosition(offset: newDateValue.length));
                           expiryDate = newDateValue;
                         });
                       },
                     ),
                   ),
+                  // Container(
+                  //   margin: EdgeInsets.symmetric(
+                  //     horizontal: 20,
+                  //   ),
+                  //   child: TextFormField(
+                  //     decoration: InputDecoration(hintText: 'Card Holder Name'),
+                  //     onChanged: (value) {
+                  //       setState(() {
+                  //         cardHolderName = value;
+                  //       });
+                  //     },
+                  //   ),
+                  // ),
                   Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
                     child: TextFormField(
-                      decoration: InputDecoration(hintText: 'Card Holder Name'),
-                      onChanged: (value) {
-                        setState(() {
-                          cardHolderName = value;
-                        });
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-                    child: TextFormField(
-                      decoration: InputDecoration(hintText: 'CVV'),
+                      decoration: const InputDecoration(hintText: 'CVC'),
                       maxLength: 3,
+                      keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
-                          // cvv = value;
+                          cvvCode = value;
                         });
                       },
-
                     ),
                   ),
                 ],
               )
-              // CreditCardForm(
-              //   formKey: formKey,
-              //   obscureCvv: true,
-              //   obscureNumber: true,
-              //   cardNumber: cardNumber,
-              //   cvvCode: cvvCode,
-              //   isHolderNameVisible: true,
-              //   isCardNumberVisible: true,
-              //   isExpiryDateVisible: true,
-              //   cardHolderName: cardHolderName,
-              //   expiryDate: expiryDate,
-              //   inputConfiguration: const InputConfiguration(
-              //     cardNumberDecoration: InputDecoration(
-              //       labelText: 'Number',
-              //       hintText: 'XXXX XXXX XXXX XXXX',
-              //     ),
-              //     expiryDateDecoration: InputDecoration(
-              //       labelText: 'Expired Date',
-              //       hintText: 'XX/XX',
-              //     ),
-              //     cvvCodeDecoration: InputDecoration(
-              //       labelText: 'CVV',
-              //       hintText: 'XXX',
-              //     ),
-              //     cardHolderDecoration: InputDecoration(
-              //       labelText: 'Card Holder',
-              //     ),
-              //   ),
-              //   onCreditCardModelChange: (p0) {},
-              // ),
             ],
           ),
         ),
@@ -546,78 +684,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
           (element) => paymentsMethod.add(PaymentModel(
               id: element.id, type: 'offline', name: element.name)),
         );
-        paymentsMethod.add(PaymentModel(
-            name: onlineMode.name, type: 'online', id: onlineMode.id));
+        if (onlineMode.status == 1) {
+          paymentsMethod.add(PaymentModel(
+              name: onlineMode.name, type: 'online', id: onlineMode.id));
+        }
         setState(() {});
       },
     );
   }
 
 
-  Widget _buildServingMethod (){
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0.r),
-      ),
-      child: Column(children: [
-        Container(
-          padding: EdgeInsets.all(20.h),
-          decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.2),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.r),
-                topRight: Radius.circular(10.r)),
-          ),
-          child: Row(
-            children: [
-              const Icon(Icons.motorcycle),
-              SizedBox(width: 10.w),
-              Text(
-                S.of(context).servingMethod,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.sp,
-                ),
-              ),
-
-            ],
-          ),
-        ),
-
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: Radio(
-            value: 'pick_up',
-            groupValue: _selectedServingMethod,
-            activeColor: colors(context).primaryColor,
-            onChanged: (value) {
-              setState(() {
-                _selectedServingMethod = value;
-              });
-            },
-          ),
-          title: Text('Pick Up',
-            style: TextStyle(fontSize: 15.sp),
-          ),
-        ),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: Radio(
-            value: 'home_delivery',
-            groupValue: _selectedServingMethod,
-            activeColor: colors(context).primaryColor,
-            onChanged: (value) {
-              setState(() {
-                _selectedServingMethod = value;
-              });
-            },
-          ),
-          title: Text('Home Delivery',
-            style: TextStyle(fontSize: 15.sp),
-          ),
-        ),
-
-      ],),
-    );
-  }
 }

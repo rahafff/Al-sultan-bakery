@@ -18,6 +18,7 @@ import 'package:grocerymart/widgets/buttons/full_width_button.dart';
 
 class AddUserAddressScreen extends ConsumerStatefulWidget {
   final ShippingBillingResponse? userAddress;
+
   const AddUserAddressScreen({
     super.key,
     required this.userAddress,
@@ -46,22 +47,22 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
 
   final TextEditingController addressController = TextEditingController();
 
-  final List<FocusNode> fNodes = [
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode(),
-    FocusNode()
-  ];
+  // final List<FocusNode> fNodes = [
+  //   FocusNode(),
+  //   FocusNode(),
+  //   FocusNode(),
+  //   FocusNode(),
+  //   FocusNode(),
+  //   FocusNode(),
+  //   FocusNode(),
+  //   FocusNode(),
+  //   FocusNode()
+  // ];
 
   @override
   void initState() {
     super.initState();
-    getPosition();
+
     if (widget.userAddress != null) {
       fnameController.text = widget.userAddress?.fName ?? '';
       lnameController.text = widget.userAddress?.lName ?? '';
@@ -71,8 +72,8 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
 
 
       countryController.text = widget.userAddress?.country ?? '';
-      cityController.text = widget.userAddress?.country ?? '';
-      stateController.text = widget.userAddress?.country ?? '';
+      cityController.text = widget.userAddress?.city ?? '';
+      stateController.text = widget.userAddress?.state ?? '';
       addressController.text = widget.userAddress?.address ?? '';
 
     }
@@ -80,6 +81,10 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.userAddress?.isShipping);
+
+    print('sssssssssssssssssssss');
+
     bool isLoading = ref.watch(menuStateNotifierProvider);
     final textStyle = AppTextStyle(context);
     return GestureDetector(
@@ -109,31 +114,54 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                     children: [
                       SizedBox(height: 10.h),
                       buildTextField(
-                        name: S.of(context).name,
+                        name: S.of(context).firstName,
                         hintText: S.of(context).enterName,
-                        focusNode: fNodes[0],
+
                         textInputType: TextInputType.text,
                         controller: fnameController,
                         width: double.infinity,
                       ),
                       14.ph,
                       buildTextField(
-                        name: S.of(context).phoneNumber,
-                        hintText: S.of(context).enterPhone,
-                        focusNode: fNodes[1],
-                        textInputType: TextInputType.phone,
-                        controller: phoneNumController,
+                        name: S.of(context).lastName,
+                        hintText: S.of(context).enterName,
+
+                        textInputType: TextInputType.text,
+                        controller: lnameController,
                         width: double.infinity,
+                      ),
+                      14.ph,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildTextField(
+                            name: S.of(context).countryCode,
+                            hintText: S.of(context).enterPhone,
+
+                            textInputType: TextInputType.phone,
+                            controller: countryCodeController,
+                            width: 100,
+                          ),
+                          buildTextField(
+                            name: S.of(context).phoneNumber,
+                            hintText: S.of(context).enterPhone,
+
+                            textInputType: TextInputType.phone,
+                            controller: phoneNumController,
+                            width: 250.h,
+                          ),
+                        ],
                       ),
                       14.ph,
                       buildTextField(
                         name: S.of(context).email,
                         hintText: S.of(context).email,
-                        focusNode: fNodes[2],
+
                         textInputType: TextInputType.text,
                         controller: emailController,
                         width: double.infinity,
                       ),
+                      14.ph,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -141,7 +169,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                           buildTextField(
                             name: S.of(context).country,
                             hintText: S.of(context).enterFlatNo,
-                            focusNode: fNodes[3],
+
                             textInputType: TextInputType.number,
                             controller: countryController,
                             width: null,
@@ -149,7 +177,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                           buildTextField(
                             name: S.of(context).city,
                             hintText: S.of(context).enterPC,
-                            focusNode: fNodes[4],
+
                             textInputType: TextInputType.text,
                             controller: cityController,
                             width: null,
@@ -157,7 +185,6 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                           buildTextField(
                             name: S.of(context).state,
                             hintText: S.of(context).state,
-                            focusNode: fNodes[5],
                             textInputType: TextInputType.text,
                             controller: stateController,
                             width: null,
@@ -168,7 +195,6 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
                       buildTextField(
                         name: S.of(context).addressLine1,
                         hintText: S.of(context).enterAddressLine1,
-                        focusNode: fNodes[6],
                         textInputType: TextInputType.text,
                         controller: addressController,
                         width: double.infinity,
@@ -203,11 +229,6 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
     );
   }
 
-  var _position;
-  Future<void> getPosition() async {
-    // _position = await Geolocator.getCurrentPosition(
-    //     desiredAccuracy: LocationAccuracy.high);
-  }
 
   Future<void> performSaveAddress() async {
     if (_formkey.currentState!.validate()) {
@@ -227,10 +248,36 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
           .read(menuStateNotifierProvider.notifier)
           .manageUserAddress(userAddress: userAddress,isShipping: widget.userAddress?.isShipping ?? true);
       nav.pop(true);
-      ref
-              .read(hiveStorageProvider)
-              .saveDeliveryAddress(
-          userAddress: ShippingBillingResponse(number:userAddress.phone,email: userAddress.email,state: userAddress.state,country: userAddress.country,city: userAddress.city,address: userAddress.address,countryCode: userAddress.countryCode ));
+      if(widget.userAddress?.isShipping ?? true){
+        ref
+            .read(hiveStorageProvider)
+            .saveDeliveryShippingAddress(
+            userAddress: ShippingBillingResponse(
+                fName: userAddress.firstName,
+                lName: userAddress.lastName,
+                number:userAddress.phone,
+                email: userAddress.email,
+                state: userAddress.state,
+                country: userAddress.country,
+                city: userAddress.city,
+                address: userAddress.address,
+                countryCode: userAddress.countryCode ));
+      }
+      else {
+        ref
+            .read(hiveStorageProvider)
+            .saveDeliveryBillingAddress(
+            userAddress: ShippingBillingResponse(
+                fName: userAddress.firstName,
+                lName: userAddress.lastName,
+                number:userAddress.phone,
+                email: userAddress.email,
+                state: userAddress.state,
+                country: userAddress.country,
+                city: userAddress.city,
+                address: userAddress.address,
+                countryCode: userAddress.countryCode ));
+      }
       EasyLoading.showSuccess(message!);
     } else {
       return;
@@ -239,7 +286,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
 
   Widget buildTextField({
     required String name,
-    required FocusNode focusNode,
+    // required FocusNode focusNode,
     required String hintText,
     required TextInputType textInputType,
     required TextEditingController controller,
@@ -257,7 +304,7 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
         SizedBox(
           width: width ?? 114.w,
           child: FormBuilderTextField(
-            focusNode: focusNode,
+            // focusNode: focusNode,
             name: name,
             decoration: AppInputDecor.loginPageInputDecor.copyWith(
               hintText: hintText,

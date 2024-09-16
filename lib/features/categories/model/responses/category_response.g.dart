@@ -31,6 +31,7 @@ SubCategoryResponse _$SubCategoryResponseFromJson(Map<String, dynamic> json) =>
       products: (json['products'] as List<dynamic>?)
           ?.map((e) => ProductResponse.fromJson(e as Map<String, dynamic>))
           .toList(),
+      image: json['image'] as String?,
     );
 
 Map<String, dynamic> _$SubCategoryResponseToJson(
@@ -38,5 +39,6 @@ Map<String, dynamic> _$SubCategoryResponseToJson(
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'image': instance.image,
       'products': instance.products,
     };

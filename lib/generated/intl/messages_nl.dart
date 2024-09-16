@@ -22,16 +22,21 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "BTW": MessageLookupByLibrary.simpleMessage("BTW"),
         "Shipping": MessageLookupByLibrary.simpleMessage("Afleveradres"),
         "aboutUs": MessageLookupByLibrary.simpleMessage("Over ons"),
         "accountDeleteDes": MessageLookupByLibrary.simpleMessage(
             "Deze actie kan niet ongedaan worden gemaakt. Alle waarden die aan dit veld zijn gekoppeld, gaan verloren."),
         "addAddress": MessageLookupByLibrary.simpleMessage("Adres toevoegen"),
+        "addBillingAddress":
+            MessageLookupByLibrary.simpleMessage("factuuradres toevoegen"),
         "addItem":
             MessageLookupByLibrary.simpleMessage("Voeg toe aan winkelwagen"),
         "addNewAddress":
             MessageLookupByLibrary.simpleMessage("Nieuw adres toevoegen"),
         "addOns": MessageLookupByLibrary.simpleMessage("Add-ons"),
+        "addShippingAddress":
+            MessageLookupByLibrary.simpleMessage("verzendadres toevoegen"),
         "additionalInfo": MessageLookupByLibrary.simpleMessage(
             "Schrijf hier eventuele aanvullende informatie"),
         "addressLine1": MessageLookupByLibrary.simpleMessage("Adresregel 1"),
@@ -47,6 +52,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "areYouSure":
             MessageLookupByLibrary.simpleMessage("Weet je het zeker?"),
         "area": MessageLookupByLibrary.simpleMessage("Gebied"),
+        "billingIsSameShipping": MessageLookupByLibrary.simpleMessage(
+            "Het factuuradres is hetzelfde als het verzendadres"),
         "blogs": MessageLookupByLibrary.simpleMessage("Blogs"),
         "cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
         "cancelOrder":
@@ -57,6 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cashOnDelivery":
             MessageLookupByLibrary.simpleMessage("Contant Bij Levering"),
         "categories": MessageLookupByLibrary.simpleMessage("Categorieën"),
+        "category": MessageLookupByLibrary.simpleMessage("Categorieën"),
         "change": MessageLookupByLibrary.simpleMessage("Wijziging"),
         "checkInternetConnection": MessageLookupByLibrary.simpleMessage(
             "Controleer de internetverbinding"),
@@ -70,6 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "continueShopping":
             MessageLookupByLibrary.simpleMessage("Ga door met winkelen"),
         "country": MessageLookupByLibrary.simpleMessage("Land"),
+        "countryCode": MessageLookupByLibrary.simpleMessage("Landcode"),
         "createNewPass": MessageLookupByLibrary.simpleMessage(
             "Maak een nieuw wachtwoord aan"),
         "dark": MessageLookupByLibrary.simpleMessage("Donker"),
@@ -112,6 +121,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "goToHome": MessageLookupByLibrary.simpleMessage("Ga naar huis"),
         "highToLow": MessageLookupByLibrary.simpleMessage("Hoog naar laag"),
         "home": MessageLookupByLibrary.simpleMessage("Thuis"),
+        "homeDelivery": MessageLookupByLibrary.simpleMessage(
+            "bezorg de bestelling bij u thuis"),
         "incorrectPin":
             MessageLookupByLibrary.simpleMessage("Onjuiste pincode"),
         "items": MessageLookupByLibrary.simpleMessage("Artikelen"),
@@ -179,6 +190,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Betalingsstatus"),
         "pending": MessageLookupByLibrary.simpleMessage("In behandeling"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Telefoonnummer"),
+        "pickUp": MessageLookupByLibrary.simpleMessage(
+            "haal de bestelling op bij onze locatie"),
         "placeOrder":
             MessageLookupByLibrary.simpleMessage("Bestelling plaatsen"),
         "postalCode": MessageLookupByLibrary.simpleMessage("Postcode"),
@@ -211,6 +224,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchShop": MessageLookupByLibrary.simpleMessage("Winkel zoeken"),
         "sec": MessageLookupByLibrary.simpleMessage("sec"),
         "select": MessageLookupByLibrary.simpleMessage("Selecteer"),
+        "selectDeliveryArea":
+            MessageLookupByLibrary.simpleMessage("Selecteer bezorggebied"),
         "selectPaymentMethod":
             MessageLookupByLibrary.simpleMessage("Selecteer de betaalmethode!"),
         "sendOtp": MessageLookupByLibrary.simpleMessage("OTP verzenden"),

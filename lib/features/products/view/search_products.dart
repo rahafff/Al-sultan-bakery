@@ -78,9 +78,8 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
               searchController: searchController,
               hintText: S.of(context).searchProducts,
               onChanged: (value) {
-                if (value!.isEmpty) {
-                  FocusScope.of(context).unfocus();
-                  getProducts(isScroll: false);
+                if (value!.isNotEmpty) {
+                  _search();
                 }
               },
             ),
@@ -275,9 +274,10 @@ class _OwnProductViewState extends ConsumerState<OwnProductView> {
 
   _search() {
     scrollLoading = false;
+    count = 1;
     FocusScope.of(context).unfocus();
     if (searchController.text.isNotEmpty) {
-      getProducts(isScroll: true);
+      getProducts(isScroll: false);
     }
   }
 }

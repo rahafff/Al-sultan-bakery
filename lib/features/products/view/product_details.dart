@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -43,15 +44,16 @@ class ProductDetailsScreen extends ConsumerStatefulWidget {
 }
 
 class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
-  List<VariationItemsResponse> _selectedVariation = [];
+  // List<VariationItemsResponse> _selectedVariation = [];
 
-  Map<String, VariationItemsResponse> _selectedValueGroup = {};
+  VariationItemsResponse? _selectedValueGroup  ;
 
   List<AddonsResponse> addonsItems = [];
 
   // ValueListenable<int> productQuantity = ValueNotifier<int>(1);
   final ValueNotifier<int> productQuantity = ValueNotifier<int>(1);
   final ValueNotifier<num> totalPrice = ValueNotifier<num>(0.0);
+  final ValueNotifier<num> totalPriceWithTax = ValueNotifier<num>(0.0);
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +77,9 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
         // }
         return ScreenWrapper(
           bottomNavigationBar: Container(
-              decoration: const BoxDecoration(
-                  // color: AppStaticColor.whiteColor,
-                  boxShadow: [
+              decoration:   BoxDecoration(
+                  color:  Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: const [
                     BoxShadow(
                         blurStyle: BlurStyle.outer,
                         color: AppStaticColor.primaryColor,
@@ -86,7 +88,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                   ]),
               height: 60.h,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -152,24 +154,25 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       AppTextButton(
                         onTap: () async {
                           HiveCartModel cartItem = HiveCartModel(
+                            priceWithTax: widget.product?.priceWithTax ?? 0.0,
+                              tax: widget.product?.tax ?? 0.0,
                               id: widget.product?.id ?? -1,
                               name: widget.product?.title ?? '',
                               productImage: widget.product?.image ?? '',
                               price:
                                   widget.product?.pricing.price?.toDouble() ?? 0,
-                              oldPrice:
-                                  widget.product?.pricing.oldPrice?.toDouble() ??
-                                      0,
+                              // oldPrice:
+                              //     widget.product?.pricing.oldPrice?.toDouble() ??
+                              //         0,
                               productsQTY: productQuantity.value,
-                              variant: _selectedValueGroup.values
-                                  .map(
-                                    (e) => HiveAddonsItem(
-                                        name: e.name, price: e.price),
-                                  )
-                                  .toList(),
+                              variant: _selectedValueGroup != null? HiveAddonsItem(
+                                  priceWithTax: addTaxToPrice(_selectedValueGroup?.price ?? 0.0),
+                                  name: _selectedValueGroup?.name ?? '', price: _selectedValueGroup?.price ?? 0.0): null,
+
                               addons: addonsItems
                                   .map(
                                     (e) => HiveAddonsItem(
+                                      priceWithTax: addTaxToPrice(e.price),
                                         name: e.name, price: e.price),
                                   )
                                   .toList());
@@ -247,7 +250,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                       ),
 
                       ///ADDbUTOON
-                      30.ph
+                      40.ph
                     ],
                   ),
                 ),
@@ -313,7 +316,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                 ),
                 Text(
                   textDirection: TextDirection.ltr,
-                  '${product.pricing.currency?.symbol} ${product.pricing.price} ',
+                  '${product.pricing.currency?.symbol} ${product.priceWithTax.toStringAsFixed(2)} ',
                   style: textStyle.subTitle
                       .copyWith(color: colors(context).primaryColor),
                 )
@@ -383,42 +386,35 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                             children: [
                               Text(
                                 '${S.current.select} ${e.name}',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                               10.5.ph,
                               Column(
                                 children: e.items
                                     .map(
-                                      (item) => RadioListTile<
-                                              VariationItemsResponse>(
-                                          contentPadding:
-                                              EdgeInsetsDirectional.zero,
+                                      (item) => RadioListTile<VariationItemsResponse>(
+                                          contentPadding: EdgeInsetsDirectional.zero,
                                           title: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(item.name,),
                                               Text(
-                                                  '(+ ${item.currency.symbol}${item.price})',
-                          textDirection: TextDirection.ltr
-                          ,
+                                                  '(+ ${item.currency.symbol}${addTaxToPrice(item.price).toStringAsFixed(2)})',
+                                                  textDirection: TextDirection.ltr,
                                                   style: textStyle.bodyText
                                                       .copyWith(
                                                           color: Colors
                                                               .green.shade600))
                                             ],
                                           ),
-                                          activeColor:
-                                              AppStaticColor.primaryColor,
+                                          activeColor: AppStaticColor.primaryColor,
                                           value: item,
-                                          groupValue:
-                                              _selectedValueGroup[e.name],
+                                          groupValue: _selectedValueGroup,
                                           dense: true,
-                                          controlAffinity:
-                                              ListTileControlAffinity.trailing,
+                                          controlAffinity: ListTileControlAffinity.trailing,
                                           onChanged: (newVal) {
-                                            _selectedValueGroup[e.name] =
-                                                newVal!;
+                                            _selectedValueGroup  = newVal!;
                                             setState(() {});
                                           }),
                                     )
@@ -478,7 +474,7 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
                                 children: [
                                   Expanded(child: Text(item.name, style: textStyle.bodyTextSmall)),
                                   Text(
-                                    '(+ ${item.currency.symbol}${item.price})',
+                                    '(+ ${item.currency.symbol}${addTaxToPrice(item.price).toStringAsFixed(2)})',
                                     style: textStyle.bodyText
                                         .copyWith(color: Colors.green.shade600),
                                   ),
@@ -523,19 +519,23 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   initSelectItems() {
     List<VariationResponse> ir = widget.product?.variations ?? [];
     for (var variation in ir) {
-      _selectedValueGroup[variation.name] = variation.items.first;
-      totalPrice.value += variation.items.first.price;
+      _selectedValueGroup = variation.items.first;
+      totalPrice.value += addTaxToPrice(variation.items.first.price);
     }
   }
   initPrice (){
-    totalPrice.value += widget.product?.pricing.price ?? 0.0;
+    totalPrice.value += widget.product?.priceWithTax ?? 0.0;
   }
 
   calculateTotalPrice(){
     num totalAddons = 0.0;
-    addonsItems.forEach((element) => totalAddons +=element.price ,);
-   var subTotal = ( widget.product?.pricing.price ?? 0.0 ) + totalAddons;
+    addonsItems.forEach((element) => totalAddons += addTaxToPrice(element.price) ,);
+   var subTotal = ( widget.product?.priceWithTax ?? 0.0 ) + totalAddons;
 
    totalPrice.value = subTotal * productQuantity.value;
   }
+
+ num addTaxToPrice(num price){
+    return  ( (((widget.product?.tax ?? 0.0) * (price) )/ 100 ) + (price) );
+ }
 }

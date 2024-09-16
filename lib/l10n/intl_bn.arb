@@ -132,5 +132,6 @@
   "accountDeleteDes": "এই ক্রিয়াটি পূর্বাবস্থায় ফেরানো যাবে না এই ক্ষেত্রের সাথে যুক্ত সমস্ত মান হারিয়ে যাবে৷",
   "message": "Message",
   "ourBlogs": "Our Blogs",
-  "latestNewsFeed": "Latest News Feeds"
+  "latestNewsFeed": "Latest News Feeds",
+  "BTW": "BTW"
 }

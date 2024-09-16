@@ -20,6 +20,7 @@ ProductResponse _$ProductResponseFromJson(Map<String, dynamic> json) =>
           .map((e) => AddonsResponse.fromJson(e as Map<String, dynamic>))
           .toList(),
       PricingResponse.fromJson(json['pricing'] as Map<String, dynamic>),
+      json['tax'] as num?,
     );
 
 Map<String, dynamic> _$ProductResponseToJson(ProductResponse instance) =>
@@ -28,6 +29,7 @@ Map<String, dynamic> _$ProductResponseToJson(ProductResponse instance) =>
       'title': instance.title,
       'feature_image': instance.image,
       'rating': instance.rating,
+      'tax': instance.tax,
       'summary': instance.summary,
       'addons': instance.addons,
       'variations': instance.variations,

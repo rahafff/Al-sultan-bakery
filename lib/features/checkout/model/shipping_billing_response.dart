@@ -23,7 +23,7 @@ class ShippingBillingResponse {
   bool? isShipping;
 
   ShippingBillingResponse({this.fName, this.lName, this.email, this.number,
-      this.countryCode, this.city, this.state, this.address, this.country});
+      this.countryCode, this.city, this.state, this.address, this.country ,this.isShipping});
 
   factory ShippingBillingResponse.fromJson(Map<String, dynamic> json) =>
       _$ShippingBillingResponseFromJson(json);
@@ -31,11 +31,11 @@ class ShippingBillingResponse {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'fName': fName,
-      'lName': lName,
+      'fname': fName,
+      'lname': lName,
       'email': email,
       'number':number,
-      'countryCode':countryCode,
+      'country_code':countryCode,
       'city':city,
       'state':state,
       'address':address,

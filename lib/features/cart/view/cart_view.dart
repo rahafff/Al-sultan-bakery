@@ -12,9 +12,11 @@ import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/logic/cart_provider.dart';
 import 'package:grocerymart/features/cart/model/discount_enum.dart';
 import 'package:grocerymart/features/cart/model/hive_cart_model.dart';
+import 'package:grocerymart/features/cart/model/postal_code.dart';
 import 'package:grocerymart/features/cart/view/widget/address_selection_dialog.dart';
 import 'package:grocerymart/features/cart/view/widget/cart_summary_text.dart';
 import 'package:grocerymart/features/cart/view/widget/cart_tile.dart';
+import 'package:grocerymart/features/checkout/model/checkout/checkout_home_delivery.dart';
 import 'package:grocerymart/features/checkout/model/place_order.dart';
 import 'package:grocerymart/features/checkout/model/shipping_billing_response.dart';
 import 'package:grocerymart/features/menu/model/user_address.dart';
@@ -41,9 +43,9 @@ class CartScreen extends ConsumerStatefulWidget {
 
 class _CartScreenState extends ConsumerState<CartScreen> {
   final TextEditingController couponController = TextEditingController();
-  // ShippingBillingResponse? deliveryAddress;
+  final TextEditingController additionalInfoController = TextEditingController();
   double couponDiscountAmount = 0;
-  int? couponId;
+  String? couponCode;
   bool isCouponApply = false;
   bool isDiscountPercentage = false;
 
@@ -51,24 +53,41 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   bool isDark = false;
   bool isLoggedIn = false;
 
+  double deliveryCharge = 0.0;
+  List<PostalCode> postal = [];
+  PostalCode? _selectedPostal ;
+
+  String _selectedServingMethod = 'home_delivery';
   @override
   void initState() {
     super.initState();
-    ref.read(hiveStorageProvider).getTheme().then((value) {
-      setState(() {
-        isDark = value;
-      });
-    });
-    ref.read(hiveStorageProvider).getAuthToken().then((value) {
-       isLoggedIn = value !=null;
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        init();
+      },
+    );
+  }
 
+  init() {
+    Future.wait([
+      ref.read(hiveStorageProvider).getTheme(),
+      ref.read(hiveStorageProvider).getAuthToken(),
+      ref.read(postalStateNotifierProvider.notifier).getAllPostal(),
+    ]).then(
+      (value) {
+        isDark = value[0] as bool;
+        isLoggedIn = value[1] != null;
+        postal = value[2] as List<PostalCode>;
+        setState(() {});
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final textStyle = AppTextStyle(context);
     bool couponLoading = ref.watch(couponStateNotifierProvider);
+    bool isLoadingPostal = ref.watch(postalStateNotifierProvider);
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: ScreenWrapper(
@@ -77,10 +96,25 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           builder: (context, box, _) {
             final cartItems = box.values.toList();
             final subTotal = calculateSubtotal(cartItems);
-            final addonsTotal = calculateAddonsTotal(cartItems);
-            final variationTotal = calculateVariantTotal(cartItems);
-            final products = getProducts(cartItems);
 
+            ///for items without tax
+            final addonsTotal = calculateAddonsTotal(cartItems);
+
+            ///for items without tax
+            final variationTotal = calculateVariantTotal(cartItems);
+
+            ///for items without tax
+            final products = getProducts(cartItems);
+            final tax = calculateTax(cartItems);
+
+            if(_selectedServingMethod == 'home_delivery'){
+              if(_selectedPostal !=null){
+                deliveryCharge = double.tryParse(_selectedPostal?.charge ?? '0.0') ?? 0.0;
+              }
+
+            }else{
+              deliveryCharge = 0.0;
+            }
             if (previousSubtotals.length == 2) {
               previousSubtotals.removeAt(0);
             }
@@ -223,113 +257,145 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               //   },
                               // ),
                               SizedBox(height: 10.h),
-                              isLoggedIn ?    Row(
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      controller: couponController,
-                                      onChanged: (v) {
-                                        if (v.isEmpty) {
-                                          refreshCouponFunction(
-                                              isHiveUpdate: false);
-                                        }
-                                      },
-                                      decoration: AppInputDecor
-                                          .loginPageInputDecor
-                                          .copyWith(
-                                        prefixIcon: SizedBox(
-                                          height: 20.h,
-                                          width: 20.w,
-                                          child: Center(
-                                            child: SvgPicture.asset(
-                                              Assets.svg.iconPercentage,
-                                              fit: BoxFit.cover,
-                                              color:
-                                                  colors(context).primaryColor,
+
+                              16.ph,
+                              _buildServingMethod(),
+                              16.ph,
+
+                              _selectedServingMethod == 'home_delivery'
+                                  ? isLoadingPostal
+                                      ? const LinearProgressIndicator(
+                                 color:  AppStaticColor.accentColor,
+                                )
+                                      : postalDropDown()
+                                  : Container(),
+                              16.ph,
+                              _buildInfoField(),
+                              16.ph,
+                              isLoggedIn
+                                  ? Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextField(
+                                            controller: couponController,
+                                            onChanged: (v) {
+                                              if (v.isEmpty) {
+                                                refreshCouponFunction(
+                                                    isHiveUpdate: false);
+                                              }
+                                            },
+                                            decoration: AppInputDecor
+                                                .loginPageInputDecor
+                                                .copyWith(
+                                              prefixIcon: SizedBox(
+                                                height: 20.h,
+                                                width: 20.w,
+                                                child: Center(
+                                                  child: SvgPicture.asset(
+                                                    Assets.svg.iconPercentage,
+                                                    fit: BoxFit.cover,
+                                                    color: colors(context)
+                                                        .primaryColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              hintText:
+                                                  S.of(context).enterPromoCode,
                                             ),
                                           ),
                                         ),
-                                        hintText: S.of(context).enterPromoCode,
-                                      ),
-                                    ),
-                                  ),
-                                  10.pw,
-                                  couponLoading
-                                      ? Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5.w),
-                                          child:
-                                              const CircularProgressIndicator(),
-                                        )
-                                      : AppOutlinedButton(
-                                          width: 100.w,
-                                          height: 50.h,
-                                          title: isCouponApply
-                                              ? S.of(context).applied
-                                              : S.of(context).apply,
-                                          onTap: () {
-                                            FocusScope.of(context).unfocus();
-                                            if (!isCouponApply) {
-                                              if (couponController
-                                                  .text.isNotEmpty) {
-                                                ref
-                                                    .read(
-                                                        couponStateNotifierProvider
-                                                            .notifier)
-                                                    .applyCouponCode(
-                                                      couponCode:
-                                                          couponController.text,
-                                                      amount: subTotal,
-                                                    )
-                                                    .then((coupon) {
-                                                  if (coupon != null) {
-                                                    DiscountEnum type =
-                                                        DiscountEnum
-                                                            .getEnumValue(
-                                                                coupon.type);
-                                                    if (type ==
-                                                        DiscountEnum.percentage)
-                                                      isDiscountPercentage =
-                                                          true;
+                                        10.pw,
+                                        couponLoading
+                                            ? Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 5.w),
+                                                child:
+                                                    const CircularProgressIndicator(),
+                                              )
+                                            : AppOutlinedButton(
+                                                width: 100.w,
+                                                height: 50.h,
+                                                title: isCouponApply
+                                                    ? S.of(context).applied
+                                                    : S.of(context).apply,
+                                                onTap: () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  if (!isCouponApply) {
+                                                    if (couponController
+                                                        .text.isNotEmpty) {
+                                                      ref
+                                                          .read(
+                                                              couponStateNotifierProvider
+                                                                  .notifier)
+                                                          .applyCouponCode(
+                                                            couponCode:
+                                                                couponController
+                                                                    .text,
+                                                            amount: subTotal,
+                                                          )
+                                                          .then((coupon) {
+                                                        if (coupon != null) {
+                                                          DiscountEnum type =
+                                                              DiscountEnum
+                                                                  .getEnumValue(
+                                                                      coupon
+                                                                          .type);
+                                                          if (type ==
+                                                              DiscountEnum
+                                                                  .percentage) {
+                                                            isDiscountPercentage =
+                                                                true;
+                                                          }
 
-                                                    isCouponApply = true;
-                                                    couponDiscountAmount =
-                                                        double.tryParse(
-                                                                coupon.value) ??
-                                                            0.0;
+                                                          isCouponApply = true;
+                                                          couponDiscountAmount =
+                                                              double.tryParse(coupon
+                                                                      .value) ??
+                                                                  0.0;
 
-                                                    couponId = coupon.id;
+                                                          couponCode =
+                                                              couponController
+                                                                  .text;
+                                                        }
+                                                      });
+                                                    } else {
+                                                      EasyLoading.showError(
+                                                        S
+                                                            .of(context)
+                                                            .pEnterPromoCode,
+                                                      );
+                                                    }
                                                   }
-                                                });
-                                              } else {
-                                                EasyLoading.showError(
-                                                  S.of(context).pEnterPromoCode,
-                                                );
-                                              }
-                                            }
-                                          },
-                                          buttonColor: Colors.transparent,
-                                          borderWidth: isCouponApply ? 5 : 1,
-                                          borderColor: isCouponApply
-                                              ? AppStaticColor.accentColor
-                                              : colors(context).primaryColor,
-                                          titleColor: isCouponApply
-                                              ? AppStaticColor.grayColor
-                                              : colors(context).primaryColor,
-                                        )
-                                ],
-                              ) :Container(),
+                                                },
+                                                buttonColor: Colors.transparent,
+                                                borderWidth:
+                                                    isCouponApply ? 5 : 1,
+                                                borderColor: isCouponApply
+                                                    ? AppStaticColor.accentColor
+                                                    : colors(context)
+                                                        .primaryColor,
+                                                titleColor: isCouponApply
+                                                    ? AppStaticColor.grayColor
+                                                    : colors(context)
+                                                        .primaryColor,
+                                              )
+                                      ],
+                                    )
+                                  : Container(),
                               16.ph,
                               _cartSummaryWidget(
-                                  subTotal: subTotal,
+                                  taxTotal: tax,
+                                  subTotal: subTotal + variationTotal,
                                   discount: couponDiscountAmount,
-                                  deliveryCharge: 0.0,
+                                  deliveryCharge: deliveryCharge,
                                   payableAmount: payableAmount(
-                                    addons: addonsTotal,
+                                      tax: tax,
+                                      variationTotal: variationTotal,
+                                      addons: addonsTotal,
                                       subTotal: subTotal,
-                                      deliveryCharge: 0,
-                                      couponDiscountAmount:
-                                          couponDiscountAmount),
+                                      deliveryCharge: deliveryCharge,
+                                      couponDiscountAmount: couponDiscountAmount),
                                   addOnsTotal: addonsTotal,
                                   isDiscountPercentage: isDiscountPercentage),
                               12.ph,
@@ -364,9 +430,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                       textStyle.subTitle.copyWith(fontSize: 16),
                                 ),
                                 Text(
-                                  '€${payableAmount(
-                                      addons: addonsTotal,
-                                      subTotal: subTotal, deliveryCharge: 0, couponDiscountAmount: couponDiscountAmount).toStringAsFixed(2)}',
+                                  '€${payableAmount(tax: tax, variationTotal: variationTotal, addons: addonsTotal, subTotal: subTotal, deliveryCharge: deliveryCharge, couponDiscountAmount: couponDiscountAmount).toStringAsFixed(2)}',
                                   style: textStyle.subTitle,
                                 )
                               ],
@@ -378,24 +442,33 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 onTap: () {
                                   CheckoutArgument checkoutArgument =
                                       CheckoutArgument(
-                                    // userAddress: deliveryAddress!,
+                                    servingMethod: _selectedServingMethod,
                                     products: products,
-                                    couponId: couponId,
-                                    deliverCharge: 30,
+                                    couponCode: couponCode,
+                                    deliverCharge: deliveryCharge,
                                     payable: payableAmount(
+                                      tax: tax,
+                                      variationTotal: variationTotal,
                                       addons: addonsTotal,
                                       subTotal: subTotal,
-                                      deliveryCharge: 0,
+                                      deliveryCharge: deliveryCharge,
                                       couponDiscountAmount:
                                           couponDiscountAmount,
                                     ),
                                     cartBox: box,
+                                        notes: additionalInfoController.text,
+                                        postalCodeId: _selectedPostal?.id
                                   );
-                                  isLoggedIn ?  Navigator.pushNamed(
-                                    context,
-                                    Routes.checkoutScreen,
-                                    arguments: checkoutArgument,
-                                  ) : showDialog(context: context, builder: (context) => LoginDialog(),);
+                                  isLoggedIn
+                                      ? Navigator.pushNamed(
+                                          context,
+                                          Routes.checkoutScreen,
+                                          arguments: checkoutArgument,
+                                        )
+                                      : showDialog(
+                                          context: context,
+                                          builder: (context) => LoginDialog(),
+                                        );
                                 },
                                 title: S.of(context).checkOut,
                                 icon: Icons.arrow_right_alt,
@@ -466,6 +539,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
     ///items price
     required double addOnsTotal,
+    required double taxTotal,
 
     ///sum of addons price
     required double discount,
@@ -497,6 +571,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           ),
           12.ph,
           CartSummaryText(
+            title: S.of(context).BTW,
+            subTitle: '€${taxTotal.toStringAsFixed(2)}',
+          ),
+          12.ph,
+          CartSummaryText(
             title: S.of(context).discount,
             subTitle:
                 '-€${discount.toStringAsFixed(2)}${isDiscountPercentage ? '%' : ''}',
@@ -518,6 +597,97 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     );
   }
 
+  Widget _buildServingMethod() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0.r),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(20.h),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.2),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.r),
+                  topRight: Radius.circular(10.r)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.motorcycle),
+                SizedBox(width: 10.w),
+                Text(
+                  S.of(context).servingMethod,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Radio(
+              value: 'pick_up',
+              groupValue: _selectedServingMethod,
+              activeColor: colors(context).primaryColor,
+              onChanged: (value) {
+                setState(() {
+                  _selectedServingMethod = value ?? 'home_delivery';
+                });
+              },
+            ),
+            title: Text(
+              S.current.pickUp,
+              style: TextStyle(fontSize: 15.sp),
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Radio(
+              value: 'home_delivery',
+              groupValue: _selectedServingMethod,
+              activeColor: colors(context).primaryColor,
+              onChanged: (value) {
+                setState(() {
+                  _selectedServingMethod = value ?? 'home_delivery';
+                });
+              },
+            ),
+            title: Text(
+              S.current.homeDelivery,
+              style: TextStyle(fontSize: 15.sp),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  double calculateTax(List<HiveCartModel> cartItems) {
+    double totalPriceWithTax = 0.0;
+    double totalPrice = 0.0;
+    for (var item in cartItems) {
+      totalPriceWithTax += item.priceWithTax * item.productsQTY;
+      totalPrice += item.price * item.productsQTY;
+      if (item.addons.isNotEmpty) {
+        var addons = item.addons;
+        for (var addons in addons) {
+          totalPriceWithTax += addons.priceWithTax * item.productsQTY;
+          totalPrice += addons.price * item.productsQTY;
+        }
+      }
+
+      if (item.variant != null) {
+        totalPriceWithTax +=
+            (item.variant?.priceWithTax ?? 0) * item.productsQTY;
+        totalPrice += (item.variant?.price ?? 0) * item.productsQTY;
+      }
+    }
+    return (totalPriceWithTax - totalPrice);
+  }
+
   double calculateSubtotal(List<HiveCartModel> cartItems) {
     double subTotal = 0.0;
     for (var item in cartItems) {
@@ -535,37 +705,49 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
     return addonsTotal;
   }
+
   double calculateVariantTotal(List<HiveCartModel> cartItems) {
     double addonsTotal = 0.0;
     for (var item in cartItems) {
-      for (var addons in item.variant) {
-        addonsTotal += addons.price * item.productsQTY;
+      if (item.variant != null) {
+        addonsTotal += (item.variant?.price ?? 0) * item.productsQTY;
       }
     }
     return addonsTotal;
   }
 
-
   double payableAmount(
-      {required double subTotal, ///price + vareation
+      {required double subTotal,
+
+      ///price
       required double deliveryCharge,
       required double addons,
+      required double variationTotal,
+      required double tax,
       required double couponDiscountAmount}) {
-
-    if(isDiscountPercentage){
-      couponDiscountAmount = (subTotal + deliveryCharge + addons) * (couponDiscountAmount / 100);
+    if (isDiscountPercentage) {
+      couponDiscountAmount =
+          (subTotal + variationTotal + deliveryCharge + addons + tax) *
+              (couponDiscountAmount / 100);
     }
 
-    return (subTotal + deliveryCharge + addons) -    couponDiscountAmount;
+    return (subTotal + deliveryCharge + addons + variationTotal + tax) -
+        couponDiscountAmount;
   }
-
-
 
   List<Product> getProducts(List<HiveCartModel> cartItems) {
     List<Product> products = [];
     for (var item in cartItems) {
       Product product =
-          Product(productId: item.id, productQTY: item.productsQTY);
+          Product(productId: item.id, productQTY: item.productsQTY, addons: []);
+      if (item.addons.isNotEmpty) {
+        for (var addon in item.addons) {
+          product.addons.add(Addons(name: addon.name));
+        }
+      }
+      if (item.variant != null) {
+        product.variant = Addons(name: item.variant?.name ?? 'un');
+      }
       products.add(product);
     }
     return products;
@@ -574,33 +756,146 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   refreshCouponFunction({required bool isHiveUpdate}) {
     if (isHiveUpdate) {
       isCouponApply = false;
-      couponId = null;
+      couponCode = null;
       couponDiscountAmount = 0;
     } else {
       setState(() {
         isCouponApply = false;
-        couponId = null;
+        couponCode = null;
         couponDiscountAmount = 0;
       });
     }
   }
+
+  Widget postalDropDown() {
+    final textStyle = AppTextStyle(context);
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0.r),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(20.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.r), topRight: Radius.circular(10.r)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              S.current.selectDeliveryArea,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.sp,
+              ),
+            ),
+            5.ph,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedPostal = value;
+                      });
+                    },
+                    hint: Text(S.current.selectDeliveryArea),
+                      value: _selectedPostal,
+                      itemHeight: 90,
+                      isExpanded: true,
+                      borderRadius: BorderRadius.circular(10),
+                      items: postal
+                          .map(
+                            (e) => DropdownMenuItem<PostalCode>(
+                                value: e,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                  Text(e.title),
+                                  Row(
+                                    children: [
+                                      Text(e.postcode),
+                                      Text('${e.currency.symbol}' '${e.charge} ',textDirection: TextDirection.ltr,style: textStyle.bodyText.copyWith(color: AppStaticColor.primaryColor,fontWeight: FontWeight.w800),),
+                                    ],
+                                  ),
+                                    if(e.freeDelivery?.isEnable == 1) ...[
+                                      Row(
+                                        children: [
+                                          Text(e.freeDelivery?.title ?? ''),
+                                          Text('${e.currency.symbol}' '${e.freeDelivery?.amount} ',textDirection: TextDirection.ltr,style: textStyle.bodyText.copyWith(color: AppStaticColor.primaryColor,fontWeight: FontWeight.w800),),
+
+                                        ],
+                                      )
+                                    ]
+
+
+                                ],),
+                            ),
+                          )
+                          .toList()),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoField() {
+    return Container(
+      height: 112.h,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.5),
+        ),
+      ),
+      child: TextField(
+        controller: additionalInfoController,
+        maxLines: 5,
+        style: TextStyle(fontSize: 14.sp),
+        decoration: InputDecoration(
+          hintText: S.of(context).additionalInfo,
+          hintStyle: TextStyle(
+            fontSize: 14.sp,
+            color: Colors.black.withOpacity(0.4),
+          ),
+          fillColor: AppStaticColor.accentColor,
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.r),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-
 class CheckoutArgument {
-  // ShippingBillingResponse userAddress;
+  int? postalCodeId;
   List<Product> products;
-  int? couponId;
-  int deliverCharge;
+  String? couponCode;
+  double deliverCharge;
+  String servingMethod;
   double payable;
+  String? notes;
 
   Box<HiveCartModel> cartBox;
   CheckoutArgument({
-    // required this.userAddress,
+       this.postalCodeId,
     required this.products,
-    this.couponId,
+    required this.servingMethod,
+    this.couponCode,
     required this.deliverCharge,
     required this.payable,
     required this.cartBox,
+    this.notes
   });
 }

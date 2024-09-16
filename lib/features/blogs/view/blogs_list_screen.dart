@@ -81,7 +81,7 @@ class _BlogsListScreenState extends ConsumerState<BlogsListScreen> {
                     isDense: false,
                     hint: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(S.current.categories,style: TextStyle(fontSize: 12),),
+                      child: Text(S.current.categories,style: TextStyle(fontSize: 12,color: AppStaticColor.primaryColor),),
                     ),
                     items: categories
                         .map(
