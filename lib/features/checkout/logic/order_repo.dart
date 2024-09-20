@@ -5,6 +5,7 @@ import 'package:grocerymart/features/checkout/model/offline_mode.dart';
 import 'package:grocerymart/features/checkout/model/online_mode.dart';
 import 'package:grocerymart/features/checkout/model/order.dart';
 import 'package:grocerymart/features/checkout/model/order_details.dart';
+import 'package:grocerymart/features/checkout/model/order_number_response.dart';
 import 'package:grocerymart/features/checkout/model/order_response.dart';
 import 'package:grocerymart/features/checkout/model/place_order.dart';
 import 'package:grocerymart/utils/api_client.dart';
@@ -22,8 +23,6 @@ class OrderRepo {
   //   final int orderId = response.data['data']['order']['id'];
   //   return orderId;
   // }
-
-
 
   Future<List<OrderResponse>> getOrders() async {
     final response =
@@ -50,58 +49,57 @@ class OrderRepo {
     List<dynamic> offlineData = response.data['data'];
 
     final List<OfflineMode> orders =
-    offlineData.map((order) => OfflineMode.fromJson(order)).toList();
-
+        offlineData.map((order) => OfflineMode.fromJson(order)).toList();
 
     return orders;
   }
 
-///checkOut online / offline
+  ///checkOut online / offline
 
-  Future<bool> checkOutHomeDeliveryOnline (CheckoutHomeDeliveryModel checkOut) async {
-  final response =
-      await ref.read(apiClientProvider).post(AppConstant.checkOutOnline,data: checkOut.toMap());
-  if(response.statusCode == 200) {
-    return true;
-  } else {
-    return
-         false;
-  }
-}
-  Future<bool> checkOutHomeDeliveryOffline (CheckoutHomeDeliveryModel checkOut) async {
-  final response =
-      await ref.read(apiClientProvider).post(AppConstant.checkOutOffline,data: checkOut.toMap());
-  if(response.statusCode == 200) {
-    return true;
-  } else {
-    return
-         false;
-  }
-}
+  Future<OrderNumberResponse> checkOutHomeDeliveryOnline(
+      CheckoutHomeDeliveryModel checkOut) async {
+    final response = await ref
+        .read(apiClientProvider)
+        .post(AppConstant.checkOutOnline, data: checkOut.toMap());
 
-
-  Future<bool> checkOutPickUpOnline (CheckoutPickUpModel checkOut) async {
-    final response =
-    await ref.read(apiClientProvider).post(AppConstant.checkOutOnline,data: checkOut.toMap());
-    if(response.statusCode == 200) {
-      return true;
-    } else {
-      return
-        false;
-    }
-  }
-  Future<bool> checkOutPickUpOffline (CheckoutPickUpModel checkOut) async {
-    final response =
-    await ref.read(apiClientProvider).post(AppConstant.checkOutOffline,data: checkOut.toMap());
-    if(response.statusCode == 200) {
-      return true;
-    } else {
-      return
-        false;
-    }
+    dynamic addressesData = response.data['data'];
+    OrderNumberResponse orderNumber =
+        OrderNumberResponse.fromJson(addressesData);
+    return orderNumber;
   }
 
+  Future<OrderNumberResponse> checkOutHomeDeliveryOffline(
+      CheckoutHomeDeliveryModel checkOut) async {
+    final response = await ref
+        .read(apiClientProvider)
+        .post(AppConstant.checkOutOffline, data: checkOut.toMap());
+    dynamic addressesData = response.data['data'];
+    OrderNumberResponse orderNumber =
+        OrderNumberResponse.fromJson(addressesData);
+    return orderNumber;
+  }
 
+  Future<OrderNumberResponse> checkOutPickUpOnline(
+      CheckoutPickUpModel checkOut) async {
+    final response = await ref
+        .read(apiClientProvider)
+        .post(AppConstant.checkOutOnline, data: checkOut.toMap());
+    dynamic addressesData = response.data['data'];
+    OrderNumberResponse orderNumber =
+        OrderNumberResponse.fromJson(addressesData);
+    return orderNumber;
+  }
+
+  Future<OrderNumberResponse> checkOutPickUpOffline(
+      CheckoutPickUpModel checkOut) async {
+    final response = await ref
+        .read(apiClientProvider)
+        .post(AppConstant.checkOutOffline, data: checkOut.toMap());
+    dynamic addressesData = response.data['data'];
+    OrderNumberResponse orderNumber =
+        OrderNumberResponse.fromJson(addressesData);
+    return orderNumber;
+  }
 }
 
 final orderRepo = Provider((ref) => OrderRepo(ref));

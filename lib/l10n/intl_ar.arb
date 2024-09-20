@@ -81,7 +81,7 @@
   "Shipping": "عنوان التسليم",
   "pending": "قيد الانتظار",
   "confirm": "يتأكد",
-  "cancel": "يلغي",
+  "cancel": "إلغاء",
   "storeOpenT": "وقت الافتتاح",
   "to": "ل",
   "allProducts": "جميع المنتجات",
@@ -109,7 +109,7 @@
   "orderDialogDes": "ستصلك رسالة تأكيد تتضمن تفاصيل طلبك",
   "continueShopping": "مواصلة التسوق",
   "logutConfirmation": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
-  "okay": "تمام",
+  "okay": "نعم",
   "language": "لغة",
   "outOfStock": "إنتهى من المخزن",
   "recoverPassword": "استعادة كلمة المرور",
@@ -176,5 +176,18 @@
   "countryCode": "رمز الدولة",
 
   "addShippingAddress": "أضف عنوان الشحن",
-  "addBillingAddress": "أضف عنوان الفاتورة"
+  "addBillingAddress": "أضف عنوان الفاتورة",
+
+  "selectDate": "أختر تاريخ",
+  "selectTime": "أختر وقت التسليم",
+
+
+
+  "completed": "اكتمل",
+
+  "received": "تم الاستلام",
+  "preparing": "التحضير",
+  "readyToPickUp": "جاهز للاستلام",
+  "pickedUp": "تم الإستلام",
+  "cancelled": "ملغى"
 }

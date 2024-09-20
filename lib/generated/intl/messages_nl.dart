@@ -58,6 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Annuleren"),
         "cancelOrder":
             MessageLookupByLibrary.simpleMessage("Bestelling annuleren"),
+        "cancelled": MessageLookupByLibrary.simpleMessage("Geannuleerd"),
         "card": MessageLookupByLibrary.simpleMessage("Credit- of debetkaart"),
         "cardInfo": MessageLookupByLibrary.simpleMessage("Kaartinformatie"),
         "cart": MessageLookupByLibrary.simpleMessage("Winkelwagen"),
@@ -71,6 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "checkOut": MessageLookupByLibrary.simpleMessage("Afrekenen"),
         "city": MessageLookupByLibrary.simpleMessage("Stad"),
         "clearFilter": MessageLookupByLibrary.simpleMessage("Wis filter"),
+        "completed": MessageLookupByLibrary.simpleMessage("Voltooid"),
         "confirm": MessageLookupByLibrary.simpleMessage("Bevestigen"),
         "confirmOTP": MessageLookupByLibrary.simpleMessage("Bevestig OTP"),
         "confirmPassword":
@@ -192,9 +194,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Telefoonnummer"),
         "pickUp": MessageLookupByLibrary.simpleMessage(
             "haal de bestelling op bij onze locatie"),
+        "pickedUp": MessageLookupByLibrary.simpleMessage("Opgehaald"),
         "placeOrder":
             MessageLookupByLibrary.simpleMessage("Bestelling plaatsen"),
         "postalCode": MessageLookupByLibrary.simpleMessage("Postcode"),
+        "preparing": MessageLookupByLibrary.simpleMessage("Voorbereiden"),
         "price": MessageLookupByLibrary.simpleMessage("Prijs"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("Privacybeleid"),
         "productDNF": MessageLookupByLibrary.simpleMessage(
@@ -204,6 +208,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "profile": MessageLookupByLibrary.simpleMessage("Profiel"),
         "profileUS": MessageLookupByLibrary.simpleMessage(
             "Profiel is succesvol bijgewerkt"),
+        "readyToPickUp":
+            MessageLookupByLibrary.simpleMessage("Klaar om op te halen"),
+        "received": MessageLookupByLibrary.simpleMessage("Ontvangen"),
         "recommendedProduct":
             MessageLookupByLibrary.simpleMessage(" Aanbevolen voor jou"),
         "recoverPassword":
@@ -224,10 +231,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchShop": MessageLookupByLibrary.simpleMessage("Winkel zoeken"),
         "sec": MessageLookupByLibrary.simpleMessage("sec"),
         "select": MessageLookupByLibrary.simpleMessage("Selecteer"),
+        "selectDate": MessageLookupByLibrary.simpleMessage("Selecteer Datum"),
         "selectDeliveryArea":
             MessageLookupByLibrary.simpleMessage("Selecteer bezorggebied"),
         "selectPaymentMethod":
             MessageLookupByLibrary.simpleMessage("Selecteer de betaalmethode!"),
+        "selectTime":
+            MessageLookupByLibrary.simpleMessage("Selecteer een ophaaltijd"),
         "sendOtp": MessageLookupByLibrary.simpleMessage("OTP verzenden"),
         "servingMethod": MessageLookupByLibrary.simpleMessage("Serveerwijze"),
         "setPass": MessageLookupByLibrary.simpleMessage("Wachtwoord instellen"),

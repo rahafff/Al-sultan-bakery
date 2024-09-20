@@ -192,5 +192,16 @@
   "countryCode": "Country Code",
 
   "addShippingAddress": "Add Shipping Address",
-  "addBillingAddress": "Add Billing Address"
+  "addBillingAddress": "Add Billing Address",
+
+  "selectDate": "Select Date",
+  "selectTime": "Select a Pickup Time",
+
+  "completed": "Completed",
+
+  "received": "Received",
+  "preparing": "Preparing",
+  "readyToPickUp": "Ready To Pick Up",
+  "pickedUp": "Picked Up",
+  "cancelled": "Cancelled"
 }

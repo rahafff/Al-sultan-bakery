@@ -4,6 +4,7 @@ import 'package:grocerymart/features/checkout/logic/order_repo.dart';
 import 'package:grocerymart/features/checkout/model/checkout/checkout_home_delivery.dart';
 import 'package:grocerymart/features/checkout/model/offline_mode.dart';
 import 'package:grocerymart/features/checkout/model/online_mode.dart';
+import 'package:grocerymart/features/checkout/model/order_number_response.dart';
 import 'package:grocerymart/features/checkout/model/place_order.dart';
 
 class OrderStateNotifier extends StateNotifier<bool> {
@@ -31,8 +32,7 @@ class OrderStateNotifier extends StateNotifier<bool> {
   Future<OnlineMode> getOnlinePayment() async {
     try {
       // state = true;
-      final OnlineMode orderId =
-      await ref.read(orderRepo).getOnline();
+      final OnlineMode orderId = await ref.read(orderRepo).getOnline();
       // state = false;
       return orderId;
     } catch (e) {
@@ -40,7 +40,7 @@ class OrderStateNotifier extends StateNotifier<bool> {
       if (kDebugMode) {
         print(e);
       }
-      return OnlineMode(-1,-1,'');
+      return OnlineMode(-1, -1, '');
     } finally {
       // state = false;
     }
@@ -49,8 +49,7 @@ class OrderStateNotifier extends StateNotifier<bool> {
   Future<List<OfflineMode>> getOfflinePayment() async {
     try {
       // state = true;
-      final List<OfflineMode> orderId =
-          await ref.read(orderRepo).getOffline();
+      final List<OfflineMode> orderId = await ref.read(orderRepo).getOffline();
       // state = false;
       return orderId;
     } catch (e) {
@@ -64,49 +63,12 @@ class OrderStateNotifier extends StateNotifier<bool> {
     }
   }
 
-
-Future<bool> checkOutHomeOnline({required CheckoutHomeDeliveryModel orderData}) async {
-  try {
-    state = true;
-    final bool orderId =
-        await ref.read(orderRepo).checkOutHomeDeliveryOnline(orderData);
-    state = false;
-    return orderId;
-  } catch (e) {
-    state = false;
-    if (kDebugMode) {
-      print(e);
-    }
-    return false;
-  } finally {
-    state = false;
-  }
-}
-Future<bool> checkOutHomeOffline({required CheckoutHomeDeliveryModel orderData}) async {
-  try {
-    state = true;
-    final bool orderId =
-        await ref.read(orderRepo).checkOutHomeDeliveryOffline(orderData);
-    state = false;
-    return orderId;
-  } catch (e) {
-    state = false;
-    if (kDebugMode) {
-      print(e);
-    }
-    return false;
-  } finally {
-    state = false;
-  }
-}
-
-
-
-  Future<bool> checkOutPickUpOnline({required CheckoutPickUpModel orderData}) async {
+  Future<OrderNumberResponse> checkOutHomeOnline(
+      {required CheckoutHomeDeliveryModel orderData}) async {
     try {
       state = true;
-      final bool orderId =
-      await ref.read(orderRepo).checkOutPickUpOnline(orderData);
+      final OrderNumberResponse orderId =
+          await ref.read(orderRepo).checkOutHomeDeliveryOnline(orderData);
       state = false;
       return orderId;
     } catch (e) {
@@ -114,16 +76,18 @@ Future<bool> checkOutHomeOffline({required CheckoutHomeDeliveryModel orderData})
       if (kDebugMode) {
         print(e);
       }
-      return false;
+      return OrderNumberResponse('', 0);
     } finally {
       state = false;
     }
   }
-  Future<bool> checkOutPickUpOffline({required CheckoutPickUpModel orderData}) async {
+
+  Future<OrderNumberResponse> checkOutHomeOffline(
+      {required CheckoutHomeDeliveryModel orderData}) async {
     try {
       state = true;
-      final bool orderId =
-      await ref.read(orderRepo).checkOutPickUpOffline(orderData);
+      final OrderNumberResponse orderId =
+          await ref.read(orderRepo).checkOutHomeDeliveryOffline(orderData);
       state = false;
       return orderId;
     } catch (e) {
@@ -131,7 +95,45 @@ Future<bool> checkOutHomeOffline({required CheckoutHomeDeliveryModel orderData})
       if (kDebugMode) {
         print(e);
       }
-      return false;
+      return OrderNumberResponse('', 0);
+    } finally {
+      state = false;
+    }
+  }
+
+  Future<OrderNumberResponse> checkOutPickUpOnline(
+      {required CheckoutPickUpModel orderData}) async {
+    try {
+      state = true;
+      final OrderNumberResponse orderId =
+          await ref.read(orderRepo).checkOutPickUpOnline(orderData);
+      state = false;
+      return orderId;
+    } catch (e) {
+      state = false;
+      if (kDebugMode) {
+        print(e);
+      }
+      return OrderNumberResponse('', 0);
+    } finally {
+      state = false;
+    }
+  }
+
+  Future<OrderNumberResponse> checkOutPickUpOffline(
+      {required CheckoutPickUpModel orderData}) async {
+    try {
+      state = true;
+      final OrderNumberResponse orderId =
+          await ref.read(orderRepo).checkOutPickUpOffline(orderData);
+      state = false;
+      return orderId;
+    } catch (e) {
+      state = false;
+      if (kDebugMode) {
+        print(e);
+      }
+      return OrderNumberResponse('', 0);
     } finally {
       state = false;
     }

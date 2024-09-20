@@ -18,7 +18,8 @@ ShippingBillingResponse _$ShippingBillingResponseFromJson(
       state: json['state'] as String?,
       address: json['address'] as String?,
       country: json['country'] as String?,
-    )..isShipping = json['isShipping'] as bool?;
+      isShipping: json['isShipping'] as bool?,
+    );
 
 Map<String, dynamic> _$ShippingBillingResponseToJson(
         ShippingBillingResponse instance) =>

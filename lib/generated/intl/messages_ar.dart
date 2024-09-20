@@ -52,8 +52,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "billingIsSameShipping": MessageLookupByLibrary.simpleMessage(
             "عنوان الفاتورة نفس عنوان الشحن"),
         "blogs": MessageLookupByLibrary.simpleMessage("الاخبار"),
-        "cancel": MessageLookupByLibrary.simpleMessage("يلغي"),
+        "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
         "cancelOrder": MessageLookupByLibrary.simpleMessage("إلغاء الطلب"),
+        "cancelled": MessageLookupByLibrary.simpleMessage("ملغى"),
         "card": MessageLookupByLibrary.simpleMessage("بطاقة الائتمان أو الخصم"),
         "cardInfo": MessageLookupByLibrary.simpleMessage("معلومات البطاقة"),
         "cart": MessageLookupByLibrary.simpleMessage("عربة"),
@@ -67,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "checkOut": MessageLookupByLibrary.simpleMessage("الدفع"),
         "city": MessageLookupByLibrary.simpleMessage("مدينة"),
         "clearFilter": MessageLookupByLibrary.simpleMessage("مسح التصفية"),
+        "completed": MessageLookupByLibrary.simpleMessage("اكتمل"),
         "confirm": MessageLookupByLibrary.simpleMessage("يتأكد"),
         "confirmOTP": MessageLookupByLibrary.simpleMessage(
             "تأكيد كلمة المرور لمرة واحدة"),
@@ -155,7 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noProductFound":
             MessageLookupByLibrary.simpleMessage("لم يتم العثور على منتج!"),
         "office": MessageLookupByLibrary.simpleMessage("مكتب"),
-        "okay": MessageLookupByLibrary.simpleMessage("تمام"),
+        "okay": MessageLookupByLibrary.simpleMessage("نعم"),
         "oldest": MessageLookupByLibrary.simpleMessage("الأقدم"),
         "oneStar": MessageLookupByLibrary.simpleMessage("1 نجمة فما فوق"),
         "optional": MessageLookupByLibrary.simpleMessage("خياري"),
@@ -184,8 +186,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneNumber": MessageLookupByLibrary.simpleMessage("رقم التليفون"),
         "pickUp": MessageLookupByLibrary.simpleMessage(
             "استلم مشترياتك من المخبز مباشرة مجاناً"),
+        "pickedUp": MessageLookupByLibrary.simpleMessage("تم الإستلام"),
         "placeOrder": MessageLookupByLibrary.simpleMessage("إنشاء الطلب"),
         "postalCode": MessageLookupByLibrary.simpleMessage("رمز بريدي"),
+        "preparing": MessageLookupByLibrary.simpleMessage("التحضير"),
         "price": MessageLookupByLibrary.simpleMessage("سعر"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
         "productDNF": MessageLookupByLibrary.simpleMessage(
@@ -194,6 +198,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "profile": MessageLookupByLibrary.simpleMessage("حساب تعريفي"),
         "profileUS":
             MessageLookupByLibrary.simpleMessage("تم تحديث الملف الشخصي بنجاح"),
+        "readyToPickUp": MessageLookupByLibrary.simpleMessage("جاهز للاستلام"),
+        "received": MessageLookupByLibrary.simpleMessage("تم الاستلام"),
         "recommendedProduct":
             MessageLookupByLibrary.simpleMessage(" موصى به لك"),
         "recoverPassword":
@@ -212,10 +218,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchShop": MessageLookupByLibrary.simpleMessage("ابحث عن متجر"),
         "sec": MessageLookupByLibrary.simpleMessage("ثانية"),
         "select": MessageLookupByLibrary.simpleMessage("يختار"),
+        "selectDate": MessageLookupByLibrary.simpleMessage("أختر تاريخ"),
         "selectDeliveryArea":
             MessageLookupByLibrary.simpleMessage("أختر منطقة التوصيل"),
         "selectPaymentMethod":
             MessageLookupByLibrary.simpleMessage("الرجاء تحديد طريقة الدفع!"),
+        "selectTime": MessageLookupByLibrary.simpleMessage("أختر وقت التسليم"),
         "sendOtp":
             MessageLookupByLibrary.simpleMessage("أرسل كلمة مرور لمرة واحدة"),
         "servingMethod":

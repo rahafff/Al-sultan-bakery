@@ -6,7 +6,7 @@ class OnlineMode{
   int id;
   int status;
 
-  @JsonKey(name: 'type')
+  @JsonKey(name: 'gateway')
   String name;
   OnlineMode(this.id, this.status ,this.name);
 

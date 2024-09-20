@@ -54,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "blogs": MessageLookupByLibrary.simpleMessage("Blogs"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelOrder": MessageLookupByLibrary.simpleMessage("Cancel Order"),
+        "cancelled": MessageLookupByLibrary.simpleMessage("Cancelled"),
         "card": MessageLookupByLibrary.simpleMessage("Credit Or Debit Card"),
         "cardInfo": MessageLookupByLibrary.simpleMessage("Card Info"),
         "cart": MessageLookupByLibrary.simpleMessage("Cart"),
@@ -67,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "checkOut": MessageLookupByLibrary.simpleMessage("Checkout"),
         "city": MessageLookupByLibrary.simpleMessage("City"),
         "clearFilter": MessageLookupByLibrary.simpleMessage("Clear Filter"),
+        "completed": MessageLookupByLibrary.simpleMessage("Completed"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "confirmOTP": MessageLookupByLibrary.simpleMessage("Confirm OTP"),
         "confirmPassword":
@@ -183,8 +185,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone Number"),
         "pickUp": MessageLookupByLibrary.simpleMessage(
             "pick up the order from our location"),
+        "pickedUp": MessageLookupByLibrary.simpleMessage("Picked Up"),
         "placeOrder": MessageLookupByLibrary.simpleMessage("Place Order"),
         "postalCode": MessageLookupByLibrary.simpleMessage("Postal Code"),
+        "preparing": MessageLookupByLibrary.simpleMessage("Preparing"),
         "price": MessageLookupByLibrary.simpleMessage("Price"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
         "productDNF":
@@ -194,6 +198,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "profileUS": MessageLookupByLibrary.simpleMessage(
             "Profile is updated successful"),
+        "readyToPickUp":
+            MessageLookupByLibrary.simpleMessage("Ready To Pick Up"),
+        "received": MessageLookupByLibrary.simpleMessage("Received"),
         "recommendedProduct":
             MessageLookupByLibrary.simpleMessage(" Recommended for you"),
         "recoverPassword":
@@ -211,10 +218,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "searchShop": MessageLookupByLibrary.simpleMessage("Search for shop"),
         "sec": MessageLookupByLibrary.simpleMessage("sec"),
         "select": MessageLookupByLibrary.simpleMessage("Select"),
+        "selectDate": MessageLookupByLibrary.simpleMessage("Select Date"),
         "selectDeliveryArea":
             MessageLookupByLibrary.simpleMessage("Select Delivery Area"),
         "selectPaymentMethod": MessageLookupByLibrary.simpleMessage(
             "Please select the payment method!"),
+        "selectTime":
+            MessageLookupByLibrary.simpleMessage("Select a Pickup Time"),
         "sendOtp": MessageLookupByLibrary.simpleMessage("Send OTP"),
         "servingMethod": MessageLookupByLibrary.simpleMessage("Serving Method"),
         "setPass": MessageLookupByLibrary.simpleMessage("Set Password"),

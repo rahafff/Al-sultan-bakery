@@ -57,8 +57,7 @@ class MenuRepo {
   }
 
   Future<ShippingBillingResponse?> getUserBillingAddresses() async {
-    print('billllllllllll');
-    final response = await ref.read(apiClientProvider).get(
+     final response = await ref.read(apiClientProvider).get(
           AppConstant.getUserBillingAddresses,
         );
     if (response.statusCode == 200) {

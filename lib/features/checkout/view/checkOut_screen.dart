@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-import 'dart:math' as math;
+
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grocerymart/config/app_color.dart';
+import 'package:grocerymart/config/app_input_decor.dart';
+import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/hive_contants.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/cart/view/cart_view.dart';
-import 'package:grocerymart/features/cart/view/widget/address_selection_dialog.dart';
 import 'package:grocerymart/features/checkout/logic/order_provider.dart';
 import 'package:grocerymart/features/checkout/model/checkout/checkout_home_delivery.dart';
 import 'package:grocerymart/features/checkout/model/offline_mode.dart';
@@ -29,6 +28,7 @@ import 'package:grocerymart/widgets/buttons/full_width_button.dart';
 import 'package:grocerymart/widgets/custom_app_bar.dart';
 import 'package:grocerymart/widgets/screen_wrapper.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 
 import '../model/shipping_billing_response.dart';
 
@@ -56,11 +56,14 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
 
   final TextEditingController zipCodeController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController timeController = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
     bool isLoading = ref.watch(orderStateNotifierProvider);
+
     return ScreenWrapper(
       child: Column(
         children: [
@@ -73,7 +76,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
                 child: Column(
                   children: [
-                    Column(
+                 widget.checkoutArgument.servingMethod =='pick_up'? _buildPickUpFields() :
+                 Column(
                       children: [
                         ValueListenableBuilder(
                           valueListenable:
@@ -290,9 +294,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                           ),
                         )
                       ],
-                    ),
+                    )  ,
                     15.ph,
-                    _buildInfoField(),
+                    _buildInfoFieldZipCode(),
                     15.ph,
                     _buildPaymentCard(),
                     15.ph,
@@ -339,9 +343,11 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                 title: S.of(context).placeOrder,
                                 onTap: () async {
 
+                                  if(isShippingSameBilling){
+                                    billingAddress = shippingAddress;
+                                  }
+
                                   if (widget.checkoutArgument.servingMethod == 'home_delivery') {
-                                    print(int.tryParse(cardNumber));
-                                    print('dddddddd');
                                     CheckoutHomeDeliveryModel orderData =
                                         CheckoutHomeDeliveryModel(
                                       gateway:
@@ -389,7 +395,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                               orderData: orderData)
                                           .then(
                                         (orderId) async {
-                                          if (orderId) {
+                                          if (orderId.total != 0) {
                                             widget.checkoutArgument.cartBox
                                                 .clear();
                                             return showDialog(
@@ -399,21 +405,18 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                                   ConfirmDialog(
                                                 cartBox: widget
                                                     .checkoutArgument.cartBox,
-                                                orderId: 1,
+                                                orderId: orderId.orderNumber,
                                               ),
                                             );
                                           }
                                         },
                                       );
                                     } else {
-                                      await ref
-                                          .read(orderStateNotifierProvider
-                                              .notifier)
-                                          .checkOutHomeOffline(
-                                              orderData: orderData)
+                                      orderData.gateway = orderData.gatewayId;
+                                      await ref.read(orderStateNotifierProvider.notifier).checkOutHomeOffline(orderData: orderData)
                                           .then(
                                         (orderId) async {
-                                          if (orderId) {
+                                          if (orderId.total != 0) {
                                             widget.checkoutArgument.cartBox
                                                 .clear();
                                             return showDialog(
@@ -423,7 +426,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                                   ConfirmDialog(
                                                 cartBox: widget
                                                     .checkoutArgument.cartBox,
-                                                orderId: 1,
+                                                orderId: orderId.orderNumber,
                                               ),
                                             );
                                           }
@@ -433,7 +436,79 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                   }
 
                                   ///pickUp
-                                  else {}
+                                  else {
+                                    CheckoutPickUpModel orderData =
+                                    CheckoutPickUpModel(
+                                      gateway:
+                                      _selectedPaymentMethod?.name ?? '',
+                                      gatewayId:
+                                      _selectedPaymentMethod?.id ?? -1,
+                                      note: widget.checkoutArgument.notes,
+                                      couponCode:
+                                      widget.checkoutArgument.couponCode,
+                                      product: widget.checkoutArgument.products,
+                                      billingAddress: ShippingAddress(
+                                          countryCode: billingAddress?.countryCode ?? '',
+                                          address:  billingAddress?.address ?? '',
+                                          city:  billingAddress?.city ?? '',
+                                          country:  billingAddress?.country ?? '',
+                                          email:  billingAddress?.email ?? '',
+                                          number:  billingAddress?.number ?? '',
+                                          fname:  billingAddress?.fName ?? '',
+                                          lname:  billingAddress?.lName ?? ''
+                                      ),
+                                      date: dateController.text,
+                                      time: timeController.text,
+                                        cardNumber: int.tryParse(cardNumber),
+                                        month: int.tryParse(expiryDate.split('/').first),
+                                        year: int.tryParse(expiryDate.split('/').last),
+                                        cardCVC: int.tryParse(cvvCode)
+                                    );
+                                    if (_selectedPaymentMethod?.type == 'online') {
+                                      await ref
+                                          .read(orderStateNotifierProvider.notifier).checkOutPickUpOnline(
+                                          orderData: orderData)
+                                          .then(
+                                            (orderId) async {
+                                          if (orderId.total != 0) {
+                                            widget.checkoutArgument.cartBox
+                                                .clear();
+                                            return showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (builder) =>
+                                                  ConfirmDialog(
+                                                    cartBox: widget
+                                                        .checkoutArgument.cartBox,
+                                                    orderId: orderId.orderNumber,
+                                                  ),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    } else {
+                                      orderData.gateway = orderData.gatewayId;
+                                      await ref.read(orderStateNotifierProvider.notifier).checkOutPickUpOffline(orderData: orderData)
+                                          .then(
+                                            (orderId) async {
+                                          if (orderId.total != 0) {
+                                            widget.checkoutArgument.cartBox
+                                                .clear();
+                                            return showDialog(
+                                              barrierDismissible: false,
+                                              context: context,
+                                              builder: (builder) =>
+                                                  ConfirmDialog(
+                                                    cartBox: widget
+                                                        .checkoutArgument.cartBox,
+                                                    orderId: orderId.orderNumber,
+                                                  ),
+                                            );
+                                          }
+                                        },
+                                      );
+                                    }
+                                  }
                                 },
                               ),
                             ),
@@ -519,36 +594,40 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
     );
   }
-  Widget _buildInfoField() {
-    return Padding(
-      padding: const EdgeInsets.all(3.0),
-      child: Container(
-        height: 50.h,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: Colors.grey.withOpacity(0.5),
-          ),
-        ),
-        child: TextField(
-          controller: zipCodeController,
-          maxLines: 1,
-          style: TextStyle(fontSize: 14.sp),
-          decoration: InputDecoration(
-            hintText: S.of(context).postalCode,
-            hintStyle: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.black.withOpacity(0.4),
-            ),
-            fillColor: AppStaticColor.accentColor,
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide.none,
+  Widget _buildInfoFieldZipCode() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(S.current.postalCode,style:  AppTextStyle(context).bodyTextSmall,),
+        10.ph,
+        Container(
+          height: 50.h,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: Colors.grey.withOpacity(0.5),
             ),
           ),
+          child: TextField(
+            controller: zipCodeController,
+            maxLines: 1,
+            style: TextStyle(fontSize: 14.sp),
+            decoration: InputDecoration(
+              hintText: S.of(context).postalCode,
+              hintStyle: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.black.withOpacity(0.4),
+              ),
+              fillColor: AppStaticColor.accentColor,
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.r),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -693,5 +772,213 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
+
+  Widget _buildPickUpFields(){
+    return Column(
+      children: [
+
+        ValueListenableBuilder(
+          valueListenable:
+          Hive.box(AppHSC.deliveryAddressBox).listenable(),
+          builder: (context, addressBox, _) {
+            Map<dynamic, dynamic>? addressShipping =
+            addressBox.get(AppHSC.shippingAddress);
+            if (addressShipping != null) {
+              Map<String, dynamic> addressStringKey =
+              addressShipping.cast<String, dynamic>();
+              shippingAddress =
+                  ShippingBillingResponse.fromJson(
+                      addressStringKey);
+            }
+            /*-----------------------------------------*/
+            Map<dynamic, dynamic>? addressBilling =
+            addressBox.get(AppHSC.billingAddress);
+            if (addressBilling != null) {
+              Map<String, dynamic> addressBillStringKey =
+              addressBilling.cast<String, dynamic>();
+              billingAddress = ShippingBillingResponse.fromJson(
+                  addressBillStringKey);
+            }
+            /*-----------------------------------------*/
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Visibility(
+                    visible: billingAddress != null,
+                  replacement: SizedBox(
+                    height: 50.h,
+                    child: TextButton.icon(
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all<
+                            Color>(
+                            AppStaticColor
+                                .accentColor),
+                        foregroundColor:
+                        MaterialStateProperty.all<
+                            Color>(
+                          colors(context)
+                              .primaryColor ??
+                              AppStaticColor
+                                  .primaryColor,
+                        ),
+                      ),
+                      onPressed: () {
+                        context.nav.pushNamed(
+                          Routes.addUserAddressScreen,
+                          arguments: ShippingBillingResponse(isShipping: false),
+                        );
+                      },
+                      icon: const Icon(Icons.add),
+                      label: Text(S
+                          .of(context)
+                          .addBillingAddress),
+                    ),
+                  ),
+                    child: Column(
+                      children: [
+                        Stack(
+                          alignment:
+                          AlignmentDirectional.topEnd,
+                          children: [
+                            AddressCard(
+                              userAddress:
+                              billingAddress!,
+                            ),
+                            SizedBox(
+                              width: 100.w,
+                              child: TextButton(
+                                style:
+                                TextButton.styleFrom(
+                                  minimumSize: Size(50.w, 30),
+                                  backgroundColor: colors(context)
+                                      .primaryColor,
+                                  foregroundColor:
+                                  colors(context)
+                                      .primaryColor,
+
+                                  shape:
+                                  RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius
+                                        .circular(
+                                        18.sp),
+                                  ),
+                                  side: BorderSide(
+                                    color: colors(context)
+                                        .primaryColor ??
+                                        AppStaticColor
+                                            .primaryColor,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  context.nav.pushNamed(
+                                    Routes
+                                        .addUserAddressScreen,
+                                    arguments:
+                                    billingAddress,
+                                  );
+                                },
+                                child: Center(
+                                  child: Text(S.of(context).edit,style: TextStyle(color: AppStaticColor.whiteColor),),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                      ],
+                    ),
+
+            )
+              ],
+            );
+          },
+        ),
+        20.ph,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(S.current.selectDate,style:  AppTextStyle(context).bodyTextSmall,),
+                  10.ph,
+                  TextField(
+                    controller: dateController,
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 14.sp),
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      hintText: S.of(context).selectDate,
+                      hintStyle: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.black.withOpacity(0.4),
+                      ),
+                      fillColor: AppStaticColor.accentColor,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide.none,
+
+                      ),
+                    ),
+                    onTap: () async {
+                          await showDatePicker(context: context,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2025)).then((value) {
+                            dateController.text =  DateFormat('dd/MM/yyyy').format(value ??DateTime.now() );
+                          },);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 20.w,),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(S.current.selectTime,style:  AppTextStyle(context).bodyTextSmall,),
+                  10.ph,
+                  TextField(
+                    readOnly: true,
+                    controller: timeController,
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 14.sp),
+                    decoration: InputDecoration(
+                      hintText: S.of(context).selectTime,
+                      hintStyle: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.black.withOpacity(0.4),
+                      ),
+                      fillColor: AppStaticColor.accentColor,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide.none,
+
+                      ),
+                    ),
+                    onTap: () async {
+                      await showTimePicker(context: context,
+                      initialTime:TimeOfDay.now() ,
+                       ).then((value) {
+                         print(value);
+                        timeController.text =  DateFormat("HH:mm").format(DateTime(0000,0,0,value?.hour ?? 0,value?.minute ?? 0) );
+                      },);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+
+   }
 
 }

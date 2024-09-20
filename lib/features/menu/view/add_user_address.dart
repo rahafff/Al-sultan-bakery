@@ -168,15 +168,15 @@ class _AddUserAddressScreenState extends ConsumerState<AddUserAddressScreen> {
 
                           buildTextField(
                             name: S.of(context).country,
-                            hintText: S.of(context).enterFlatNo,
+                            hintText: S.of(context).country,
 
-                            textInputType: TextInputType.number,
+                            textInputType: TextInputType.text,
                             controller: countryController,
                             width: null,
                           ),
                           buildTextField(
                             name: S.of(context).city,
-                            hintText: S.of(context).enterPC,
+                            hintText: S.of(context).city,
 
                             textInputType: TextInputType.text,
                             controller: cityController,

@@ -389,6 +389,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                   subTotal: subTotal + variationTotal,
                                   discount: couponDiscountAmount,
                                   deliveryCharge: deliveryCharge,
+                                  currency: '€',
                                   payableAmount: payableAmount(
                                       tax: tax,
                                       variationTotal: variationTotal,
@@ -546,6 +547,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     required double deliveryCharge,
     required double payableAmount,
     bool isDiscountPercentage = false,
+    required String currency,
   }) {
     return Container(
       padding: EdgeInsets.all(16.r),
@@ -557,7 +559,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         children: [
           CartSummaryText(
             title: S.of(context).subTotal,
-            subTitle: '€${subTotal.toStringAsFixed(2)}',
+            subTitle: '$currency${subTotal.toStringAsFixed(2)}',
           ),
           12.ph,
           CartSummaryText(
@@ -567,18 +569,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           12.ph,
           CartSummaryText(
             title: S.of(context).addOns,
-            subTitle: '€$addOnsTotal',
+            subTitle: '$currency$addOnsTotal',
           ),
           12.ph,
           CartSummaryText(
             title: S.of(context).BTW,
-            subTitle: '€${taxTotal.toStringAsFixed(2)}',
+            subTitle: '$currency${taxTotal.toStringAsFixed(2)}',
           ),
           12.ph,
           CartSummaryText(
             title: S.of(context).discount,
             subTitle:
-                '-€${discount.toStringAsFixed(2)}${isDiscountPercentage ? '%' : ''}',
+                '-$currency${discount.toStringAsFixed(2)}${isDiscountPercentage ? '%' : ''}',
             isDicount: true,
           ),
           12.ph,
@@ -589,7 +591,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           12.ph,
           CartSummaryText(
             title: S.of(context).payableAmount,
-            subTitle: '€${payableAmount.toStringAsFixed(2)}',
+            subTitle: '$currency${payableAmount.toStringAsFixed(2)}',
             shouldBold: true,
           ),
         ],

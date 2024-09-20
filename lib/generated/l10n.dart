@@ -1789,6 +1789,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Select Date`
+  String get selectDate {
+    return Intl.message(
+      'Select Date',
+      name: 'selectDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select a Pickup Time`
+  String get selectTime {
+    return Intl.message(
+      'Select a Pickup Time',
+      name: 'selectTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completed`
+  String get completed {
+    return Intl.message(
+      'Completed',
+      name: 'completed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Received`
+  String get received {
+    return Intl.message(
+      'Received',
+      name: 'received',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preparing`
+  String get preparing {
+    return Intl.message(
+      'Preparing',
+      name: 'preparing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ready To Pick Up`
+  String get readyToPickUp {
+    return Intl.message(
+      'Ready To Pick Up',
+      name: 'readyToPickUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Picked Up`
+  String get pickedUp {
+    return Intl.message(
+      'Picked Up',
+      name: 'pickedUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancelled`
+  String get cancelled {
+    return Intl.message(
+      'Cancelled',
+      name: 'cancelled',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

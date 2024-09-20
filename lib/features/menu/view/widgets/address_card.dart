@@ -79,7 +79,7 @@ class _AddressCardState extends State<AddressCard> {
                   ),
                   Row(
                     children: [
-                        Text(S.current.countryCode,style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text('${S.current.countryCode}: ',style: TextStyle(fontWeight: FontWeight.bold),),
                       Text(
                         widget.userAddress.countryCode ?? '',
                         style: textStyle.bodyText.copyWith(

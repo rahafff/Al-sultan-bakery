@@ -107,7 +107,7 @@ class OrderScreen extends ConsumerWidget {
                                           fontWeight: FontWeight.bold,
                                         ),
                                         ),
-                                        Text('${orders[index].total} ${orders[index].currencyResponse.symbol}',
+                                        Text('${orders[index].currencyResponse.symbol}${orders[index].total} ',
                                           style: textStyle.bodyTextSmall.copyWith(
                                           color: AppStaticColor.primaryColor,
                                           fontWeight: FontWeight.bold,
@@ -129,8 +129,7 @@ class OrderScreen extends ConsumerWidget {
                                             .withOpacity(0.2)
                                         : Colors.green.withOpacity(0.2),
                                   ),
-                                  child: Text(
-                                    orders[index].orderStatus,
+                                  child: Text(getOrderStatus(orders[index].orderStatus),
                                     style: textStyle.bodyTextSmall.copyWith(
                                       color: AppStaticColor.blackColor,
                                       fontWeight: FontWeight.bold,
@@ -165,5 +164,26 @@ class OrderScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String getOrderStatus(String status) {
+    if (status == "pending") {
+      return S.current.pending;
+    } else if (status == "received") {
+      return S.current.received;
+    } else if (status == "preparing") {
+      return S.current.preparing;
+    }else if (status == "ready_to_pick_up") {
+      return S.current.readyToPickUp;
+    }
+    else if (status == "picked_up") {
+      return S.current.pickedUp;
+    }
+    else if (status == "cancelled") {
+      return S.current.cancelled;
+    }
+    else {
+      return S.current.cancel;
+    }
   }
 }

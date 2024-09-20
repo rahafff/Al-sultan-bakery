@@ -82,7 +82,7 @@ class AuthService {
     });
 
     final message = response.data['message'];
-    if (response.statusCode == 200) {
+    if (response.statusCode == 202) {
       return AuthResponseModel(isSuccess: true, message: message);
     }
     return AuthResponseModel(isSuccess: false, message: message);

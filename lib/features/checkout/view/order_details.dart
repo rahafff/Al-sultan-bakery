@@ -48,7 +48,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     SlideAnimation(horizontalOffset: 50.0, child: widget),
                 children: [
                   ProductCardWidget(products: widget.order.items),
-                  buildAddressCard(address: widget.order.shipping),
+                  // buildAddressCard(address: widget.order.shipping),
                   buildDetailsCard(orderInfo:  widget.order),
                 ],
               ),
@@ -135,7 +135,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ),
               ),
               Text(
-                '#000${orderInfo.id}',
+                '#${orderInfo.id}',
                 style: textStyle.bodyText.copyWith(
                   color: AppStaticColor.blackColor,
                   fontWeight: FontWeight.bold,
@@ -146,24 +146,21 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           SizedBox(height: 10.h),
           buildTile(
             key: S.of(context).orderStatus,
-            value: getStatus(orderInfo.orderStatus),
+            value: getOrderStatus(orderInfo.orderStatus),
           ),
           SizedBox(height: 10.h),
           buildTile(
             key: S.of(context).paymentStatus,
-            value: getStatus(
+            value: getPaymentStatusStatus(
               orderInfo.paymentStatus,
             ),
           ),
           SizedBox(height: 10.h),
-          buildTile(key: S.of(context).subTotal, value: '\$${orderInfo.total}'),
+          buildTile(key: S.of(context).subTotal, value: '${orderInfo.currencyResponse.symbol}${orderInfo.total - orderInfo.shippingCharge }'),
           SizedBox(height: 10.h),
           buildTile(
               key: S.of(context).deliveryCharge,
-              value: '\$${orderInfo.shippingCharge}'),
-          SizedBox(height: 10.h),
-          buildTile(
-              key: S.of(context).discount, value: '\$${orderInfo.shippingCharge}'),
+              value: '${orderInfo.currencyResponse.symbol}${orderInfo.shippingCharge}'),
           SizedBox(height: 10.h),
           const DottedLine(
             direction: Axis.horizontal,
@@ -189,7 +186,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ),
               ),
               Text(
-                '\$${orderInfo.total}',
+                '${orderInfo.currencyResponse.symbol}${orderInfo.total}',
                 style: textStyle.bodyText.copyWith(
                   color: AppStaticColor.blackColor,
                   fontWeight: FontWeight.bold,
@@ -278,11 +275,31 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     }
   }
 
-  String getStatus(String status) {
+  String getOrderStatus(String status) {
     if (status == "pending") {
       return S.of(context).pending;
-    } else if (status == "confirm") {
-      return S.of(context).confirm;
+    } else if (status == "received") {
+      return S.of(context).received;
+    } else if (status == "preparing") {
+      return S.of(context).preparing;
+    }else if (status == "ready_to_pick_up") {
+      return S.of(context).readyToPickUp;
+    }
+    else if (status == "picked_up") {
+      return S.of(context).pickedUp;
+    }
+    else if (status == "cancelled") {
+      return S.of(context).cancelled;
+    }
+    else {
+      return S.of(context).cancel;
+    }
+  }
+  String getPaymentStatusStatus(String status) {
+    if (status == "Completed") {
+      return S.of(context).completed;
+    } else if (status == "Pending") {
+      return S.of(context).pending;
     } else {
       return S.of(context).cancel;
     }

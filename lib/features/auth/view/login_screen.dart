@@ -3,14 +3,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/auth/logic/auth_provider.dart';
 import 'package:grocerymart/features/auth/model/login_credentials.dart';
 import 'package:grocerymart/features/auth/view/widget/auth_wrapper.dart';
 import 'package:grocerymart/features/auth/view/widget/build_textfield.dart';
-import 'package:grocerymart/gen/assets.gen.dart';
+import 'package:grocerymart/features/menu/logic/menu_repo.dart';
+import 'package:grocerymart/generated/assets.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
@@ -55,8 +55,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 flex: 2,
                 child: SizedBox(
                   child: Center(
-                    child: SvgPicture.asset(
-                      Assets.svg.appLogo,
+                    child: Image.asset(
+                      Assets.imagesLogo,
                       width: 160.w,
                     ),
                   ),
@@ -160,6 +160,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   final bool isSuccess =
                                       await performLogin(ref, credentials);
                                   if (isSuccess) {
+                                      ref.read(menuRepo).getUserShippingAddresses();
+                                      ref.read(menuRepo).getUserBillingAddresses();
                                     EasyLoading.showSuccess(
                                         'Signed in successfully');
                                     return nav.pushNamedAndRemoveUntil(

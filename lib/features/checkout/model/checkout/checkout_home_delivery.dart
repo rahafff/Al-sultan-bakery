@@ -1,5 +1,5 @@
 class CheckoutHomeDeliveryModel {
-  String? gateway;
+  dynamic gateway;
   int gatewayId;
   List<Product> product;
   String? note;
@@ -17,15 +17,16 @@ class CheckoutHomeDeliveryModel {
   String? zipCode;
   int postalCode;
   CheckoutHomeDeliveryModel(
-      {  this.gateway,
+      {this.gateway,
+
       required this.product,
       this.note,
       required this.gatewayId,
       this.couponCode,
       required this.postalCode,
-        this.zipCode,
+      this.zipCode,
       required this.sameAsShipping,
-        this.shippingAddress,
+      this.shippingAddress,
       this.billingAddress,
       this.cardNumber,
       this.cardCVC,
@@ -33,33 +34,33 @@ class CheckoutHomeDeliveryModel {
       this.year});
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'gateway': gateway,
-      'gateway_id': gatewayId,
-      'serving_method': 'home_delivery',
-      'ordered_from': 'mobile',
-      'zip_code': zipCode,
-      'order_notes': note,
-      'coupon': couponCode,
-      'postal_code': postalCode,
-      'same_as_shipping': sameAsShipping,
+    Map<String, dynamic> data = {};
+    data['gateway'] = gateway;
+    data['gateway_id'] = gatewayId;
+    data['serving_method'] = 'home_delivery';
+    data['ordered_from'] = 'mobile';
+    data['zip_code'] = zipCode;
+    data['order_notes'] = note;
+    data['coupon'] = couponCode;
+    data['postal_code'] = postalCode;
+    data['same_as_shipping'] = sameAsShipping;
+    data['products'] = product
+        .map(
+          (e) => e.toMap(),
+        )
+        .toList();
+    data['shipping'] = shippingAddress?.toMap();
+    data['billing'] = billingAddress?.toMap();
 
-      'products': product
-          .map(
-            (e) => e.toMap(),
-          )
-          .toList(),
 
-      'shipping': shippingAddress?.toMap(),
-      'billing': billingAddress?.toMap(),
+    if (cardNumber != null) {
+      data['cardNumber'] = cardNumber;
+      data['month'] = month;
+      data['year'] = year;
+      data['cardCVC'] = cardCVC;
+    }
 
-      ///for online
-
-      "cardNumber": cardNumber,
-      "month": month,
-      "year": year,
-      "cardCVC": cardCVC,
-    };
+    return data;
   }
 }
 
@@ -94,17 +95,17 @@ class ShippingAddress {
       'email': 'email',
       'country_code': countryCode,
       'number': number,
-      'charge':'1'
+      'charge': '1'
     };
   }
 }
+
 class Product {
   int productId;
   int productQTY;
 
   List<Addons> addons;
-  Addons?  variant;
-
+  Addons? variant;
 
   Product({
     required this.productId,
@@ -117,15 +118,15 @@ class Product {
     return <String, dynamic>{
       'id': productId,
       'qty': productQTY,
-      'addons':addons.map((e) => e.toMap(),).toList(),
+      'addons': addons
+          .map(
+            (e) => e.toMap(),
+          )
+          .toList(),
       'variant': variant?.toMap()
     };
   }
-
-
 }
-
-
 
 class Addons {
   String name;
@@ -140,23 +141,17 @@ class Addons {
   }
 }
 
-
 class CheckoutPickUpModel {
-  String gateway;
+  dynamic gateway;
   int gatewayId;
   List<Product> product;
   String? note;
   String? couponCode;
 
-  String email;
-  String name;
-
-  String countryCode;
-  String number;
+  ShippingAddress? billingAddress;
 
   String date;
   String time;
-
 
   int? cardNumber;
   int? month;
@@ -165,54 +160,44 @@ class CheckoutPickUpModel {
 
   CheckoutPickUpModel(
       {required this.gateway,
-        required this.product,
-        this.note,
-        required this.gatewayId,
-        this.couponCode,
-
-        required this.name,
-        required this.email,
-
-        required this.countryCode,
-        required this.number,
-
-        required this.date,
-        required this.time,
-
-        this.cardNumber,
-        this.cardCVC,
-        this.month,
-        this.year});
+      required this.product,
+      this.note,
+      required this.gatewayId,
+      this.couponCode,
+      required this.billingAddress,
+      required this.date,
+      required this.time,
+      this.cardNumber,
+      this.cardCVC,
+      this.month,
+      this.year});
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'gateway': gateway,
-      'gateway_id': gatewayId,
-      'serving_method': 'pick_up',
-      'ordered_from': 'mobile',
-      'order_notes': note,
-      'coupon': couponCode,
-      'products': product
-          .map(
-            (e) => e.toMap(),
-      )
-          .toList(),
+    Map<String, dynamic> data = {};
 
-      'billing_fname': name,
-      'billing_email': email,
-      "billing_country_code":countryCode,
-      "billing_number":number,
-      "pick_up_date":date,
-      "pick_up_time":time,
+    data['gateway'] = gateway;
+    data['gateway_id'] = gatewayId;
+    data['serving_method'] = 'pick_up';
+    data['ordered_from'] = 'mobile';
 
+    data['order_notes'] = note;
+    data['coupon'] = couponCode;
 
+    data['products'] = product
+        .map(
+          (e) => e.toMap(),
+    )
+        .toList();
 
-      ///for online
+    data['billing'] = billingAddress?.toMap();
 
-      "cardNumber": cardNumber,
-      "month": month,
-      "year": year,
-      "cardCVC": cardCVC,
-    };
+    if (cardNumber != null) {
+      data['cardNumber'] = cardNumber;
+      data['month'] = month;
+      data['year'] = year;
+      data['cardCVC'] = cardCVC;
+    }
+
+    return data;
   }
 }

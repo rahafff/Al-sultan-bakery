@@ -177,5 +177,16 @@
   "countryCode": "Landcode",
 
   "addShippingAddress": "verzendadres toevoegen",
-  "addBillingAddress": "factuuradres toevoegen"
+  "addBillingAddress": "factuuradres toevoegen",
+
+  "selectDate": "Selecteer Datum",
+  "selectTime": "Selecteer een ophaaltijd",
+
+
+  "completed": "Voltooid",
+  "received": "Ontvangen",
+  "preparing": "Voorbereiden",
+  "readyToPickUp": "Klaar om op te halen",
+  "pickedUp": "Opgehaald",
+  "cancelled": "Geannuleerd"
 }

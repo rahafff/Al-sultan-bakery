@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:grocerymart/config/app_text_style.dart';
 import 'package:grocerymart/config/theme.dart';
 import 'package:grocerymart/features/auth/logic/auth_provider.dart';
-import 'package:grocerymart/features/auth/logic/auth_repo.dart';
 import 'package:grocerymart/features/auth/model/auth_response.dart';
 import 'package:grocerymart/features/auth/model/sign_up.dart';
-import 'package:grocerymart/features/auth/view/verify_otp.dart';
 import 'package:grocerymart/features/auth/view/widget/auth_wrapper.dart';
 import 'package:grocerymart/features/auth/view/widget/build_textfield.dart';
-import 'package:grocerymart/gen/assets.gen.dart';
+import 'package:grocerymart/generated/assets.dart';
 import 'package:grocerymart/generated/l10n.dart';
 import 'package:grocerymart/routes.dart';
 import 'package:grocerymart/util/entensions.dart';
@@ -69,9 +65,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           controller: _scrollController,
           children: [
             SizedBox(height: 20.h),
-            SvgPicture.asset(
-              Assets.svg.appLogo,
+            Image.asset(
+              Assets.imagesLogo,
               width: 150.w,
+              height: 150.h,
             ),
             CustomTextFormField(
               name: 'first name',

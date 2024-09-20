@@ -12,7 +12,7 @@ import 'package:grocerymart/widgets/buttons/full_width_button_with_icon.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class ConfirmDialog extends StatelessWidget {
-  final int orderId;
+  final String orderId;
   final Box<HiveCartModel> cartBox;
   const ConfirmDialog({
     Key? key,
@@ -49,7 +49,7 @@ class ConfirmDialog extends StatelessWidget {
           ),
           20.ph,
           Text(
-            "${S.of(context).yourOrderID} #000$orderId",
+            "${S.of(context).yourOrderID} #$orderId",
             style: textStyle.subTitle
                 .copyWith(fontSize: 16.sp, color: AppStaticColor.grayColor),
           ),
