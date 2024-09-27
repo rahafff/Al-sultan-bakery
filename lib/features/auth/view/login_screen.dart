@@ -33,8 +33,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool showPass = false;
   @override
   void initState() {
-    numOrEmailController.text = 'testrahaf@test.com';
-    passwordController.text = '123654';
+    // numOrEmailController.text = 'testrahaf@test.com';
+    // passwordController.text = '123654';
     super.initState();
   }
 
