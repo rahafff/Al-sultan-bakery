@@ -92,7 +92,7 @@ class ShippingAddress {
       'address': address,
       'city': city,
       'country': country,
-      'email': 'email',
+      'email': email,
       'country_code': countryCode,
       'number': number,
       'charge': '1'
