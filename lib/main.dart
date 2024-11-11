@@ -1,6 +1,6 @@
 import 'package:connectivity_wrapper/connectivity_wrapper.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,12 +20,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await setupFlutterNotifications();
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  firebaseMessagingForgroundHandler();
-  String? fcmToken = await FirebaseMessaging.instance.getToken();
-  debugPrint(fcmToken);
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await setupFlutterNotifications();
+  // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  // firebaseMessagingForgroundHandler();
+  // String? fcmToken = await FirebaseMessaging.instance.getToken();
+  // debugPrint(fcmToken);
   debugPrint('fcmTokeeeeeeeeeeeeen');
   // Stripe.publishableKey = AppConstant.publishableKey;
   await Hive.initFlutter();
